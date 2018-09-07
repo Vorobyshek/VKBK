@@ -36,7 +36,24 @@
     
     </div>
 
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-gray pb-2 mb-0">0.8.2 &rarr; 0.8.4</h6>
+        <div class="media text-muted pt-3">
+          <div class="media-body pb-0 mb-0 small lh-125">
+            <span class="d-block">
+<pre>
+ALTER TABLE `vk_messages_attach` CHANGE `text` `text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL, CHANGE `title` `title` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 
+ALTER TABLE `vk_attach` CHANGE `text` `text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,  CHANGE `title` `title` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+ALTER TABLE `vk_videos` CHANGE `title` `title` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL, CHANGE `desc` `desc` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+UPDATE `vk_status` SET `val` = '2018090801' WHERE `key` = 'version';
+</pre>
+	    </span>
+          </div>
+        </div>
+    </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.8.1 &rarr; 0.8.2</h6>

@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.7
--- http://www.phpmyadmin.net
+-- version 4.8.3
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Aug 26, 2018 at 12:01 AM
--- Server version: 1.0.213
+-- Host: localhost
+-- Generation Time: Sep 08, 2018 at 02:02 AM
+-- Server version: 10.2.13-MariaDB
 -- PHP Version: 5.6.32
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 --
@@ -23,10 +25,10 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `vk_albums` (
   `id` int(10) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `created` int(10) unsigned NOT NULL,
-  `updated` int(10) unsigned NOT NULL,
-  `img_total` int(10) unsigned NOT NULL,
-  `img_done` int(10) unsigned NOT NULL,
+  `created` int(10) UNSIGNED NOT NULL,
+  `updated` int(10) UNSIGNED NOT NULL,
+  `img_total` int(10) UNSIGNED NOT NULL,
+  `img_done` int(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `created` (`created`),
   KEY `updated` (`updated`),
@@ -55,12 +57,12 @@ CREATE TABLE IF NOT EXISTS `vk_attach` (
   `owner_id` int(11) NOT NULL,
   `uri` text NOT NULL,
   `path` varchar(255) NOT NULL,
-  `width` smallint(5) unsigned NOT NULL,
-  `height` smallint(5) unsigned NOT NULL,
-  `text` text NOT NULL,
+  `width` smallint(5) UNSIGNED NOT NULL,
+  `height` smallint(5) UNSIGNED NOT NULL,
+  `text` text CHARACTER SET utf8mb4 NOT NULL,
   `date` int(11) NOT NULL,
   `access_key` varchar(255) NOT NULL,
-  `title` text NOT NULL,
+  `title` text CHARACTER SET utf8mb4 NOT NULL,
   `duration` int(11) NOT NULL,
   `player` text NOT NULL,
   `link_url` text NOT NULL,
@@ -81,13 +83,13 @@ CREATE TABLE IF NOT EXISTS `vk_attach` (
 --
 
 CREATE TABLE IF NOT EXISTS `vk_counters` (
-  `album` mediumint(8) unsigned NOT NULL,
-  `photo` mediumint(8) unsigned NOT NULL,
-  `music` mediumint(8) unsigned NOT NULL,
-  `video` mediumint(8) unsigned NOT NULL,
-  `wall` mediumint(8) unsigned NOT NULL,
-  `docs` mediumint(8) unsigned NOT NULL,
-  `dialogs` mediumint(8) unsigned NOT NULL,
+  `album` mediumint(8) UNSIGNED NOT NULL,
+  `photo` mediumint(8) UNSIGNED NOT NULL,
+  `music` mediumint(8) UNSIGNED NOT NULL,
+  `video` mediumint(8) UNSIGNED NOT NULL,
+  `wall` mediumint(8) UNSIGNED NOT NULL,
+  `docs` mediumint(8) UNSIGNED NOT NULL,
+  `dialogs` mediumint(8) UNSIGNED NOT NULL,
   UNIQUE KEY `counters` (`album`,`photo`,`music`,`video`,`wall`,`docs`,`dialogs`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -140,8 +142,8 @@ CREATE TABLE IF NOT EXISTS `vk_docs` (
   `type` smallint(6) NOT NULL,
   `preview_uri` text NOT NULL,
   `preview_path` text NOT NULL,
-  `width` smallint(5) unsigned NOT NULL,
-  `height` smallint(5) unsigned NOT NULL,
+  `width` smallint(5) UNSIGNED NOT NULL,
+  `height` smallint(5) UNSIGNED NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   `in_queue` tinyint(1) NOT NULL,
   `local_path` text NOT NULL,
@@ -176,12 +178,12 @@ CREATE TABLE IF NOT EXISTS `vk_groups` (
 --
 
 CREATE TABLE IF NOT EXISTS `vk_messages` (
-  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `msg_id` int(11) NOT NULL,
   `msg_chat` int(11) NOT NULL,
   `msg_dialog` int(11) NOT NULL,
   `msg_user` int(11) NOT NULL,
-  `msg_date` int(11) unsigned NOT NULL,
+  `msg_date` int(11) UNSIGNED NOT NULL,
   `msg_body` text CHARACTER SET utf8mb4 NOT NULL,
   `msg_attach` tinyint(1) NOT NULL,
   `msg_forwarded` tinyint(1) NOT NULL,
@@ -207,12 +209,12 @@ CREATE TABLE IF NOT EXISTS `vk_messages_attach` (
   `owner_id` int(11) NOT NULL,
   `uri` text NOT NULL,
   `path` varchar(255) NOT NULL,
-  `width` smallint(5) unsigned NOT NULL,
-  `height` smallint(5) unsigned NOT NULL,
-  `text` text NOT NULL,
+  `width` smallint(5) UNSIGNED NOT NULL,
+  `height` smallint(5) UNSIGNED NOT NULL,
+  `text` text CHARACTER SET utf8mb4 NOT NULL,
   `date` int(11) NOT NULL,
   `access_key` varchar(255) NOT NULL,
-  `title` text NOT NULL,
+  `title` text CHARACTER SET utf8mb4 NOT NULL,
   `duration` int(11) NOT NULL,
   `player` text NOT NULL,
   `link_url` text NOT NULL,
@@ -233,14 +235,14 @@ CREATE TABLE IF NOT EXISTS `vk_messages_attach` (
 --
 
 CREATE TABLE IF NOT EXISTS `vk_music` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `artist` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `album` int(10) unsigned NOT NULL,
-  `duration` smallint(5) unsigned NOT NULL,
+  `album` int(10) UNSIGNED NOT NULL,
+  `duration` smallint(5) UNSIGNED NOT NULL,
   `uri` text NOT NULL,
-  `date_added` int(10) unsigned NOT NULL,
-  `date_done` int(10) unsigned NOT NULL,
+  `date_added` int(10) UNSIGNED NOT NULL,
+  `date_done` int(10) UNSIGNED NOT NULL,
   `saved` tinyint(1) NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   `path` text NOT NULL,
@@ -277,11 +279,11 @@ CREATE TABLE IF NOT EXISTS `vk_music_albums` (
 CREATE TABLE IF NOT EXISTS `vk_photos` (
   `id` int(11) NOT NULL,
   `album_id` int(10) NOT NULL,
-  `date_added` int(10) unsigned NOT NULL,
+  `date_added` int(10) UNSIGNED NOT NULL,
   `uri` text NOT NULL,
-  `width` smallint(5) unsigned NOT NULL,
-  `height` smallint(5) unsigned NOT NULL,
-  `date_done` int(11) unsigned NOT NULL,
+  `width` smallint(5) UNSIGNED NOT NULL,
+  `height` smallint(5) UNSIGNED NOT NULL,
+  `date_done` int(11) UNSIGNED NOT NULL,
   `saved` tinyint(1) NOT NULL,
   `path` text NOT NULL,
   `hash` varchar(40) NOT NULL,
@@ -306,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `vk_profiles` (
   `id` int(11) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
-  `sex` tinyint(1) NOT NULL DEFAULT '0',
+  `sex` tinyint(1) NOT NULL DEFAULT 0,
   `nick` varchar(255) NOT NULL,
   `photo_uri` text NOT NULL,
   `photo_path` varchar(255) NOT NULL,
@@ -320,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `vk_profiles` (
 --
 
 CREATE TABLE IF NOT EXISTS `vk_session` (
-  `vk_id` int(10) unsigned NOT NULL,
+  `vk_id` int(10) UNSIGNED NOT NULL,
   `vk_token` varchar(255) NOT NULL,
   `vk_expire` int(11) NOT NULL,
   `vk_user` int(11) NOT NULL,
@@ -355,7 +357,7 @@ INSERT INTO `vk_status` (`key`, `val`) VALUES
 ('log_music', ''),
 ('log_photo', ''),
 ('log_video', ''),
-('version', '2018082501'),
+('version', '2018090801'),
 ('auto-queue-audio', '0'),
 ('auto-queue-photo', '0'),
 ('play-local-video', '0');
@@ -369,8 +371,8 @@ INSERT INTO `vk_status` (`key`, `val`) VALUES
 CREATE TABLE IF NOT EXISTS `vk_stickers` (
   `product` int(11) NOT NULL,
   `sticker` int(11) NOT NULL,
-  `width` int(10) unsigned NOT NULL,
-  `height` int(10) unsigned NOT NULL,
+  `width` int(10) UNSIGNED NOT NULL,
+  `height` int(10) UNSIGNED NOT NULL,
   `uri` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL,
   `in_queue` tinyint(4) NOT NULL,
@@ -388,22 +390,22 @@ CREATE TABLE IF NOT EXISTS `vk_stickers` (
 CREATE TABLE IF NOT EXISTS `vk_videos` (
   `id` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
-  `title` text NOT NULL,
-  `desc` text NOT NULL,
-  `duration` smallint(5) unsigned NOT NULL,
+  `title` text CHARACTER SET utf8mb4 NOT NULL,
+  `desc` text CHARACTER SET utf8mb4 NOT NULL,
+  `duration` smallint(5) UNSIGNED NOT NULL,
   `preview_uri` varchar(255) NOT NULL,
   `preview_path` varchar(255) NOT NULL,
   `player_uri` text NOT NULL,
   `access_key` varchar(255) NOT NULL,
-  `date_added` int(10) unsigned NOT NULL,
-  `date_done` int(10) unsigned NOT NULL,
+  `date_added` int(10) UNSIGNED NOT NULL,
+  `date_done` int(10) UNSIGNED NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   `in_queue` tinyint(1) NOT NULL,
   `local_path` text NOT NULL,
   `local_size` int(11) NOT NULL,
   `local_format` varchar(50) NOT NULL,
-  `local_w` smallint(5) unsigned NOT NULL,
-  `local_h` smallint(5) unsigned NOT NULL,
+  `local_w` smallint(5) UNSIGNED NOT NULL,
+  `local_h` smallint(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`,`owner_id`),
   KEY `dur` (`duration`),
   KEY `dadded` (`date_added`),
@@ -440,3 +442,4 @@ CREATE TABLE IF NOT EXISTS `vk_wall` (
   KEY `repost` (`is_repost`),
   KEY `repost_owner` (`repost_owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+COMMIT;

@@ -39,7 +39,7 @@ print <<<E
 			<div class="row">
 			<div class="col-xs-6 col-sm-3 libs-row">
 			<a href="http://getbootstrap.com/">Bootstrap</a>
-				<span class="badge badge-light">4.0.0</span><br/>
+				<span class="badge badge-light">4.1.3</span><br/>
 			<a href="https://github.com/vladkens/VK">PHP класс для VK.API</a>
 				<span class="badge badge-light">0.1.7</span><br/>
 			<a href="https://github.com/kombai/freewall">Freewall.js</a>
@@ -51,7 +51,7 @@ print <<<E
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
 			<a href="https://fortawesome.github.io/Font-Awesome/">Font Awesome</a>
-				<span class="badge badge-light">5.0.8</span><br/>
+				<span class="badge badge-light">5.3.1</span><br/>
 			<a href="https://github.com/minhur/bootstrap-toggle">Bootstrap Toggle</a>
 				<span class="badge badge-light">2.2.2</span><br/>
 			<a href="https://habrahabr.ru/sandbox/57659/">hashnav.js</a>
@@ -64,7 +64,7 @@ print <<<E
 			<div class="col-xs-6 col-sm-3 libs-row">
 			
 			<a href="https://github.com/snapappointments/bootstrap-select">Bootstrap Select</a>
-				<span class="badge badge-light">1.13.0</span><br/>
+				<span class="badge badge-light">1.13.2</span><br/>
 			<a href="https://github.com/defunkt/jquery-pjax">pjax</a>
 				<span class="badge badge-light">2.0.1</span><br/>
 			<a href="https://github.com/customd/jquery-visible/">jQuery Visible</a>
@@ -72,11 +72,11 @@ print <<<E
 			<a href="http://benalman.com/projects/jquery-throttle-debounce-plugin/">Debounce plugin</a>
 				<span class="badge badge-light">1.1</span><br/>
 			<a href="https://github.com/js-cookie/js-cookie">js-cookie</a>
-				<span class="badge badge-light">2.1.4</span>
+				<span class="badge badge-light">2.2.0</span>
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
 			<a href="https://github.com/FezVrasta/popper.js">popper.js</a>
-				<span class="badge badge-light">1.14.1</span><br/>
+				<span class="badge badge-light">1.14.4</span><br/>
 			<a href="https://github.com/miromannino/Justified-Gallery">Justified Gallery</a>
 				<span class="badge badge-light">3.7.0</span><br/>
 			</div>
@@ -88,6 +88,15 @@ E;
 
 $changelog = array(
 	'0.8.x' => array(
+		'0.8.4' => array(
+			array('bf',"Обновлена кодировка некоторых таблиц для поддержки эмодзи."),
+			array('u','Bootstrap обновлен до версии 4.1.3'),
+			array('u','Bootstrap Select обновлен до версии 1.13.2'),
+			array('u','FontAwesome обновлен до версии 5.3.1'),
+			array('u','js-cookie обновлен до версии 2.2.0'),
+			array('u','popper.js обновлен до версии 1.14.4'),
+			array('u',"Мелкие изменения."),
+		),
 		'0.8.3' => array(
 			array('bf',"Исправлено отображение незнакомых пользователей в групповых диалогах."),
 			array('u',"Включен просмотр групповых диалогов."),

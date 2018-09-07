@@ -231,9 +231,10 @@ E;
 	    $uri_name = $row['uri'];
 	    
 	    $t = '';
-	    if($row['type'] == 'photo'){    $t = 'atph';$row['id'] = $row['attach_id']; }
-	    if($row['type'] == 'video'){    $t = 'atvi';$row['id'] = $row['attach_id']; }
-	    if($row['type'] == 'link'){     $t = 'atli';$row['id'] = $row['attach_id']; }
+	    $fancy = false;
+	    if($row['type'] == 'photo'){    $t = 'atph';$row['id'] = $row['attach_id'];$fancy=true; }
+	    if($row['type'] == 'video'){    $t = 'atvi';$row['id'] = $row['attach_id'];$fancy=true; }
+	    if($row['type'] == 'link'){     $t = 'atli';$row['id'] = $row['attach_id'];$fancy=true; }
 	    if($row['type'] == 'audio'){
 		$t = 'atau';$row['id'] = $row['attach_id'];
 		mb_internal_encoding("UTF-8");
@@ -242,15 +243,22 @@ E;
 		$duration = $skin->seconds2human($row['duration']);
 		$uri_name = "[{$duration}] {$row['caption']} - {$row['title']}";
 	    }
-	    if($row['type'] == 'groups'){   $t = 'gr'; $row['uri']  = $row['photo_uri']; }
-	    if($row['type'] == 'profiles'){ $t = 'pr'; $row['uri']  = $row['photo_uri']; }
+	    if($row['type'] == 'groups'){   $t = 'gr'; $row['uri']  = $row['photo_uri'];$fancy=true; }
+	    if($row['type'] == 'profiles'){ $t = 'pr'; $row['uri']  = $row['photo_uri'];$fancy=true; }
 	    if($row['type'] == 'doc'){      $t = 'atdc';$row['id']  = $row['attach_id']; }
 	    
-		if($row['type'] == 'm-photo'){    $t = 'matph';$row['id'] = $row['attach_id']; }
-		if($row['type'] == 'm-video'){    $t = 'matvi';$row['id'] = $row['attach_id']; }
-	    if($row['type'] == 'm-link'){     $t = 'matli';$row['id'] = $row['attach_id'];$row['owner_id'] = $row['date']; }
+	    if($row['type'] == 'm-photo'){    $t = 'matph';$row['id'] = $row['attach_id'];$fancy=true; }
+	    if($row['type'] == 'm-video'){    $t = 'matvi';$row['id'] = $row['attach_id'];$fancy=true; }
+	    if($row['type'] == 'm-link'){     $t = 'matli';$row['id'] = $row['attach_id'];$row['owner_id'] = $row['date'];$fancy=true; }
 		if($row['type'] == 'm-doc'){      $t = 'matdc';$row['id'] = $row['attach_id']; }
-	    if($row['type'] == 'm-sticker'){  $t = 'matst';$row['id'] = $row['date']; }
+	    if($row['type'] == 'm-sticker'){  $t = 'matst';$row['id'] = $row['date'];$fancy=true; }
+	    
+	    // Fancybox preview for some types
+	    if($fancy == true){
+		$fbox = 'class="fancybox" data-fancybox="images"';
+	    } else {
+		$fbox = 'target="_blank"';
+	    }
 	    
 	    // Add a autodownload for the first element in list
 	    if($first == true){
@@ -261,7 +269,7 @@ return <<<E
 <tr id="{$row['id']}">
   <td class="text-center"><i class="fa fa-paperclip"></i></td>
   <td class="align-middle">{$row['id']}</td>
-  <td class="align-middle"><a href="{$row['uri']}" target="_blank">{$uri_name}</a></td>
+  <td class="align-middle"><a href="{$row['uri']}" {$fbox}>{$uri_name}</a></td>
   <td class="align-middle">{$row['fdate']}</td>
   <td class="align-middle"><a href="queue.php?t={$t}&id={$row['id']}{$oid}" class="btn btn-sm btn-outline-primary" id="{$row['id']}" onClick="jQuery('#{$row['id']}').hide();return true;" title="Скачать"><b class="fas fa-download fa-fw"></b></a>{$auto}</td>
 </tr>

@@ -133,7 +133,7 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 			$f->dialog_insert($pv,$multi,$dialog_exist);
 		}
 		
-		if($dialog_ids != '' && true == false){
+		if($dialog_ids != ''){
 			$q = $db->query("SELECT * FROM vk_profiles WHERE id IN(".$dialog_ids.")");
 			$dialog_ids = explode(',',$dialog_ids);
 			
@@ -187,7 +187,7 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 			} // end new profiles
 		}
 		
-		if($dialog_group_ids != '' && true == false){
+		if($dialog_group_ids != ''){
 			$q = $db->query("SELECT * FROM vk_groups WHERE id IN(".$dialog_group_ids.")");
 			$dialog_group_ids = explode(',',$dialog_group_ids);
 			

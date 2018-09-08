@@ -76,7 +76,7 @@ print <<<E
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
 			<a href="https://github.com/FezVrasta/popper.js">popper.js</a>
-				<span class="badge badge-light">1.14.4</span><br/>
+				<span class="badge badge-light">1.14.1</span><br/>
 			<a href="https://github.com/miromannino/Justified-Gallery">Justified Gallery</a>
 				<span class="badge badge-light">3.7.0</span><br/>
 			</div>
@@ -94,7 +94,6 @@ $changelog = array(
 			array('u','Bootstrap Select обновлен до версии 1.13.2'),
 			array('u','FontAwesome обновлен до версии 5.3.1'),
 			array('u','js-cookie обновлен до версии 2.2.0'),
-			array('u','popper.js обновлен до версии 1.14.4'),
 			array('u',"Мелкие изменения."),
 		),
 		'0.8.3' => array(

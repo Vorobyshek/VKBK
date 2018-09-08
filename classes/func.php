@@ -100,6 +100,15 @@ class func {
 	    $atk[$type]['caption']     = !isset($atk[$type]['caption'])    ? '' : $atk[$type]['caption'];
 	    $atk[$type]['access_key']  = !isset($atk[$type]['access_key']) ? '' : $atk[$type]['access_key'];
 	    
+		// Do not update empty fields! Especially when they used later for local data :D
+		$update_fields = '';
+		if($atk[$type]['title'] == ''){ 	 $update_fields .= ($update_fields != '' ? ', ' : '')."`title` = '".$db->real_escape($atk[$type]['title'])."'"; }
+		if($atk[$type]['player'] == ''){ 	 $update_fields .= ($update_fields != '' ? ', ' : '')."`player` = '{$atk[$type]['player']}'"; }
+		if($atk[$type]['url'] == ''){ 		 $update_fields .= ($update_fields != '' ? ', ' : '')."`link_url` = '".$db->real_escape($atk[$type]['url'])."'"; }
+		if($atk[$type]['caption'] == ''){ 	 $update_fields .= ($update_fields != '' ? ', ' : '')."`caption` = '".$db->real_escape($atk[$type]['caption'])."'"; }
+		if($atk[$type]['access_key'] == ''){ $update_fields .= ($update_fields != '' ? ', ' : '')."`access_key` = '{$atk[$type]['access_key']}'"; }
+		$update_fields = ($update_fields != '' ? ', ' : '').$update_fields;
+		
 	    // Save information about attach
 		if($debug == false){
 	    $q = $db->query("INSERT INTO `vk_messages_attach`
@@ -107,7 +116,7 @@ class func {
 	    VALUES
 	    (NULL,{$id},'{$type}',0,{$atk[$type]['id']},{$atk[$type]['owner_id']},'{$photo_uri}','',{$atk[$type]['width']},{$atk[$type]['height']},'".$db->real_escape($text)."',{$atk[$type]['date']},'{$atk[$type]['access_key']}','".$db->real_escape($atk[$type]['title'])."',{$atk[$type]['duration']},'{$atk[$type]['player']}','".$db->real_escape($atk[$type]['url'])."','".$db->real_escape($atk[$type]['caption'])."',0)
 	    ON DUPLICATE KEY UPDATE
-	    `wall_id` = {$id}, `type` = '{$type}', `is_local` = 0, `attach_id` = {$atk[$type]['id']}, `owner_id` = {$atk[$type]['owner_id']}, `uri` = '{$photo_uri}', `width` = {$atk[$type]['width']}, `height` = {$atk[$type]['height']}, `text` = '".$db->real_escape($text)."', `date` = {$atk[$type]['date']}, `access_key` = '{$atk[$type]['access_key']}', `title` = '".$db->real_escape($atk[$type]['title'])."', `duration` = {$atk[$type]['duration']}, `player` = '{$atk[$type]['player']}', `link_url` = '".$db->real_escape($atk[$type]['url'])."', `caption` = '".$db->real_escape($atk[$type]['caption'])."', `skipthis` = 0
+	    `wall_id` = {$id}, `type` = '{$type}', `is_local` = 0, `attach_id` = {$atk[$type]['id']}, `owner_id` = {$atk[$type]['owner_id']}, `uri` = '{$photo_uri}', `width` = {$atk[$type]['width']}, `height` = {$atk[$type]['height']}, `text` = '".$db->real_escape($text)."', `date` = {$atk[$type]['date']}, `duration` = {$atk[$type]['duration']}, `skipthis` = 0 {$update_fields}
 	    ");
 		} else {
 			return array(

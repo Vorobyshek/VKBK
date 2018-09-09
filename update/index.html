@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>VKBK Manual Update</title>
-
+    <link href="../favicon.png" rel="shortcut icon">
     <!-- Bootstrap -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -32,14 +32,13 @@
           <h6 class="mb-0 text-white lh-100">VKBK Обновления</h6>
           <small>На этой странице вы найдете запросы для обновления структуры базы данных VKBK.<br/>Обновления необходимо добавлять последовательно начиная с вашей версии и до актуальной.<br/>
 	  <b>Версии ниже 0.5.6 (от 28 Дек.) необходимо обновлять вручную, сравнивая структуру. Версии начиная с 0.6 можно обновлять по инструкции.</b></small>
-    </div>
-    
+        </div>
     </div>
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.8.2 &rarr; 0.8.4</h6>
-        <div class="media text-muted pt-3">
-          <div class="media-body pb-0 mb-0 small lh-125">
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
             <span class="d-block">
 <pre>
 ALTER TABLE `vk_messages_attach` CHANGE `text` `text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL, CHANGE `title` `title` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
@@ -57,8 +56,8 @@ UPDATE `vk_status` SET `val` = '2018090801' WHERE `key` = 'version';
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.8.1 &rarr; 0.8.2</h6>
-        <div class="media text-muted pt-3">
-          <div class="media-body pb-0 mb-0 small lh-125">
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
             <span class="d-block">
 <pre>
 ALTER TABLE `vk_videos` ADD `owner_id` INT( 11 ) NOT NULL AFTER `id`;
@@ -79,8 +78,8 @@ UPDATE `vk_status` SET `val` = '2018082501' WHERE `key` = 'version';
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.7.7 &rarr; 0.8.0</h6>
-        <div class="media text-muted pt-3">
-          <div class="media-body pb-0 mb-0 small lh-125">
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
             <span class="d-block">
 <div class="d-flex align-items-center p-3 text-white1 badge-danger rounded box-shadow">
         <div class="lh-100">
@@ -179,8 +178,8 @@ UPDATE `vk_status` SET `val` = '2018050201' WHERE `key` = 'version';
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.7.5 &rarr; 0.7.6</h6>
-        <div class="media text-muted pt-3">
-          <div class="media-body pb-0 mb-0 small lh-125">
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
             <span class="d-block">
 <pre>
 ALTER TABLE `vk_wall` CHANGE `text` `text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
@@ -194,8 +193,8 @@ UPDATE `vk_status` SET `val` = '2018042101' WHERE `key` = 'version';
     
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.7.3 &rarr; 0.7.4</h6>
-        <div class="media text-muted pt-3">
-          <div class="media-body pb-0 mb-0 small lh-125">
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
             <span class="d-block">
 <pre>
 ALTER TABLE `vk_wall` DROP INDEX `id` , ADD UNIQUE `id` ( `id` , `owner_id` );
@@ -212,8 +211,8 @@ UPDATE `vk_status` SET `val` = '2017090201' WHERE `key` = 'version';
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.6 &rarr; 0.7</h6>
-        <div class="media text-muted pt-3">
-          <div class="media-body pb-0 mb-0 small lh-125">
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
             <span class="d-block">
 <pre>
 ALTER TABLE `vk_attach` CHANGE `duration` `duration` INT( 11 ) NOT NULL;
@@ -223,12 +222,12 @@ UPDATE `vk_status` SET `val` = '2017031201' WHERE `key` = 'version';
 	    </span>
           </div>
         </div>
-    </div>    
+    </div>
     
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.5.6 (от 28 Дек.) &rarr; 0.6</h6>
-        <div class="media text-muted pt-3">
-          <div class="media-body pb-0 mb-0 small lh-125">
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
             <span class="d-block">
 <pre>
 ALTER TABLE `vk_counters` ADD `docs` MEDIUMINT UNSIGNED NOT NULL AFTER `wall`;

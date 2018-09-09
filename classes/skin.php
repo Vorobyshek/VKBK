@@ -69,7 +69,8 @@ E;
     <link rel="stylesheet" href="css/bootstrap-select.min.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/bootstrap2-toggle.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="jplayer/skin/vkbk/css/jplayer.vkbk.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/justifiedGallery.min.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/justifiedGallery.min.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/plyr.css" type="text/css" media="screen" />
     <!-- Custom styles for this template -->
     <link href="css/custom.css" rel="stylesheet">
     <link href="css/fontawesome-all.min.css" rel="stylesheet">
@@ -136,9 +137,10 @@ E;
     <script type="text/javascript" src="js/jquery.debounce.min.js"></script>
     <script type="text/javascript" src="jplayer/jquery.jplayer.min.js"></script>
     <script type="text/javascript" src="jplayer/jplayer.playlist.js"></script>
+    <script type="text/javascript" src="js/plyr.min.js"></script>
     <script type="text/javascript" src="js/hashnav.js"></script>
     <script type="text/javascript" src="js/js.cookie.min.js"></script>
-	<script type="text/javascript" src="js/jquery.justifiedGallery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.justifiedGallery.min.js"></script>
     <script type="text/javascript" src="js/vkbk.js"></script>
 E;
 	}
@@ -153,7 +155,7 @@ E;
 		return <<<E
     <nav class="navbar navbar-expand-md navbar-inverse fixed-top">
 
-          <a class="navbar-brand" href="index.php"><i class="fab fa-vk"></i>BK</a>
+      <a class="navbar-brand" href="index.php"><i class="fab fa-vk"></i>BK</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -168,9 +170,9 @@ E;
 			{$this->navigation_item('docs.php'	 ,'Документы'		,'far fa-file'				,$s['docs'])}
 			{$this->navigation_item('dialogs.php','Диалоги'			,'far fa-comment-alt'		,$s['dialogs'])}
 			{$this->navigation_item('queue.php'	 ,'Очередь закачки'	,'fa fa-cloud-download-alt'	,'')}
-
-	    <li class="nav-item tip" data-placement="bottom" data-toggle="tooltip" data-original-title="Настройки">
-		<a class="nav-link" data-morphing id="morphing" data-src="ajax/settings.php" href="javascript:;"><i class="fa fa-sliders-h"></i><span class="xs-show">Настройки</span></a></li>
+			
+			<li class="nav-item tip" data-placement="bottom" data-toggle="tooltip" data-original-title="Настройки">
+				<a class="nav-link" data-morphing id="morphing" data-src="ajax/settings.php" href="javascript:;"><i class="fa fa-sliders-h"></i><span class="xs-show">Настройки</span></a></li>
         </ul>
       </div>
     </nav>
@@ -250,7 +252,7 @@ E;
 	    if($row['type'] == 'm-photo'){    $t = 'matph';$row['id'] = $row['attach_id'];$fancy=true; }
 	    if($row['type'] == 'm-video'){    $t = 'matvi';$row['id'] = $row['attach_id'];$fancy=true; }
 	    if($row['type'] == 'm-link'){     $t = 'matli';$row['id'] = $row['attach_id'];$row['owner_id'] = $row['date'];$fancy=true; }
-		if($row['type'] == 'm-doc'){      $t = 'matdc';$row['id'] = $row['attach_id']; }
+	    if($row['type'] == 'm-doc'){      $t = 'matdc';$row['id'] = $row['attach_id']; }
 	    if($row['type'] == 'm-sticker'){  $t = 'matst';$row['id'] = $row['date'];$fancy=true; }
 	    
 	    // Fancybox preview for some types
@@ -287,7 +289,7 @@ E;
 	*/
 	function reload($class,$msg,$uri,$timeout){
 	    if($timeout <= 0){ $timeout = 10000; } else { $timeout = $timeout * 1000; } // Default 10 sec
-	    if($class=='info'){ $c = 'class="alert alert-info" role="alert"'; }
+	    if($class=='info'){    $c = 'class="alert alert-info" role="alert"';    }
 	    if($class=='warning'){ $c = 'class="alert alert-warning" role="alert"'; }
 return <<<E
 <tr>
@@ -386,7 +388,7 @@ E;
 		return "$m:$s";
 	    }
 	}
-
+	
 	/*
 		Function: check_db_ver
 		Checks DB version and return true or false

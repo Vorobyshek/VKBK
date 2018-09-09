@@ -281,7 +281,7 @@ $(document).ready(function() {
 				jQuery.ajax({
 					async : false,
 					method : "GET",
-					url : paginator_video+ajax_page_reload('video',video_vars(i))
+					url : paginator_video+video_vars(i)
 				}).done( function(data){
 					jQuery(".paginator-next").remove();
 					list.append(data);

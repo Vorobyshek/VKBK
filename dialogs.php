@@ -46,6 +46,7 @@ $dial_groups = '';
 // Show Dialog List
 $r = $db->query("SELECT * FROM vk_dialogs ORDER BY date DESC");
 while($row = $db->return_row($r)){
+	if($row['chat_id'] > 0){ $row['id'] = $row['admin_id']; } // Set profile id for multichat
 	$dial_list[$row['date']] = array('id' => $row['id'],'chat_id' => $row['chat_id'],'title' => $row['title'],'date' => $row['date'],'data' => '');
 	if($row['id'] >= 1){ $dial_users .= ($dial_users != '' ? ',' : '').$row['id']; } else { $dial_groups .= ($dial_groups != '' ? ',' : '').abs($row['id']); }
 } // End of while

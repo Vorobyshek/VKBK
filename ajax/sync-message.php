@@ -123,12 +123,17 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 				$dialog_group_ids .= ($dialog_group_ids != '' ? ',' : '').abs($pv['conversation']['peer']['id']);
 			}
 			// Insert OR update dialog
-			$multi = array('on' => 0, 'chat_id' => 0, 'users' => 0);
+			$multi = array('on' => 0, 'chat_id' => 0, 'users' => 0, 'admin' => 0);
 			if($pv['conversation']['peer']['type'] == 'chat'){
+				// Set last active user as 'admin'
+				$admin_id = (isset($pv['last_message']['from_id']) && is_numeric($pv['last_message']['from_id'])) ? $pv['last_message']['from_id'] : 0;
 				$multi = array(
 					'on' => 1,
 					'chat_id' => $pv['conversation']['peer']['local_id'],
-					'users' => $pv['conversation']['chat_settings']['members_count']);
+					'users' => $pv['conversation']['chat_settings']['members_count'],
+					'admin' => $admin_id);
+				// Add 'admin' ID to dialogs users IDs
+				if($admin_id > 0){ $dialog_ids .= ($dialog_ids != '' ? ',' : '').$admin_id; }
 			}
 			$f->dialog_insert($pv,$multi,$dialog_exist);
 		}
@@ -142,8 +147,10 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 					// Existing profile. Check it for changes.
 					
 					// Remove profile id from known list
-					$k = array_search($row['id'],$dialog_ids);
-					unset($dialog_ids[$k]);
+					$k = array_keys($dialog_ids,$row['id']);
+					foreach($k as $knk => $knv){
+						unset($dialog_ids[$knv]);
+					}
 				}
 			}
 			
@@ -154,8 +161,11 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 					if(in_array($av['conversation']['peer']['id'],$dialog_ids)){
 						$dialog_new_ids[$av['conversation']['peer']['id']] = $av['conversation']['peer']['id'];
 					}
+					// Check if we have multichat data
+					if($av['conversation']['peer']['type'] == 'chat' && in_array($av['last_message']['from_id'],$dialog_ids)){
+						$dialog_new_ids[$av['last_message']['from_id']] = $av['last_message']['from_id'];
+					}
 				}
-				
 				$profile_data = '';
 				if(!empty($dialog_new_ids)){
 					// Get Users info

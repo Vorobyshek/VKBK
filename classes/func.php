@@ -642,7 +642,7 @@ E;
 	    In:
 	    v - dialogData,
 	    multi - multichat array:
-	    on - bool, chat_id - int, users - int;
+	    on - bool, chat_id - int, users - int, admin - int;
 	    ex - existing dialogs ID's array:
 	    dialog_id => in_read
 	*/
@@ -679,9 +679,9 @@ E;
 	    $db->query("INSERT INTO `vk_dialogs`
 	    (`id`,`date`,`title`,`in_read`,`multichat`,`chat_id`,`admin_id`,`users`,`is_new`,`is_upd`)
 	    VALUES
-	    ({$v['conversation']['peer']['id']},{$v['last_message']['date']},'{$title}',{$v['conversation']['in_read']},{$multi['on']},{$multi['chat_id']},0,{$multi['users']},{$is_new},{$is_upd})
+	    ({$v['conversation']['peer']['id']},{$v['last_message']['date']},'{$title}',{$v['conversation']['in_read']},{$multi['on']},{$multi['chat_id']},{$multi['admin']},{$multi['users']},{$is_new},{$is_upd})
 	    ON DUPLICATE KEY UPDATE
-	    `id` = {$v['conversation']['peer']['id']}, `date` = {$v['last_message']['date']}, `title` = '{$title}', `in_read` = {$v['conversation']['in_read']}, `multichat` = {$multi['on']},  `chat_id` = {$multi['chat_id']}, `admin_id` = 0, `users` = {$multi['users']}, `is_new` = {$is_new}, `is_upd` = {$is_upd}
+	    `id` = {$v['conversation']['peer']['id']}, `date` = {$v['last_message']['date']}, `title` = '{$title}', `in_read` = {$v['conversation']['in_read']}, `multichat` = {$multi['on']},  `chat_id` = {$multi['chat_id']}, `admin_id` = {$multi['admin']}, `users` = {$multi['users']}, `is_new` = {$is_new}, `is_upd` = {$is_upd}
 	    ");
 	}
 	

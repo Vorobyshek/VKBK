@@ -58,7 +58,7 @@ print <<<E
 				<span class="badge badge-light">6 May 2016</span><br/>
 			<a href="https://github.com/noraesae/perfect-scrollbar">perfect-scrollbar.js</a>
 				<span class="badge badge-light">1.3.0</span><br/>
-			<a href="https://github.com/happyworm/jPlayer">jPlayer.js</a>
+			<a href="https://github.com/happyworm/jPlayer">jPlayer.js <i class="badge badge-warning">deprecated</i></a>
 				<span class="badge badge-light">2.9.2</span>
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
@@ -79,6 +79,8 @@ print <<<E
 				<span class="badge badge-light">1.14.1</span><br/>
 			<a href="https://github.com/miromannino/Justified-Gallery">Justified Gallery</a>
 				<span class="badge badge-light">3.7.0</span><br/>
+			<a href="https://github.com/sampotts/plyr">Plyr</a>
+				<span class="badge badge-light">3.4.0</span><br/>
 			</div>
 			</div>
 			
@@ -88,6 +90,12 @@ E;
 
 $changelog = array(
 	'0.8.x' => array(
+		'0.8.5' => array(
+			array('n',"Плеер локального видео jPlayer заменен на Plyr."),
+			array('bf',"В разделе видео при наличии в url хэштег параметров, страницы не подгружались."),
+			array('bf',"Групповые диалоги не работали корректно."),
+			array('bf',"Потеря информация о локальной копии файла в диалогах."),
+		),
 		'0.8.4' => array(
 			array('bf',"Обновлена кодировка некоторых таблиц для поддержки эмодзи."),
 			array('u','Bootstrap обновлен до версии 4.1.3'),

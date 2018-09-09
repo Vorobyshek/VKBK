@@ -49,16 +49,16 @@ print <<<E
     <p class="card-text">Автоматически переходить к очереди закачек после синхронизации фотографий.</p>
 	<div class="text-center">
 		<input id="auto-queue-photo" type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="secondary" {$settings['auto-queue-photo']}>
-					</div>
-				</div>
+	</div>
+  </div>
   <div class="card-body">
     <p class="card-text">Автоматически переходить к очереди закачек после синхронизации аудиофайлов.</p>
 	<div class="text-center">
 		<input id="auto-queue-audio" type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="secondary" {$settings['auto-queue-audio']}>
-						</div>
-							</div>
+	</div>
+  </div>
 </div>
-							</div>
+				</div>
 				<div class="col-sm-5 small">
 <div class="card bg-light mb-3" style="max-width: 20rem;">
   <div class="card-header">Видео</div>
@@ -66,14 +66,14 @@ print <<<E
     <p class="card-text">Воспроизводить локальное видео вместо онлайн-плеера.</p>
 	<div class="text-center">
 		<input id="play-local-video" type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="secondary" {$settings['play-local-video']}>
-							</div>
-							</div>
+	</div>
+  </div>
   <div class="card-body">
     <p class="card-text">Автоматически воспроизводить локальное видео.</p>
 	<div class="text-center">
 		<input id="start-local-video" type="checkbox" data-toggle="toggle" data-size="small" data-onstyle="success" data-offstyle="secondary" {$settings['start-local-video']}>
-						</div>
-					</div>
+	</div>
+  </div>
 </div>
 				</div>
 			</div>

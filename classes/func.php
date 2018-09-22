@@ -10,7 +10,7 @@ class func {
 	    if($type == 'video'){ return preg_replace("/^Y\:\/VKBK\/video\//","/vkbk-video/",$url); }
 	    if($type == 'photo'){ return preg_replace("/^K\:\/VKBK\/photo\//","/vkbk-photo/",$url); }
 	    if($type == 'audio'){ return preg_replace("/^W\:\/VKBK\/music\//","/vkbk-music/",$url); }
-	    if($type == 'docs'){  return preg_replace("/^K\:\/VKBK\/docs\//" ,"/vkbk-docs/" ,$url); }
+		if($type == 'docs'){  return preg_replace("/^K\:\/VKBK\/docs\//" ,"/vkbk-docs/" ,$url); }
 	}
 	
 	/*
@@ -158,14 +158,14 @@ class func {
 	    $type = $atk['type'];
 	    
 		if($debug == false){
-	    // Insert OR update
-	    $q = $db->query("INSERT INTO `vk_messages_attach`
+			// Insert OR update
+			$q = $db->query("INSERT INTO `vk_messages_attach`
 			(`uid`,`wall_id`,`type`,`is_local`,`attach_id`,`owner_id`,`uri`,`path`,`width`,`height`,`text`,`date`,`access_key`,`title`,`duration`,`player`,`link_url`,`caption`,`skipthis`)
-	    VALUES
+			VALUES
 			(NULL,{$id},'{$type}',1,{$atk[$type]['id']},0,'','',0,0,'',0,'','',0,'','','',0)
-	    ON DUPLICATE KEY UPDATE
-	    `wall_id` = {$id}, `type` = '{$type}', `is_local` = 1, `attach_id` = {$atk[$type]['id']}
-	    ");
+			ON DUPLICATE KEY UPDATE
+			`wall_id` = {$id}, `type` = '{$type}', `is_local` = 1, `attach_id` = {$atk[$type]['id']}
+			");
 		} else {
 			// Be lazy, Do nothing;
 		}
@@ -343,13 +343,13 @@ class func {
 	
 	function wall_show_post($row,$repost,$repost_body,$session){
 	    global $cfg, $db, $skin;
-	    
+		
 	    $output = '';
 
 	    // Load profiles for posts
 	    if($row['from_id'] > 0){
 		    $pr = $db->query_row("SELECT * FROM vk_profiles WHERE `id` = ".$row['from_id']);
-        	    $path = 'profiles';
+        	$path = 'profiles';
 		    $who = $pr['first_name'].' '.$pr['last_name'];
 	    } else {
 		    $pr = $db->query_row("SELECT * FROM vk_groups WHERE `id` = ".abs($row['from_id']));

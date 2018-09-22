@@ -126,7 +126,7 @@ $(document).ready(function() {
 		console.log("Fresh page call");
 		
 	}
-	apr_jscroller('wall',list);	
+	apr_jscroller('wall',list);
 	
 	$(".full-date").tooltip();
 	

@@ -34,9 +34,9 @@ $settings = array(
 
 $q = $db->query("SELECT * FROM vk_status");
 while($row = $db->return_row($q)){
-	if($row['key'] == 'auto-queue-photo'){ $row['val'] == '1' ? $row['val'] = 'checked' : $row['val'] = '';	}
-	if($row['key'] == 'auto-queue-audio'){ $row['val'] == '1' ? $row['val'] = 'checked' : $row['val'] = '';	}
-	if($row['key'] == 'play-local-video'){ $row['val'] == '1' ? $row['val'] = 'checked' : $row['val'] = '';	}
+	if($row['key'] == 'auto-queue-photo'){  $row['val'] == '1' ? $row['val'] = 'checked' : $row['val'] = '';	}
+	if($row['key'] == 'auto-queue-audio'){  $row['val'] == '1' ? $row['val'] = 'checked' : $row['val'] = '';	}
+	if($row['key'] == 'play-local-video'){  $row['val'] == '1' ? $row['val'] = 'checked' : $row['val'] = '';	}
 	if($row['key'] == 'start-local-video'){ $row['val'] == '1' ? $row['val'] = 'checked' : $row['val'] = '';	}
 	$settings[$row['key']] = $row['val'];
 }

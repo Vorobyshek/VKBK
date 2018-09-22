@@ -90,7 +90,7 @@ print <<<E
 		<span class="nav-item mt-2 ml-auto mr-4">
 			<select title="Альбомы" id="album" class="selectpicker show-tick" data-live-search="true" data-size="10" data-width="auto" data-style="btn-sm">
 E;
-		  
+
 /* Album list dropdown */
 $r = $db->query("SELECT * FROM vk_albums ORDER BY id ASC");
 while($album_list = $db->return_row($r)){

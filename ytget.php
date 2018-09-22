@@ -108,7 +108,7 @@ if($s == 'vk'){
 	if($force_auth === true){
 		$youtubeDLcmd = $cfg['yt_dl_path'].'youtube-dl.exe -4 --restrict-filenames -w --no-part --write-info-json -u "'.$cfg['yt_dl_login'].'" -p "'.$cfg['yt_dl_passw'].'" -o "'.$cfg['video_path'].'data/vk-'.$vid['id'].'.%(ext)s" "'.$vid['player_uri'].'"';
 	} else {
-	$youtubeDLcmd = $cfg['yt_dl_path'].'youtube-dl.exe -4 --restrict-filenames -w --no-part --write-info-json -o "'.$cfg['video_path'].'data/vk-'.$vid['id'].'.%(ext)s" "'.$vid['player_uri'].'"';
+		$youtubeDLcmd = $cfg['yt_dl_path'].'youtube-dl.exe -4 --restrict-filenames -w --no-part --write-info-json -o "'.$cfg['video_path'].'data/vk-'.$vid['id'].'.%(ext)s" "'.$vid['player_uri'].'"';
 	}
 }
 

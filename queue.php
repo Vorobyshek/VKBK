@@ -199,12 +199,12 @@ print <<<E
 E;
 				}
 			} else {
-				// If error, let's try to see wtf is going on
+					// If error, let's try to see wtf is going on
 					$error_code = false;
 					if($func->is_html_response($out['content'])){
 						$error_code = $skin->remote_server_error($out = $c->curl_req(array('uri' => $q['uri'], 'method'=>'', 'return'=>0 )));
-				}
-				// Something wrong with response or connection
+					}
+					// Something wrong with response or connection
 					$skin->queue_no_data($error_code,false,false);
 			}
 			
@@ -411,12 +411,12 @@ print <<<E
 E;
 				}
 			} else {
-				// If error, let's try to see wtf is going on
+					// If error, let's try to see wtf is going on
 					$error_code = false;
 					if($func->is_html_response($out['content'])){
 						$error_code = $skin->remote_server_error($out = $c->curl_req(array('uri' => $q['uri'], 'method'=>'', 'return'=>0 )));
-				}
-				// Something wrong with response or connection
+					}
+					// Something wrong with response or connection
 					$skin->queue_no_data($error_code,false,false);
 			}
 			
@@ -946,12 +946,12 @@ print <<<E
 E;
 				}
 			} else {
-				// If error, let's try to see wtf is going on
+					// If error, let's try to see wtf is going on
 					$error_code = false;
 					if($func->is_html_response($out['content'])){
 						$error_code = $skin->remote_server_error($out = $c->curl_req(array('uri' => $q['link_url'], 'method'=>'', 'return'=>0 )));
-				}
-				// Something wrong with response or connection
+					}
+					// Something wrong with response or connection
 					$skin->queue_no_data($error_code,"t=atdc&id=".$queue_id."&oid=".$queue_oid,$queue_id);
 			}
 			
@@ -1155,12 +1155,12 @@ print <<<E
 E;
 				}
 			} else {
-				// If error, let's try to see wtf is going on
+					// If error, let's try to see wtf is going on
 					$error_code = false;
 					if($func->is_html_response($out['content'])){
 						$error_code = $skin->remote_server_error($out = $c->curl_req(array('uri' => $q['link_url'], 'method'=>'', 'return'=>0 )));
-				}
-				// Something wrong with response or connection
+					}
+					// Something wrong with response or connection
 					$skin->queue_no_data($error_code,"t=matdc&id=".$queue_id."&oid=".$queue_oid,$queue_id);
 			}
 			

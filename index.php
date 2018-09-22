@@ -31,7 +31,7 @@ if(!$cfg['pj']){
 
 print <<<E
   <div class="container">
-      <div class="row">
+    <div class="row">
 	  <div class="col-sm-2 col-md-3 mt-4" id="auth-col">
 	    <ul class="nav">
 		  <li class="col-sm-6 col-md-12">
@@ -69,20 +69,20 @@ if($vk_session['vk_token']){
 if($vk_session['vk_token'] != '' && $token_valid == true){
 	
 	try {
-			// We logged in, get personal info
-			$user = $vk->api('users.get', array(
-				'user_id' => $vk_session['vk_user'],
-				'fields' => 'first_name,last_name,has_photo,photo_200_orig,counters,nickname'
-			));
-			
-			$u = $user['response'][0];
-			
-	print "<center>";
-			if($u['has_photo']){
+		// We logged in, get personal info
+		$user = $vk->api('users.get', array(
+			'user_id' => $vk_session['vk_user'],
+			'fields' => 'first_name,last_name,has_photo,photo_200_orig,counters,nickname'
+		));
+		
+		$u = $user['response'][0];
+		
+		print "<center>";
+		if($u['has_photo']){
 print <<<E
 <img class="img-thumbnail" alt="200x200" style="width: 200px;" src="{$u['photo_200_orig']}" data-holder-rendered="true">
 E;
-			}
+		}
 print <<<E
 			<h6><a href="https://vk.com/id{$u['id']}" target="_blank">{$u['nickname']}</a> <a href="ajax/auth.php?do=logout" data-pjauth><i class="fa fa-sign-out-alt"></i></a></h6>
 			{$u['first_name']} {$u['last_name']}
@@ -92,42 +92,42 @@ print <<<E
 		    <ul class="nav my-3 p-3 bg-white rounded box-shadow">
 				<li style="width:100%;text-align:center;">Данные из ВК:</li>
 E;
-			
-			// GET REAL ALBUMS
-			$albums = $vk->api('photos.getAlbums', array(
-				'owner_id' => $vk_session['vk_user'],
-				'need_system' => '1'
-			));
-			
-			$counters_show['albums'] = $albums['response']['count'];
-			$counters_show['photos'] = 0;
-			foreach($albums['response']['items'] as $k => $v){
-				$counters_show['photos'] += $v['size'];
-			}
+		
+		// GET REAL ALBUMS
+		$albums = $vk->api('photos.getAlbums', array(
+			'owner_id' => $vk_session['vk_user'],
+			'need_system' => '1'
+		));
+		
+		$counters_show['albums'] = $albums['response']['count'];
+		$counters_show['photos'] = 0;
+		foreach($albums['response']['items'] as $k => $v){
+			$counters_show['photos'] += $v['size'];
+		}
 
-			// GET AUDIO Count
+		// GET AUDIO Count
 		// Disabled because VK does not return data anymore
 		/*$music = $vk->api('audio.getCount', array(
-				'owner_id' => $vk_session['vk_user']
-			));
+			'owner_id' => $vk_session['vk_user']
+		));
 		if(isset($music['response'])){
-				$counters_show['audios'] = $music['response'];
+			$counters_show['audios'] = $music['response'];
 		} else {
 			$counters_show['audios'] = 0;
 		}*/
 		
-			// GET VIDEO Count
-			$video = $vk->api('video.get', array(
-				'owner_id' => $vk_session['vk_user'],
-				'count' => 0,
-				'offset' => 0,
-				'extended' => 0
-			));
-			if(isset($video['response']) && $video['response']['count']){
-				$counters_show['videos'] = $video['response']['count'];
-			} else {
-				$counters_show['videos'] = 'n/a';
-			}
+		// GET VIDEO Count
+		$video = $vk->api('video.get', array(
+			'owner_id' => $vk_session['vk_user'],
+			'count' => 0,
+			'offset' => 0,
+			'extended' => 0
+		));
+		if(isset($video['response']) && $video['response']['count']){
+			$counters_show['videos'] = $video['response']['count'];
+		} else {
+			$counters_show['videos'] = 'n/a';
+		}
 		
 		// GET DOCUMENTS Count
 		$docs = $vk->api('docs.get', array(
@@ -140,7 +140,7 @@ E;
 		} else {
 			$counters_show['docs'] = 0;
 		}
-
+		
 		// GET DIALOGS Count
 		$dialogs = $vk->api('messages.getDialogs', array(
 			'count' => 0,
@@ -152,7 +152,7 @@ E;
 			$counters_show['dialogs'] = 0;
 		}
 
-			foreach($counters_show as $k => $v){
+		foreach($counters_show as $k => $v){
 			if($k == 'albums') { $k = '<i class="fa fa-folder fa-fw"></i> Альбомы'; }
 			if($k == 'photos') { $k = '<i class="fa fa-image fa-fw"></i> Фото'; }
 			//if($k == 'audios') { $k = '<i class="fa fa-music fa-fw"></i> Музыка'; }
@@ -160,8 +160,8 @@ E;
 			if($k == 'docs') { $k = '<i class="fa fa-file fa-fw"></i> Документы'; }
 			if($k == 'dialogs') { $k = '<i class="far fa-comment-alt fa-fw"></i> Диалоги'; }
 			print '<li class="w-100 btn btn-light text-left mb-1 d-flex justify-content-between align-items-center"><span>'.$k.':</span> <span class="badge badge-secondary">'.$v.'</span></li>';
-			}
-			
+		}
+		
 		print '</ul>';
 
 	} catch (Exception $error) {
@@ -172,12 +172,12 @@ E;
 
 	try {
     
-    if (!isset($_REQUEST['code'])) {
-        /**
-         * If you need switch the application in test mode,
-         * add another parameter "true". Default value "false".
-         * Ex. $vk->getAuthorizeURL($api_settings, $callback_url, true);
-         */
+		if (!isset($_REQUEST['code'])) {
+			/**
+	         * If you need switch the application in test mode,
+			 * add another parameter "true". Default value "false".
+	         * Ex. $vk->getAuthorizeURL($api_settings, $callback_url, true);
+			*/
 	        //$authorize_url = $vk->getAuthorizeURL('offline,status,photos,audio,video,docs',$cfg['vk_uri']);
 			$authorize_url = $vk->getAuthorizeURL('offline,status,photos,audio,video,docs,messages');
 print <<<E
@@ -193,16 +193,16 @@ print <<<E
 		</form>
 </div>
 E;
-    } else {
+		} else {
 			$access_token = $vk->getAccessToken($_REQUEST['code']);//, $cfg['vk_uri']);
 
-		// If we get token, save it!
-		if($access_token['access_token']){
-			$q = $db->query("REPLACE INTO vk_session (`vk_id`,`vk_token`, `vk_expire`, `vk_user`) VALUES (1,'{$access_token['access_token']}','{$access_token['expires_in']}','{$access_token['user_id']}')");
-		}
+			// If we get token, save it!
+			if($access_token['access_token']){
+				$q = $db->query("REPLACE INTO vk_session (`vk_id`,`vk_token`, `vk_expire`, `vk_user`) VALUES (1,'{$access_token['access_token']}','{$access_token['expires_in']}','{$access_token['user_id']}')");
+			}
 		
-		print '<h3><span class="badge badge-success" style="white-space:inherit;display:block;">Авторизация пройдена</span></h3>';
-    }
+			print '<h3><span class="badge badge-success" style="white-space:inherit;display:block;">Авторизация пройдена</span></h3>';
+		}
 	} catch (Exception $error) {
 		echo '<h3><span class="badge badge-danger" style="white-space:inherit;display:block;">Ошибка: '.$error->getMessage().'</span></h3>';
 	}
@@ -210,7 +210,7 @@ E;
 
 print <<<E
 				</li>
-          </ul>
+			</ul>
         </div>
 E;
 

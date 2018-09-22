@@ -557,8 +557,8 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 				
 				if($quick == true && $quick_sync_stop == true){
 					if(SYNC_MSG_DEBUG == false){
-					// Update current dialog status to done
-					$q1 = $db->query("UPDATE vk_dialogs SET `is_new` = 0, `is_upd` = 0 WHERE `id` = ".$dlg_id." AND `date` = ".$dlg_date);
+						// Update current dialog status to done
+						$q1 = $db->query("UPDATE vk_dialogs SET `is_new` = 0, `is_upd` = 0 WHERE `id` = ".$dlg_id." AND `date` = ".$dlg_date);
 					}
 					
 					// Check do we need sync updated or new dialogs?
@@ -575,8 +575,8 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 					// If we done with all messages
 					if(($offset+$count) >= $vk_msg_total){
 						if(SYNC_MSG_DEBUG == false){
-						// Update current dialog status to done
-						$q1 = $db->query("UPDATE vk_dialogs SET `is_new` = 0, `is_upd` = 0 WHERE `id` = ".$dlg_id." AND `date` = ".$dlg_date);
+							// Update current dialog status to done
+							$q1 = $db->query("UPDATE vk_dialogs SET `is_new` = 0, `is_upd` = 0 WHERE `id` = ".$dlg_id." AND `date` = ".$dlg_date);
 						}
 					
 						// Check do we need sync updated or new dialogs?

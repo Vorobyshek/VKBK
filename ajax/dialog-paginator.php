@@ -150,9 +150,9 @@ foreach($messages as $k => $v){
 			);
 			$ava_path = "#f44336";
 		} else {
-		$who = $users_data[$v['msg_user']];
-		$ava_path = "profiles/".$who['photo_path'];
-	}
+			$who = $users_data[$v['msg_user']];
+			$ava_path = "profiles/".$who['photo_path'];
+		}
 	}
 	
 	$output_attach = '';

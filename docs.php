@@ -53,11 +53,11 @@ print <<<E
 	</select>
 	</div>
 </div>
-	
-</div>
 
+</div>
+	
 <div class="container">
-          <div class="container" id="docs-list">
+    <div class="container" id="docs-list">
 E;
 
 	$page = (isset($_GET['page']) && is_numeric($_GET['page'])) ? intval($_GET['page']) : 0;
@@ -129,7 +129,7 @@ $fancybox_options = <<<E
 	transitionEffect	: false,
 	touch		: {
 		vertical	: false
-	    },
+	},
 	hash		: false
 E;
 

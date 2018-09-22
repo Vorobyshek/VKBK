@@ -83,9 +83,9 @@ print <<<E
 </div>
 E;
 	} else {
-	$n = (!isset($v['data']['name']) ? $n = $v['data']['first_name'].' '.$v['data']['last_name'] : $n = $v['data']['name'] );
-	$full_date = date("d M Y H:i",$v['date']);
-	$v['date'] = $f->dialog_date_format($v['date']);
+		$n = (!isset($v['data']['name']) ? $n = $v['data']['first_name'].' '.$v['data']['last_name'] : $n = $v['data']['name'] );
+		$full_date = date("d M Y H:i",$v['date']);
+		$v['date'] = $f->dialog_date_format($v['date']);
 		if($v['chat_id'] > 0){ $v['id'] = 2000000000+$v['chat_id']; }
 print <<<E
 <div class="mb-1 dialogs-head border-bottom list-group-item list-group-item-action justify-content-between" onclick="javascript:dialog_load({$v['id']});return false;" style="cursor:pointer;">

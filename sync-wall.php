@@ -291,20 +291,20 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 					if($atk['type'] == 'audio'){
 						// Checking availabiliy of API
 						if($atk['audio']['duration'] != 25 && strpos($atk['audio']['url'],"audio_api_unavailable") !== false){
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT id FROM vk_music WHERE id = ".$atk['audio']['id']);
-						// Attach found, make a link
+							// Check do we have this attach already?
+							$at = $db->query_row("SELECT id FROM vk_music WHERE id = ".$atk['audio']['id']);
+							// Attach found, make a link
 							if(!empty($at['id']) && $atk['audio']['owner_id'] == $vk_session['vk_user']){
-							// Insert OR update
-							$f->wall_attach_update($v['id'],$atk);
-						} else {
-							$photo_uri                  = $atk['audio']['url'];
-							$atk['audio']['caption']    = $atk['audio']['artist'];
-							$atk['audio']['access_key'] = '';
-							// Save information about attach
-							$f->wall_attach_insert($v['id'],$atk,$photo_uri);
+								// Insert OR update
+								$f->wall_attach_update($v['id'],$atk);
+							} else {
+								$photo_uri                  = $atk['audio']['url'];
+								$atk['audio']['caption']    = $atk['audio']['artist'];
+								$atk['audio']['access_key'] = '';
+								// Save information about attach
+								$f->wall_attach_insert($v['id'],$atk,$photo_uri);
+							}
 						}
-					}
 					}
 					
 					// Attach - Document
@@ -335,7 +335,7 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 							$atk['doc']['height'] = 0;
 							$atk['doc']['duration'] = $atk['doc']['size'];
 							$atk['doc']['text'] = $atk['doc']['ext'];
-				
+							
 							if(isset($atk['doc']['preview'])){
 								// Images
 								if(isset($atk['doc']['preview']['photo'])){
@@ -449,21 +449,21 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 							if($rpatk['type'] == 'audio'){
 								// Checking availabiliy of API
 								if($rpatk['audio']['duration'] != 25 && strpos($rpatk['audio']['url'],"audio_api_unavailable") !== false){
-								// Check do we have this attach already?
-								$at = $db->query_row("SELECT id FROM vk_music WHERE id = ".$rpatk['audio']['id']);
-								// Attach found, make a link
+									// Check do we have this attach already?
+									$at = $db->query_row("SELECT id FROM vk_music WHERE id = ".$rpatk['audio']['id']);
+									// Attach found, make a link
 									if(!empty($at['id']) && $rpatk['audio']['owner_id'] == $vk_session['vk_user']){
-									// Insert OR update
-									$f->wall_attach_update($rp['id'],$rpatk);
-								} else {
-									$photo_uri                    = $rpatk['audio']['url'];
-									$rpatk['audio']['caption']    = $rpatk['audio']['artist'];
-									$rpatk['audio']['access_key'] = '';
-									// Save information about attach
-									$f->wall_attach_insert($rp['id'],$rpatk,$photo_uri);
+										// Insert OR update
+										$f->wall_attach_update($rp['id'],$rpatk);
+									} else {
+										$photo_uri                    = $rpatk['audio']['url'];
+										$rpatk['audio']['caption']    = $rpatk['audio']['artist'];
+										$rpatk['audio']['access_key'] = '';
+										// Save information about attach
+										$f->wall_attach_insert($rp['id'],$rpatk,$photo_uri);
+									}
 								}
 							}
-						}
 						}
 					} // attachments
 					
@@ -520,17 +520,17 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 	} else {
 	
 		// If we done with all posts
-	if(($offset+$count) >= $vk_post_total){
-		// No unsynced posts left. This is the end...
-		print '<tr><td><div class="alert alert-success" role="alert"><strong>Великая китайская!</strong> Синхронизация всех сообщений со стены завершена.</div></td></tr>';
-	} else {
-		// Some posts on the wall is not synced yed
-		print '<tr><td>Перехожу к следующей порции сообщений...</td></tr>';
+		if(($offset+$count) >= $vk_post_total){
+			// No unsynced posts left. This is the end...
+			print '<tr><td><div class="alert alert-success" role="alert"><strong>Великая китайская!</strong> Синхронизация всех сообщений со стены завершена.</div></td></tr>';
+		} else {
+			// Some posts on the wall is not synced yed
+			print '<tr><td>Перехожу к следующей порции сообщений...</td></tr>';
 		
-		// Calculate offset and reload page
-		$offset_new = $offset+$count;
+			// Calculate offset and reload page
+			$offset_new = $offset+$count;
 			print $skin->reload('info',"Страница будет обновлена через <span id=\"gcd\">".$cfg['sync_wall_next_cd']."</span> сек.","sync-wall.php?offset=".$offset_new."&fast=".$fast_sync."",$cfg['sync_wall_next_cd']);
-	}
+		}
 	
 	} // Fast sync end
 	

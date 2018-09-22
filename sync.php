@@ -814,11 +814,11 @@ E;
 					$video_list['id'][] = $row['id'];
 					$video_list['uid'][] = $row['id'].'_'.$row['date_added'];
 				}
-			
+				
 				// Get list of IDs which is NOT in local DB. so they are NEW
 				// Compare VK IDs with local IDs
 				$video_create = array_diff($video_vk_list['uid'],$video_list['uid']);
-			
+				
 				if(sizeof($video_list) > 0){
 					// Update status for local IDs which was found
 					$q = $db->query("UPDATE vk_videos SET `deleted` = 0 WHERE `id` IN(".implode(',',$video_list['id']).") AND `in_queue` = 0");
@@ -838,9 +838,9 @@ E;
 						$vcv = explode("_",$vcv);
 						$video_create_ids[$vcv[1]] = $vcv[0]; // Key: date_added, Value: id
 					}
-				
-				foreach($video_vk as $k => $v){
-					if(isset($video_create_ids[$v['adding_date']]) && $video_create_ids[$v['adding_date']] = $v['id']){
+					
+					foreach($video_vk as $k => $v){
+						if(isset($video_create_ids[$v['adding_date']]) && $video_create_ids[$v['adding_date']] = $v['id']){
 						// Get biggest preview
 						if(isset($v['photo_640'])){ $v['uri'] = $v['photo_640'];}
 							elseif(isset($v['photo_320'])){ $v['uri'] = $v['photo_320'];}
@@ -856,8 +856,8 @@ E;
 							'player_uri' => $v['player'],
 							'access_key' => (!isset($v['access_key']) ? '' : $v['access_key'])
 						);
-					}
-				} // foreach end
+						}
+					} // foreach end
 				}
 				
 				if(!empty($video_data) && (sizeof($video_create) == sizeof($video_data))){

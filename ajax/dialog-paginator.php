@@ -178,7 +178,7 @@ E;
 					$av['path'] = $f->windows_path_alias($av['path'],'photo');
 				}
 $output_attach .= <<<E
-    <div class="brick" style='width:{$cfg['wall_layout_width']}px;'><a class="fancybox" data-fancybox="images" rel="p{$v['msg_id']}" href="{$av['path']}"><img style="width:100%" src="{$av['path']}"></a></div>
+    <div class="brick" style='max-width:350px;'><a class="fancybox" data-fancybox="images" rel="p{$v['msg_id']}" href="{$av['path']}"><img style="width:100%" src="{$av['path']}"></a></div>
 E;
 			}
 			if($av['is_local'] == 1 && isset($attach_data[$v['msg_id']][$av['attach_id']])){
@@ -187,7 +187,7 @@ E;
 					$attach_data[$v['msg_id']][$av['attach_id']]['path'] = $f->windows_path_alias($attach_data[$v['msg_id']][$av['attach_id']]['path'],'photo');
 				}
 $output_attach .= <<<E
-    <div class="brick" style='width:{$cfg['wall_layout_width']}px;'><a class="fancybox" data-fancybox="images" rel="p{$v['msg_id']}" href="{$attach_data[$v['msg_id']][$av['attach_id']]['path']}"><img style="width:100%" src="{$attach_data[$v['msg_id']][$av['attach_id']]['path']}"></a></div>
+    <div class="brick" style='max-width:350px;'><a class="fancybox" data-fancybox="images" rel="p{$v['msg_id']}" href="{$attach_data[$v['msg_id']][$av['attach_id']]['path']}"><img style="width:100%" src="{$attach_data[$v['msg_id']][$av['attach_id']]['path']}"></a></div>
 E;
 			}
 		} // end of attach photo
@@ -238,7 +238,7 @@ E;
 						$animated = 'class="doc-gif" data-docsrc="'.$av['player'].'" data-docpre="'.$av['path'].'"';
 					}
 $output_attach .= <<<E
-    <div class="brick" style='width:100%;'><a class="fancybox" data-fancybox="images" rel="p{$av['attach_id']}" href="{$av['player']}"><img {$animated} style="width:100%" src="{$av['path']}"></a></div>
+    <div class="brick" style='width:100%;max-width:260px;'><a class="fancybox" data-fancybox="images" rel="p{$av['attach_id']}" href="{$av['player']}"><img {$animated} style="width:100%" src="{$av['path']}"></a></div>
 E;
 				} else {
 					$av['duration'] = $f->human_filesize($av['duration']);
@@ -271,7 +271,7 @@ $output_attach .= <<<E
 	    <span class="label label-default msg-video-duration px-2 py-1">{$av['duration']}</span>
 	    <a class="various fancybox" href="javascript:;" onclick="javascript:fbox_video_global('{$av['player']}',1);" data-title-id="title-{$av['attach_id']}" style="background-image:url('{$av['path']}');"></a>
 	</div>
-	<h6 class="msg-video-header">{$av['title']}</h6>
+	<h6 class="msg-video-header" style="max-width:400px;">{$av['title']}</h6>
 	<div id="title-{$av['attach_id']}" style="display:none;">
 	    {$av['text']}
 	    <div class="expander" onClick="expand_desc();">показать</div>

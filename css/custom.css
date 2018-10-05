@@ -1,15 +1,15 @@
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 body {
-  /* Margin bottom by footer height */
+    /* Margin bottom by footer height */
     margin-bottom: 40px;
     /* Move down content because we have a fixed navbar that is 54px tall */
     padding-top: 54px;
-  background-color: #f1f2f4;
+    background-color: #f1f2f4;
 }
 a {
     color: #2a5885;
@@ -18,9 +18,9 @@ a:hover {
     color: #315b8c;
 }
 .footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     background-color: #FFF;
     min-height: 32px;
 }
@@ -68,8 +68,8 @@ h4[aria-expanded="false"]:hover{
  * Hide default border to remove 1px line.
  */
 .navbar-fixed-top {
-  border: 0;
-  margin-bottom: 1em;
+    border: 0;
+    margin-bottom: 1em;
 }
 
 .navbar-inverse,
@@ -114,19 +114,19 @@ h4[aria-expanded="false"]:hover{
 }
 
 .nav-underline .nav-link {
-  padding-top: .75rem;
-  padding-bottom: .75rem;
-  font-size: .875rem;
-  color: var(--secondary);
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: .875rem;
+    color: var(--secondary);
 }
 
 .nav-underline .nav-link:hover {
-  cursor: default;
+    cursor: default;
 }
 
 .nav-underline .active {
-  font-weight: 500;
-  color: var(--gray-dark);
+    font-weight: 500;
+    color: var(--gray-dark);
 }
 
 .badge-sup {
@@ -157,16 +157,16 @@ h4[aria-expanded="false"]:hover{
  */
 
 .main {
-  padding: 20px;
+    padding: 20px;
 }
 @media (min-width: 768px) {
-  .main {
-    padding-right: 40px;
-    padding-left: 40px;
-  }
+    .main {
+	padding-right: 40px;
+	padding-left: 40px;
+    }
 }
 .main .page-header {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 
@@ -175,18 +175,18 @@ h4[aria-expanded="false"]:hover{
  */
 
 .placeholders {
-  margin-bottom: 30px;
-  text-align: center;
+    margin-bottom: 30px;
+    text-align: center;
 }
 .placeholders h4 {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 .placeholder {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 .placeholder img {
-  display: inline-block;
-  border-radius: 50%;
+    display: inline-block;
+    border-radius: 50%;
 }
 
 /*****************************************************/
@@ -322,11 +322,11 @@ h4[aria-expanded="false"]:hover{
 }
 
 .fancybox-slide--iframe .fancybox-content {
-	width  : 100% !important;
-	height : 100% !important;
-	max-width  : 80%;/*1340px;*/
-	max-height : 80%;/*820px;*/
-	margin: 0;
+    width  : 100% !important;
+    height : 100% !important;
+    max-width  : 80%;/*1340px;*/
+    max-height : 80%;/*820px;*/
+    margin: 0;
 }
 
 .fbox-controls {
@@ -701,66 +701,66 @@ img.dlg-ava {
 
 /* Fancybox -- modal */
 .morphing-btn-wrap {
-  position: relative;
+    position: relative;
 }
 
 .morphing-btn {
-  -webkit-transition: background 0.3s, color 0.2s 0.2s, width 0.2s 0s;
-  -moz-transition: background 0.3s, color 0.2s 0.2s, width 0.2s 0s;
-  -o-transition: background 0.3s, color 0.2s 0.2s, width 0.2s 0s;
-  transition: color 0.3s 0.2s, width 0.2s 0s;
-  white-space: nowrap;
-  box-sizing: border-box;
+    -webkit-transition: background 0.3s, color 0.2s 0.2s, width 0.2s 0s;
+    -moz-transition: background 0.3s, color 0.2s 0.2s, width 0.2s 0s;
+    -o-transition: background 0.3s, color 0.2s 0.2s, width 0.2s 0s;
+    transition: color 0.3s 0.2s, width 0.2s 0s;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 
 .morphing-btn_circle {
-  color: transparent !important;
-  padding-left: 0;
-  padding-right: 0;
-  width: 35.6px !important;
+    color: transparent !important;
+    padding-left: 0;
+    padding-right: 0;
+    width: 35.6px !important;
 
-  /* Override inline style rule */
-  -webkit-transition: color 0.2s 0s, width .3s 0.2s;
-  -moz-transition: color 0.2s 0s, width .3s 0.2s;
-  -o-transition: color 0.2s 0s, width .3s 0.2s;
-  transition: color 0.2s 0s, width .3s 0.2s;
+    /* Override inline style rule */
+    -webkit-transition: color 0.2s 0s, width .3s 0.2s;
+    -moz-transition: color 0.2s 0s, width .3s 0.2s;
+    -o-transition: color 0.2s 0s, width .3s 0.2s;
+    transition: color 0.2s 0s, width .3s 0.2s;
 }
 
 .morphing-btn-clone {
-  position: fixed;
-  background: #f1f2f4;
-  border-radius: 50%;
-  z-index: 3;
-  -webkit-transition: all 0.5s cubic-bezier(.65, .05, .36, 1);
-  -moz-transition: all 0.5s cubic-bezier(.65, .05, .36, 1);
-  -o-transition: all 0.5s cubic-bezier(.65, .05, .36, 1);
-  transition: all 0.5s cubic-bezier(.65, .05, .36, 1);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+    position: fixed;
+    background: #f1f2f4;
+    border-radius: 50%;
+    z-index: 3;
+    -webkit-transition: all 0.5s cubic-bezier(.65, .05, .36, 1);
+    -moz-transition: all 0.5s cubic-bezier(.65, .05, .36, 1);
+    -o-transition: all 0.5s cubic-bezier(.65, .05, .36, 1);
+    transition: all 0.5s cubic-bezier(.65, .05, .36, 1);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .morphing-btn-clone_visible {
-  display: block;
-  -webkit-transform: scale(1) !important;
-  -moz-transform: scale(1) !important;
-  -ms-transform: scale(1) !important;
-  -o-transform: scale(1) !important;
-  transform: scale(1) !important;
+    display: block;
+    -webkit-transform: scale(1) !important;
+    -moz-transform: scale(1) !important;
+    -ms-transform: scale(1) !important;
+    -o-transform: scale(1) !important;
+    transform: scale(1) !important;
 }
 
 .fancybox-morphing .fancybox-bg {
-  background: #f1f2f4;
-  opacity: 1;
+    background: #f1f2f4;
+    opacity: 1;
 }
 
 .fancybox-morphing .fancybox-toolbar {
-  top: 20px;
-  right: 40px;
+    top: 20px;
+    right: 40px;
 }
 
 .fancybox-morphing .fancybox-button--close {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
 }
 
 .fancybox-morphing .fancybox-button--close::after, 
@@ -771,23 +771,23 @@ img.dlg-ava {
 }
 
 .fancybox-morphing .fancybox-button--close:hover {
-  background: rgba(0, 0, 0, 0.25);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 /* Styling for element used in example */
 #morphing-content {
-  margin: 0;
-  position: relative;
-  background: transparent;
-  color: #fff;
-  padding: 6em 10vw;
-  line-height: 2;
-  z-index: 3;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+    margin: 0;
+    position: relative;
+    background: transparent;
+    color: #fff;
+    padding: 6em 10vw;
+    line-height: 2;
+    z-index: 3;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 #morphing-content a {
-  color: #fff;
+    color: #fff;
 }
 /* Fancybox -- modal END */

@@ -668,6 +668,16 @@ img.dlg-ava {
     height: 495px;
 }
 
+#sync-ssp {
+    font-size: 4em;
+    cursor: pointer;
+}
+#sync-ssp span {
+    font-size: .25em;
+    display: block;
+    font-weight: bold;
+}
+
 @media(max-width: 767px){
     .libs-row{ border: 0; }
     .pic-albums {height:300px;}

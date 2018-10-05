@@ -53,8 +53,7 @@ print <<<E
 					</div>
 				</div>
 				<div class="col-sm-2 text-center">
-					<div id="sync-ssp" style="cursor:pointer;font-size:4em;"><i class="far fa-play-circle"></i></div>
-					<button type="button" class="btn btn-outline-danger w-100 mt-3" disabled>Отмена</button>
+					<div id="sync-ssp"><i class="far fa-play-circle"></i></div>
 				</div>
 		</div>
 	</div>
@@ -87,6 +86,7 @@ var syncError   = '<i class="far fa-times-circle text-danger"></i>';		// Error
 var syncSuccess = '<i class="far fa-check-circle text-success"></i>';		// Finished sync
 var syncProceed = '<i class="far fa-arrow-alt-circle-right"></i>';			// Between sync modes
 var syncProcess = '<i class="fas fa-spinner fa-pulse text-secondary"></i>';	// Sync working
+    syncProcess += '<span>{$cfg['sync_dialog_next_cd']}</span>';
 
 var dstatus = 'start';  // [start|pause|process|success|error]
 var sync_do = 'none';	// [dlg|msg|next|none]
@@ -96,6 +96,9 @@ var mmin = 0;
 var mmax = 0;
 var sync_ssp = jQuery("#sync-ssp");		// StartStopProceed
 var sync_status  = jQuery("#d-status");	// Sync status
+
+var spin_counter = null;
+var spin_count = {$cfg['sync_dialog_next_cd']};
 
 $(document).ready(function() {
 	
@@ -110,14 +113,18 @@ $(document).ready(function() {
 	jQuery("#m-min").on('change', function(){ urlCommands.urlPush({mmin:this.value}); });
 	jQuery("#m-max").on('change', function(){ urlCommands.urlPush({mmax:this.value}); });
 	
+	// Basic control StartStopProceed bind
 	jQuery("#sync-ssp").on('click', function(){
 		console.log('SSP pressed - sync_do: '+sync_do+' status: '+sync_status.val());
 		if(sync_status.val() == 'start' && sync_do == 'none'){
+			// Phase 1: Set control style to 'process' and do dialogs check
 			sync_ssp.html(syncProcess); sync_set_status('process');
 			sync_do = 'dlg'; process_query('/ajax/sync-message.php?do=dlg&offset=0','dlg');
 			console.log('Executed sync [Start&None]: '+sync_do);
 		}
 		if(sync_status.val() == 'pause' && sync_do == 'next'){
+			// Phase 2: Control on 'pause' after dialogs check
+			// And we ready for the next step - messages check
 			sync_ssp.html(syncProcess); sync_set_status('process');
 			sync_do = 'msg'; process_query('/ajax/sync-message.php?do=next&offset=0','msg');
 			console.log('Executed sync [Pause&Next]: '+sync_do);
@@ -128,6 +135,12 @@ $(document).ready(function() {
 	
 });
 
+/*
+	Function process_query
+	In:
+	uri - query url		(string)
+	s   - sync state	(string)
+*/
 function process_query(uri,s){
 	if(s != ''){ sync_do = s; }
 	console.log('Processing query: '+sync_do+' URL: '+uri);
@@ -152,9 +165,23 @@ function process_query(uri,s){
 				// Check next URL and do a query if yes...
 				if(r.response.next_uri != ''){
 					console.log('DBG: Timeout & Reload');
-					setTimeout(function(){
-						process_query(r.response.next_uri,sync_do)
-					},{$cfg['sync_dialog_next_cd']}*1000);
+					// Update countdown between requests
+					spin_counter = setInterval(function(){
+						spin_count = spin_count-1;
+						if(spin_count <= 0) {
+							// We done, set spin_count back to defined and process
+							clearInterval(spin_counter);
+							spin_count = {$cfg['sync_dialog_next_cd']};
+							jQuery("#sync-ssp span").html('');
+							process_query(r.response.next_uri,sync_do);
+						} else {
+							// Just another waste of one second...
+							jQuery("#sync-ssp span").html(spin_count);
+						}
+					}, 1000);
+					//setTimeout(function(){
+					//	process_query(r.response.next_uri,sync_do)
+					//},{$cfg['sync_dialog_next_cd']}*1000);
 				}
 				if(r.response.done == 0 && sync_do == 'msg' && r.response.next_uri == ''){
 					if(sync_do != 'next'){
@@ -175,7 +202,11 @@ function process_query(uri,s){
 
 /*
 	Function: update_count
-	In: c - count, tc - total count, t - type, n - next or finish
+	In:
+	c  - count			(int)
+	tc - total count	(int)
+	t  - type			(string)
+	n  - next or finish	(bool)
 */
 function update_count(c,tc,t,n){
 	var minval = jQuery("#"+t+"-min");
@@ -229,13 +260,24 @@ function update_count(c,tc,t,n){
 	} // end M type
 }
 
+/*
+	Function progress_change
+	In:
+	selector - min value		(object)
+	value    - current value	(object)
+	total    - total selector	(selector)
+	percent  - current percent	(int)
+*/
 function progress_change(selector,value,total,percent){
 	selector.val(value);
 	selector.change();
 	total.css("width",percent+"%");
 }
 
-// Check default values of Status from URL and update html if needed
+/*
+	Function sync_check
+	Check default values of Status from URL and update html if needed
+*/
 function sync_check(){
 	//alert(dstatus);
 	if(dstatus != 'start'){
@@ -259,11 +301,17 @@ function sync_check(){
 	}
 }
 
-// Update status var and URL
+/*
+	Function sync_set_status
+	Update status var and URL
+	In:
+	v - status (string)
+*/
 function sync_set_status(v){
 	sync_status.val(v);
 	urlCommands.urlPush({dstatus:v});
 }
+
 </script>
 E;
 

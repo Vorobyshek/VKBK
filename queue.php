@@ -972,6 +972,15 @@ E;
 			// Get file name
 			preg_match_all("/\/([0-9]+)\/[^\.]+\.([^\.]+)$/",$q['uri'],$n);
 			
+			if(!isset($n[1][0]) || !isset($n[2][0])){
+				// Something wrong with url?... Who da fuck is did this?!
+				// Ofc VK can change API without any notice, ass'oles =_=
+				if(substr($q['uri'],15,14) == 'stickers_proxy'){
+					preg_match_all("/sticker_id=([0-9]+)/",$q['uri'],$n);
+					$n[2][0] = 'png';
+				}
+			}
+			
 			// Check do we have this file already ( useful if you are developer and pucked up attachments DB :D )
 			if(is_file(ROOT.'data/stickers/'.$n[1][0].'.'.$n[2][0])){
 print <<<E
@@ -991,7 +1000,7 @@ E;
 						'method'=>'',
 						'return'=>1
 				));
-			
+				
 				if($out['err'] == 0 && $out['errmsg'] == '' && $out['content'] != '' && substr($out['content'],0,5) != '<html' && substr($out['content'],0,9) != '<!DOCTYPE'){
 					$saved = $c->file_save(array('path'=>ROOT.'data/stickers/','name'=>$n[1][0].'.'.$n[2][0]),$out['content']);
 					if($saved){

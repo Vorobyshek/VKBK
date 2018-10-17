@@ -332,7 +332,7 @@ if($counters_show['dialogs'] != 0 && $counters_show['dialogs'] > $counters['dial
 	$d = $counters_show['dialogs'] - $counters['dialogs'];
 	if($d > 0){ $d = '(+<b>'.$d.'</b>)'; }
 print <<<E
-<tr><td>Количество <b>диалогов</b> изменилось {$d}, необходима синхронизация. <a href="sync-dialog.php">Синхронизировать</a> сейчас?</td></tr>
+<tr><td>Количество <b>диалогов</b> изменилось {$d}, необходима синхронизация. <a href="sync-messages.php">Синхронизировать</a> сейчас?</td></tr>
 E;
 }
 

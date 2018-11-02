@@ -316,7 +316,7 @@ E;
 					if($_GET['auto'] == '1'){
 						$nrow = $db->query_row("SELECT id,owner_id FROM vk_videos WHERE `in_queue` = 1 ".($skip_list != '' ? "AND `id` NOT IN (".$skip_list.")" : "")." ORDER BY date_added DESC");
 						if($nrow['id'] > 0){
-							print $skin->reload('info',"Страница будет обновлена через <span id=\"gcd\">".$cfg['sync_video_next_cd']."</span> сек.","queue.php?t=v&id=".$nrow['id']."&oid=".$nrow['oqner_id']."&auto=1".($skip_list != '' ? "&skip=".$skip_list : ""),$cfg['sync_video_next_cd']);
+							print $skin->reload('info',"Страница будет обновлена через <span id=\"gcd\">".$cfg['sync_video_next_cd']."</span> сек.","queue.php?t=v&id=".$nrow['id']."&oid=".$nrow['owner_id']."&auto=1".($skip_list != '' ? "&skip=".$skip_list : ""),$cfg['sync_video_next_cd']);
 						}
 					}
 					

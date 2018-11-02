@@ -1543,13 +1543,13 @@ while($row = $db->return_row($r)){
 
 
 if($all_queue == 0 && $no_queue == true) {
-	print '<tr><td colspan="4" style="text-align:center;color:#bbb;">Очередь закачки пуста</td></tr>';
+	print '<tr><td colspan="5" style="text-align:center;color:#bbb;">Очередь закачки пуста</td></tr>';
 }
 
 if($bar_queue['p'] > $show || $bar_queue['m'] > $show){
 print <<<E
 <tr>
-  <td colspan="4">
+  <td colspan="5">
 	<div class="alert alert-info" role="alert">
 E;
 print 'И ещё';

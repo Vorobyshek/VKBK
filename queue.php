@@ -979,6 +979,11 @@ E;
 					preg_match_all("/sticker_id=([0-9]+)/",$q['uri'],$n);
 					$n[2][0] = 'png';
 				}
+				// And again
+				if(strpos($q['uri'],"vk.com/sticker/") !== false){
+					preg_match_all("/[0-9]\-([0-9]+)\-512b\-[0-9]/",$q['uri'],$n);
+					$n[2][0] = 'png';
+				}
 			}
 			
 			// Check do we have this file already ( useful if you are developer and pucked up attachments DB :D )

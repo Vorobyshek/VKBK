@@ -23,6 +23,7 @@ var paginator_video  = ajxdir+'videos-paginator.php';
 var paginator_wall   = ajxdir+'wall-paginator.php';
 var paginator_dialog = ajxdir+'dialog-paginator.php';
 var queue_skip       = ajxdir+'queue-skipthis.php';
+var music_grab       = ajxdir+'music-grab2queue.php';
 
 var freewall_width = 300; // Default width, it replaced in albums with config value
 
@@ -495,4 +496,33 @@ function skipit(u,i){
 	    jQuery(".hosterror").hide();
 	});
     }
+}
+
+// MUSIC
+// ===============================================
+
+// GrabIt
+// i - id of element
+function grabit(i){
+	jQuery.ajax({
+	    async : false,
+	    cache : false,
+	    method : "POST",
+	    data : {
+		id : i,
+		artist: jQuery("#"+i+"-artist").val(),
+		title: jQuery("#"+i+"-title").val(),
+		duration: jQuery("#"+i+"-duration").val(),
+		uri: jQuery("#"+i+"-uri").val()
+	    },
+	    url : music_grab
+	}).done( function(data){
+	    var r = jQuery.parseJSON(data);
+	    if(r.error == false){
+		jQuery("#"+i+" td:last-child").append(r.msg);
+		jQuery("#"+i+" td:last-child input[type=button]").hide();
+	    } else {
+		jQuery("#"+i+" td:last-child").append("<br/>"+r.msg);
+	    }
+	});
 }

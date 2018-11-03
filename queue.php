@@ -226,10 +226,10 @@ E;
 			require_once(ROOT.'classes/curl.php');
 			$c = new cu();
 			$c->curl_on();
-			$q['uri'] = preg_replace("/\?extra\=.*/","",$q['uri']);
+			//$q['uri'] = preg_replace("/\?extra\=.*/","",$q['uri']);
 			preg_match("/[^\.]+$/",$q['uri'],$n);
 			if(mb_strlen($q['title']) > 200){ $q['title'] = mb_substr($row['artist'],0,200); }
-			$nam = $c->clean_name($q['artist'].' - '.$q['title'].' ['.$q['id'].'].'.$n[0]);
+			$nam = $c->clean_name($q['artist'].' - '.$q['title'].' ['.$q['id'].'].mp3');
 			$win = $c->win_name($nam);
 			// Double check this f**kn' filename
 			// If filename was converted for windows we need revert codepage to UTF-8 before DB insert

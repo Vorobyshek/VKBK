@@ -246,7 +246,7 @@ print <<<E
             </div>
             <div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['music'])}</h2>
-              <span class="text-muted">Музыка</span>
+              <span class="text-muted">Музыка&nbsp;&nbsp;<a href="musicgrab.php"><i class="fa fa-skull fa-fw"></i></a></span>
             </div>
             <div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['video'])}</h2>

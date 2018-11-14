@@ -91,7 +91,9 @@ h4[aria-expanded="false"]:hover{
 .navbar-inverse .navbar-nav>li>a:focus i,
 .navbar-inverse .navbar-nav>li>a:hover i,
 .navbar-inverse .navbar-nav>li>.morphing-btn-wrap>a:focus i,
-.navbar-inverse .navbar-nav>li>.morphing-btn-wrap>a:hover i{
+.navbar-inverse .navbar-nav>li>.morphing-btn-wrap>a:hover i,
+.navbar-toggler-icon > i:hover,
+.navbar-toggler-icon > i:focus {
     color: #FFF;
 }
 
@@ -243,6 +245,7 @@ h4[aria-expanded="false"]:hover{
 }
 
 .navbar-nav > li > a > i,
+.navbar-toggler-icon > i,
 .navbar-nav > li > .morphing-btn-wrap > a > i {
     padding: 3px 10px;
     color: #2a5885;

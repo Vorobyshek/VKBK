@@ -157,7 +157,7 @@ E;
 
       <a class="navbar-brand" href="index.php"><i class="fab fa-vk"></i>BK</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"><i class="fa fa-fw fa-bars"></i></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbar">

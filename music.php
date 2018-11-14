@@ -43,31 +43,35 @@ print <<<E
 	<div class="jp-type-playlist">
 		<div class="jp-gui jp-interface">
 			<div class="jp-controls">
-				<button class="jp-previous" role="button" tabindex="0"><i class="fa fa-backward"></i></button>
-				<button class="jp-play" role="button" tabindex="0"><i class="fa fa-play jpi-play"></i><i class="fa fa-pause jpi-pause" style="display:none;"></i></button>
-				<button class="jp-next" role="button" tabindex="0"><i class="fa fa-forward"></i></button>
+				<button class="jp-previous" role="button" tabindex="0"><i class="fa fa-fw fa-step-backward"></i></button>
+				<button class="jp-play" role="button" tabindex="0"><i class="fa fa-fw fa-play jpi-play"></i><i class="fa fa-fw fa-pause jpi-pause" style="display:none;"></i></button>
+				<button class="jp-next" role="button" tabindex="0"><i class="fa fa-fw fa-step-forward"></i></button>
 				<button class="jp-stop" role="button" tabindex="0"><i class="fa fa-stop"></i></button>
+				
+				<div class="jp-toggles">
+					<button class="jp-repeat tip" data-placement="top" data-toggle="tooltip" data-original-title="повторять" role="button" tabindex="0"><i class="fa fa-fw fa-retweet"></i></button>
+					<button class="jp-shuffle tip" data-placement="top" data-toggle="tooltip" data-original-title="перемешать" role="button" tabindex="0"><i class="fa fa-fw fa-random"></i></button>
+				</div>
+				
+				<div class="jp-volume-controls">
+					<button class="jp-mute" role="button" tabindex="0"><i class="fa fa-fw fa-volume-off"></i></button>
+					<button class="jp-volume-max" role="button" tabindex="0"><i class="fa fa-fw fa-volume-up"></i></button>
+					<div class="jp-volume-bar">
+						<div class="jp-volume-bar-value"></div>
+					</div>
+				</div>
+			
 			</div>
 			<div class="jp-progress">
 				<div class="jp-seek-bar">
 					<div class="jp-play-bar"></div>
 				</div>
 			</div>
-			<div class="jp-volume-controls">
-				<button class="jp-mute" role="button" tabindex="0"><i class="fa fa-volume-off"></i></button>
-				<button class="jp-volume-max" role="button" tabindex="0"><i class="fa fa-volume-up"></i></button>
-				<div class="jp-volume-bar">
-					<div class="jp-volume-bar-value"></div>
-				</div>
-			</div>
 			<div class="jp-time-holder">
 				<div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
 				<div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>
 			</div>
-			<div class="jp-toggles">
-				<button class="jp-repeat tip" data-placement="top" data-toggle="tooltip" data-original-title="повторять" role="button" tabindex="0"><i class="fa fa-retweet"></i></button>
-				<button class="jp-shuffle tip" data-placement="top" data-toggle="tooltip" data-original-title="перемешать" role="button" tabindex="0"><i class="fa fa-random"></i></button>
-			</div>
+			
 			<div class="jp-filters">
 				<label for="listsort">Сортировать по: </label>
 				<select class="jp-sorter selectpicker show-tick" name="listsort">

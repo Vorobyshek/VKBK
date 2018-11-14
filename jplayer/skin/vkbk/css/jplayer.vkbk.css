@@ -86,10 +86,11 @@
 .jp-interface {
   position: fixed;
   left: 0;
-  bottom: 60px;
-  background-color: #e8e8e8;
+  bottom: 40px;
+  background-color: #fefefe;
   z-index: 10;
-  width: 100%; }
+  width: 100%;
+  border-bottom: 1px solid #e0e0e0; }
 
 .jp-audio .jp-interface {
   height: 80px; }
@@ -126,7 +127,8 @@
 
 .jp-audio .jp-controls {
   width: 480px;
-  padding: 20px 20px 0 20px; }
+  position: relative;
+  padding: 25px 20px 0 20px; }
   
 .jp-video .jp-controls {
     width: auto;
@@ -159,17 +161,18 @@
 }
 
 .jp-stop, .jp-previous, .jp-next {
-    background-color: #47698f;
+    color: #47698f;
+    background: transparent;
 }
 
 .jp-play {
   background-color: #577CA1;
-  font-size: 20px;
-  padding-bottom: 4px;
+  line-height: 40px;
+  padding: 0;
 }
 
 .jp-stop, .jp-play {
-  border-radius: 6px;
+  border-radius: 50%;
 }
 
 .jp-stop, .jp-previous, .jp-next {
@@ -182,6 +185,7 @@
   margin-left: 10px;
   padding: 0 0px 1px 0;
   font-size: 12px;
+  display: none !important; /* hide stop button because we have play\pause */
 }
 
 .jp-previous {
@@ -222,16 +226,16 @@
 
 .jp-audio .jp-progress {
   position: absolute;
-  top: 32px;
-  height: 15px; }
+  top: 0px;
+  height: 3px; }
 
 .jp-audio .jp-type-single .jp-progress {
   left: 110px;
   width: 186px; }
 
 .jp-audio .jp-type-playlist .jp-progress {
-  left: 166px;
-  width: 130px; }
+  left: 0px;
+  width: 100%; }
   
 .jp-video .jp-progress {
     position: absolute;
@@ -267,9 +271,10 @@
 
 .jp-volume-controls {
   position: absolute;
-  top: 32px;
-  left: 308px;
-  width: 200px; }
+  top: 30px;
+  left: 150px;
+  width: 200px;
+  height: 30px; }
   
 .jp-video .jp-volume-controls {
     top: 26px;
@@ -283,9 +288,9 @@
   background-color: transparent;
   display: block;
   position: absolute;
-  top: -10px;
-  font-size: 20px;
-  
+  top: 0px;
+  font-size: 16px;
+  color: #47698f;
   overflow: hidden;
   border: none;
   cursor: pointer; }
@@ -293,10 +298,10 @@
 .jp-mute,
 .jp-volume-max {
   width: 30px;
-  height: 30px; }
+  height: 25px; }
 
 .jp-volume-max {
-  left: 74px; }
+  right: 0px; }
   
 .jp-video .jp-volume-max {
   left: 125px; }
@@ -334,10 +339,10 @@
   position: absolute;
   overflow: hidden;
   background: url("../image/jplayer.vkbk.jpg") 0 -250px repeat-x;
-  top: 5px;
-  left: 27px;
-  width: 46px;
-  height: 5px;
+  top: 13px;
+  left: 15%;
+  width: 70%;
+  height: 2px;
   cursor: pointer; }
   
 .jp-video .jp-volume-bar {
@@ -353,15 +358,16 @@
 /* @group current time and duration */
 .jp-audio .jp-time-holder {
   position: absolute;
-  top: 50px; }
+  top: 5px;
+  padding: 0 10px; }
 
 .jp-audio .jp-type-single .jp-time-holder {
   left: 110px;
   width: 186px; }
 
 .jp-audio .jp-type-playlist .jp-time-holder {
-  left: 166px;
-  width: 130px; }
+  left: 0px;
+  width: 100%; }
 
 .jp-video .jp-time-holder {
     position: absolute;
@@ -557,11 +563,12 @@ span.jp-artist {
 .jp-audio .jp-type-playlist .jp-toggles {
   margin: 0;
   position: absolute;
-  left: 325px;
-  top: 55px; }
+  right: 5%;
+  top: 32px;
+  font-size: 1.25em; }
 
 .jp-video .jp-toggles {
-  position: absolute;
+    position: absolute;
     top: 22px;
     left: 365px;
     color: #fff;
@@ -577,6 +584,10 @@ span.jp-artist {
   /* need this for IE6 */
   border: none;
   cursor: pointer; }
+  
+.jp-toggles button:first-child {
+    margin-left: 0;
+}
 
 .jp-full-screen {
   background: url("../image/jplayer.vkbk.jpg") 0 -310px no-repeat;
@@ -601,7 +612,7 @@ span.jp-artist {
 
 .jp-shuffle,
 .jp-repeat
-{ margin-left: 5px; background-color: #eee; color: #989898; text-indent: 0px !important; height: 22px !important; }
+{ margin-left: 5px; background-color: #eee; color: #ccc; text-indent: 0px !important; height: 22px !important; }
 .jp-shuffle:focus,
 .jp-shuffle:hover,
 .jp-repeat:focus,
@@ -609,7 +620,7 @@ span.jp-artist {
 { color: #597da3; }
 .jp-state-shuffled .jp-shuffle,
 .jp-state-looped .jp-repeat
-{ background-color: #597da3; border-radius: 4px; color: #FFF; }
+{ color: #597da3; border-radius: 4px; }
 .jp-state-shuffled .jp-shuffle:focus,
 .jp-state-shuffled .jp-shuffle:hover,
 .jp-state-looped .jp-repeat:focus,
@@ -628,18 +639,14 @@ span.jp-artist {
 
 .jp-filters{
     position: absolute;
-    left: 440px;
+    left: 480px;
     top: 25px;
     font-size: 12px;
 }
 
 @media(max-width: 640px){
     .jp-filters {
-	top: -110px;
-	left: 0;
-	padding: 15px 20px 0;
-	background-color: #efefef;
-	border-top: 1px solid #e8e8e8;
+	display: none;
     }
     .jp-filters label {
 	margin-bottom: 20px;

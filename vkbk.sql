@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `vk_attach` (
   KEY `width` (`width`),
   KEY `height` (`height`),
   KEY `skip` (`skipthis`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -188,11 +188,11 @@ CREATE TABLE IF NOT EXISTS `vk_messages` (
   `msg_attach` tinyint(1) NOT NULL,
   `msg_forwarded` tinyint(1) NOT NULL,
   PRIMARY KEY (`uid`),
-  UNIQUE KEY `msg_uid` (`msg_id`,`msg_chat`,`msg_dialog`),
+  UNIQUE KEY `msg_uid` (`msg_id`,`msg_chat`,`msg_dialog`,`msg_date`) USING BTREE,
   KEY `user` (`msg_user`),
   KEY `attach` (`msg_attach`),
   KEY `forwarded` (`msg_forwarded`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -357,7 +357,7 @@ INSERT INTO `vk_status` (`key`, `val`) VALUES
 ('log_music', ''),
 ('log_photo', ''),
 ('log_video', ''),
-('version', '2018090801'),
+('version', '2018121001'),
 ('auto-queue-audio', '0'),
 ('auto-queue-photo', '0'),
 ('play-local-video', '0');

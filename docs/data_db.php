@@ -298,42 +298,42 @@ $db = array(
 	)
     ),
     'messages' => array(
-	'uid' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'msg_id' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'msg_chat' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'msg_dialog' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'msg_user' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'msg_date' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'msg_body' => array(
-	    'type' => 'tx',
-	    'desc' => ''
-	),
-	'msg_attach' => array(
-	    'type' => 'b',
-	    'desc' => ''
-	),
-	'msg_forwarded' => array(
-	    'type' => 'b',
-	    'desc' => ''
-	)
+		'uid' => array(
+			'type' => 'i11',
+		    'desc' => 'Уникальный ID'
+		),
+		'msg_id' => array(
+			'type' => 'i11',
+		    'desc' => 'ID сообщения (для пересылаемых сообшений имеет негативное ID сообщения)'
+		),
+		'msg_chat' => array(
+			'type' => 'i11',
+		    'desc' => 'ID группового чата которому принадлежит сообщение'
+		),
+		'msg_dialog' => array(
+			'type' => 'i11',
+		    'desc' => 'ID диалога которому принадлежит сообщение'
+		),
+		'msg_user' => array(
+			'type' => 'i11',
+			'desc' => 'ID пользователя который оставил сообщение'
+		),
+		'msg_date' => array(
+			'type' => 'i11',
+		    'desc' => 'Дата сообщения'
+		),
+		'msg_body' => array(
+			'type' => 'tx',
+		    'desc' => 'Тело сообщения'
+		),
+		'msg_attach' => array(
+		    'type' => 'b',
+		    'desc' => 'Флаг: Сообщение содержит вложение (связь `msg_id` -> `'.$db_prefix.'messages_attach.wall_id` )'
+		),
+		'msg_forwarded' => array(
+			'type' => 'b',
+			'desc' => 'Флаг: Сообщение содержит пересылаемое(ые) сообщения'
+		)
     ),
     'messages_attach' => array(
 	'uid' => array(
@@ -690,46 +690,46 @@ $db = array(
 	)
     ),
     'wall' => array(
-	'id' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'from_id' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'owner_id' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'date' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'post_type' => array(
-	    'type' => 'v255',
-	    'desc' => ''
-	),
-	'text' => array(
-	    'type' => 'tx',
-	    'desc' => ''
-	),
-	'attach' => array(
-	    'type' => 'b',
-	    'desc' => ''
-	),
-	'repost' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'repost_owner' => array(
-	    'type' => 'i11',
-	    'desc' => ''
-	),
-	'is_repost' => array(
-	    'type' => 'b',
-	    'desc' => ''
-	)
+		'id' => array(
+			'type' => 'i11',
+			'desc' => 'ID сообщения'
+		),
+		'from_id' => array(
+		    'type' => 'i11',
+			'desc' => ''
+		),
+		'owner_id' => array(
+		    'type' => 'i11',
+			'desc' => ''
+		),
+		'date' => array(
+		    'type' => 'i11',
+			'desc' => 'Дата сообщения'
+		),
+		'post_type' => array(
+		    'type' => 'v255',
+			'desc' => 'Тип сообщения'
+		),
+		'text' => array(
+			'type' => 'tx',
+			'desc' => 'Содержание сообщения'
+		),
+		'attach' => array(
+		    'type' => 'b',
+			'desc' => 'Сообщение содержит вложение (связь id -> '.$db_prefix.'attach.wall_id )'
+		),
+		'repost' => array(
+		    'type' => 'i11',
+			'desc' => 'ID сообщения репоста (связь repost -> id )'
+		),
+		'repost_owner' => array(
+		    'type' => 'i11',
+			'desc' => 'ID владельца репост сообщения (связь repost_owner -> owner_id )'
+		),
+		'is_repost' => array(
+		    'type' => 'b',
+			'desc' => 'Сообщение содержит репост'
+		)
     ),
 );
 

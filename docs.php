@@ -35,7 +35,7 @@ print <<<E
 		<span class="nav-link active"><i class="fa fa-file"></i> Документы</span>
 		<button type="button" class="btn btn-link docs-filter-btn ml-auto mr-4"><i class="fa fa-filter"></i></button>
     </nav>
-
+	
 <div class="col-sm-4 white-box docs-filter-box">
 	<h6><i class="fa fa-filter"></i> Фильтр</h6>
 	<div class="row">
@@ -197,7 +197,7 @@ $(document).ready(function() {
 	});
 	
 	$(".tip").tooltip();
-	
+
 });
 
 </script>

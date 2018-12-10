@@ -750,7 +750,7 @@ E;
 
         return $cleanText;
 	}
-
+	
 	/*
 		Disable annotations in YouTube player & other cleaning
 		In:
@@ -766,6 +766,29 @@ E;
 		} else {
 			return $link;
 		}
+	}
+	
+	/*
+		Return a row from array for debug purposes
+		In:
+		p - array(params,params) (multi array)
+		head - return first as <th> or <td> (bool)
+		Out:
+		string
+	*/
+	function dbg_row($p,$head){
+		$output = '<table cellpadding="2" border="1" style="border-collapse:collapse;">';
+		foreach($p as $k => $v){
+			if(is_array($v)){
+				$output .= '<tr>';
+				foreach($v as $a => $b){
+					$output .= ($head == true && $k == 0 ? '<th>' : '<td>').$b.($head == true && $k == 0 ? '</th>' : '</td>');
+				}
+				$output .= '</tr>';
+			}
+		}
+		$output .= '</table>';
+		return $output;
 	}
 
 } // end of class

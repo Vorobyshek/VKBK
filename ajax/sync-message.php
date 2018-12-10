@@ -5,6 +5,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
+// Debug mode
 define('SYNC_MSG_DEBUG', false);
 
 // Check do we have all needed GET data
@@ -74,6 +75,12 @@ if($vk_session['vk_token']){
 	$vk->setApiVersion($cfg['vk_api_version']);
 }
 
+require_once(ROOT.'classes/profiles.php');
+$prof = new profiles();
+$prof->db = $db;
+$prof->vk = $vk;
+$prof->func = $f;
+
 if($vk_session['vk_token'] != '' && $token_valid == true){
 	try {
 	
@@ -139,20 +146,7 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 		}
 		
 		if($dialog_ids != ''){
-			$q = $db->query("SELECT * FROM vk_profiles WHERE id IN(".$dialog_ids.")");
-			$dialog_ids = explode(',',$dialog_ids);
-			
-			while($row = $db->return_row($q)){
-				if(in_array($row['id'],$dialog_ids)){
-					// Existing profile. Check it for changes.
-					
-					// Remove profile id from known list
-					$k = array_keys($dialog_ids,$row['id']);
-					foreach($k as $knk => $knv){
-						unset($dialog_ids[$knv]);
-					}
-				}
-			}
+			$dialog_ids = $prof->profile_get_new('user',$dialog_ids,SYNC_MSG_DEBUG);
 			
 			// Set last profiles as new and save em
 			if(!empty($dialog_ids)){
@@ -166,50 +160,15 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 						$dialog_new_ids[$av['last_message']['from_id']] = $av['last_message']['from_id'];
 					}
 				}
-				$profile_data = '';
+				
 				if(!empty($dialog_new_ids)){
-					// Get Users info
-					// Warning: API limit is 1000 users via query, there is no limit check
-					// because most dialogs would be 1 on 1 and within limit of 100 dialogs
-					// per query chance to get overhead is low. Maybe fix this later...
-					$profile_api = $vk->api('users.get', array(
-						'user_ids' => implode(',',$dialog_new_ids),
-						'fields' => 'screen_name,first_name,last_name,sex,photo_100'
-					));
-					
-					foreach($profile_api['response'] as $pk => $pv){
-						if(in_array($pv['id'],$dialog_new_ids)){
-							$dialog_new_ids[$pv['id']] = $pv;
-						}
-					}
-					
-					// Make import query string
-					foreach($dialog_new_ids as $k => $v){
-						if(!isset($v['screen_name'])){ $v['screen_name'] = 'id'.$v['id']; }
-						$profile_data .= ($profile_data != '' ? ',' : '')."({$v['id']},'".$db->real_escape($v['first_name'])."','".$db->real_escape($v['last_name'])."',{$v['sex']},'{$v['screen_name']}','{$v['photo_100']}','')";
-					}
-					
-					// If we have data to import, do it!
-					if($profile_data != ''){
-						$q = $db->query("INSERT INTO vk_profiles (`id`,`first_name`,`last_name`,`sex`,`nick`,`photo_uri`,`photo_path`) VALUES ".$profile_data);
-					}
+					$prof->profile_user_add($dialog_new_ids,SYNC_MSG_DEBUG);
 				}
 			} // end new profiles
 		}
 		
 		if($dialog_group_ids != ''){
-			$q = $db->query("SELECT * FROM vk_groups WHERE id IN(".$dialog_group_ids.")");
-			$dialog_group_ids = explode(',',$dialog_group_ids);
-			
-			while($row = $db->return_row($q)){
-				if(in_array($row['id'],$dialog_group_ids)){
-					// Existing profile. Check it for changes.
-					
-					// Remove profile id from known list
-					$k = array_search($row['id'],$dialog_group_ids);
-					unset($dialog_group_ids[$k]);
-				}
-			}
+			$dialog_group_ids = $prof->profile_get_new('group',$dialog_group_ids,SYNC_MSG_DEBUG);
 			
 			// Set last profiles as new and save em
 			if(!empty($dialog_group_ids)){
@@ -221,29 +180,8 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 					}
 				}
 				
-				$group_data = '';
 				if(!empty($dialog_new_group_ids)){
-					// Get Groups info
-					$group_api = $vk->api('groups.getById', array(
-						'group_ids' => implode(',',$dialog_new_group_ids),
-						'fields' => 'name,screen_name,photo_100'
-					));
-					
-					foreach($group_api['response'] as $pk => $pv){
-						if(in_array($pv['id'],$dialog_new_group_ids)){
-							$dialog_new_group_ids[$pv['id']] = $pv;
-						}
-					}
-					
-					// Make import query string
-					foreach($dialog_new_group_ids as $k => $v){
-						$group_data .= ($group_data != '' ? ',' : '')."({$v['id']},'".$db->real_escape($v['name'])."','{$v['screen_name']}','{$v['photo_100']}','')";
-					}
-					
-					// If we have data to import, do it!
-					if($group_data != ''){
-						$q = $db->query("INSERT INTO vk_groups (`id`,`name`,`nick`,`photo_uri`,`photo_path`) VALUES ".$group_data);
-					}
+					$prof->profile_group_add($dialog_new_group_ids,SYNC_MSG_DEBUG);
 				}
 			} // end new groups
 		}
@@ -351,7 +289,6 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 						$forward_attach = 0;
 			
 			// Check attachments
-			
 			if(!empty($v['attachments'])){
 				$attach = 1;
 				
@@ -522,6 +459,225 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 					
 				} // Foreach end
 			} // Attachments end
+			
+			// Check forwarded messages
+			$fwd_profiles = array();
+			if(!empty($v['fwd_messages'])){
+				$forward = 1;
+				
+				foreach($v['fwd_messages'] as $fwdk => $fwdm){
+					$fwd_attach = 0;
+					
+					// Insert user ID in array
+					$fwd_profiles[$fwdm['user_id']] = $fwdm['user_id'];
+					
+					// Check the attachment first
+					if(!empty($fwdm['attachments'])){
+						$forward_attach = 1;
+						$fwd_attach = 1;
+						
+						foreach($fwdm['attachments'] as $fatv => $fatk){
+							
+							// Set DATE same as forwarded message date, to bind it as key
+							$fatk[$fatk['type']]['date'] = $fwdm['date'];
+							
+							// Insert attach user ID in array
+							$possible_keys = array(
+								0 => 'owner_id', 1 => 'from_id', 2 => 'to_id',
+							);
+							foreach($possible_keys as $psk => $psv){
+								if(isset($fatk[$fatk['type']][$psv])){
+									$fwd_profiles[$fatk[$fatk['type']][$psv]] = $fatk[$fatk['type']][$psv];
+								}
+							}
+							// User IDs to array end
+							
+					// Attach - Photo
+					if($fatk['type'] == 'photo'){
+						// Check do we have this attach already?
+						$at = $db->query_row("SELECT id FROM vk_photos WHERE id = ".$fatk['photo']['id']);
+						// Attach found, make a link
+						if(!empty($at['id']) && $fatk['photo']['owner_id'] == $vk_session['vk_user']){
+							// Insert OR update
+							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
+						} else {
+							$photo_uri = $f->get_largest_photo($fatk['photo']);
+							
+							// Save information about attach
+							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
+						}
+					}
+					
+					// Attach - Video
+					if($fatk['type'] == 'video'){
+						// Check do we have this attach already?
+						$at = $db->query_row("SELECT id FROM vk_videos WHERE id = ".$fatk['video']['id']);
+						// Attach found, make a link
+						if(!empty($at['id']) && $fatk['video']['owner_id'] == $vk_session['vk_user']){
+							// Insert OR update
+							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
+						} else {
+							$photo_uri = $f->get_largest_photo($fatk['video']);
+							$fatk['video']['player'] = '';
+							
+							// Get video player code for external attach
+							$v_api = $vk->api('video.get', array(
+								'videos' => $fatk['video']['owner_id'].'_'.$fatk['video']['id'].($fatk['video']['access_key'] != '' ? '_'.$fatk['video']['access_key'] : ''),
+								'extended' => 0, // возвращать ли информацию о настройках приватности видео для текущего пользователя
+								'offset' => 0,
+								'count' => 1
+							));
+							
+							if(isset($v_api['response']['items'][0]['player']) && $v_api['response']['items'][0]['player'] != ''){
+								$fatk['video']['player'] = $v_api['response']['items'][0]['player'];
+							}
+							
+							// Save information about attach
+							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
+						}
+					}
+					
+					// Attach - Link
+					if($fatk['type'] == 'link'){
+						// For links we use a date as id because link type does not have a id
+						$fatk['link']['id'] = $v['date'];
+						$fatk['link']['owner_id'] = 0;
+						$fatk['link']['date'] = $v['date'];
+						$fatk['link']['access_key'] = '';
+						// Check do we have this attach already?
+						$at = $db->query_row("SELECT attach_id FROM vk_messages_attach WHERE attach_id = ".$fatk['link']['id']);
+						// Attach found, just skip it ><
+						if(!empty($at['attach_id'])){
+							// Insert OR update
+							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
+						} else {
+							if(isset($fatk['link']['photo'])){
+								$photo_uri = $f->get_largest_photo($fatk['link']['photo']);
+								$fatk['link']['width']  = (isset($fatk['link']['photo']['width'])) ? $fatk['link']['photo']['width'] : 0 ;
+								$fatk['link']['height'] = (isset($fatk['link']['photo']['height'])) ? $fatk['link']['photo']['height'] : 0;
+							} else {
+								$photo_uri = '';
+							}
+							
+							// Save information about attach
+							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
+						}
+					}
+					
+					
+					// Attach - Document
+					if($fatk['type'] == 'doc'){
+						// Check do we have this attach already?
+						$at = $db->query_row("SELECT id FROM vk_docs WHERE id = ".$fatk['doc']['id']);
+						$photo_uri = '';
+						// Attach found, make a link
+						if(!empty($at['id']) && $fatk['doc']['owner_id'] == $vk_session['vk_user']){
+							// Insert OR update
+							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
+						} else {
+							$fatk['doc']['caption'] = $fatk['doc']['ext'];
+							$fatk['doc']['width'] = 0;
+							$fatk['doc']['height'] = 0;
+							$fatk['doc']['duration'] = $fatk['doc']['size'];
+							$fatk['doc']['text'] = $fatk['doc']['ext'];
+							
+							if(isset($fatk['doc']['preview'])){
+								// Images
+								if(isset($fatk['doc']['preview']['photo'])){
+									// Get biggest preview
+									$sizes = $f->get_largest_doc_image($fatk['doc']['preview']['photo']['sizes']);
+									if($sizes['pre'] != ''){
+										$photo_uri = $sizes['pre'];
+										$fatk['doc']['width'] = $sizes['prew'];
+										$fatk['doc']['height'] = $sizes['preh'];
+									}
+								}
+							} // Preview end
+
+							// Save information about attach
+							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
+						}
+					}
+					
+					// Attach - Sticker
+					if($fatk['type'] == 'sticker'){
+						if(!isset($fatk['sticker']['sticker_id'])){ $fatk['sticker']['sticker_id'] = $fatk['sticker']['id']; }
+						// Check do we have this attach already?
+						$at = $db->query_row("SELECT sticker FROM vk_stickers WHERE product = ".$fatk['sticker']['product_id']." AND sticker = ".$fatk['sticker']['sticker_id']);
+						// Attach found, make a link
+						if(!empty($at['sticker'])){
+							// Insert OR update
+							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
+						} else {
+							//print_r($atk);
+							$fatk['sticker']['caption'] = '';
+							$fatk['sticker']['width'] = 0;
+							$fatk['sticker']['height'] = 0;
+							$fatk['sticker']['duration'] = 0;
+							$fatk['sticker']['text'] = '';
+							$fatk['sticker']['owner_id'] = 0;
+							$fatk['sticker']['date'] = $v['date'];
+							$fatk['sticker']['id'] = 0;
+							
+							$sticker = $f->get_sticker_image($fatk['sticker'],true);
+							
+							if($sticker['pre'] != ''){
+								$photo_uri = $sticker['pre'];
+								$fatk['sticker']['width'] = $sticker['prew'];
+								$fatk['sticker']['height'] = $sticker['preh'];
+							}
+							// Save information about attach
+							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
+						}
+					} // STICKER end
+					
+					// Attach - Wall
+					if($fatk['type'] == 'wall'){
+						$fatk['wall']['caption'] = '';
+						$fatk['wall']['owner_id'] = $fatk['wall']['from_id'];
+						$fatk['wall']['width'] = 0;
+						$fatk['wall']['height'] = 0;
+						$fatk['wall']['duration'] = 0;
+						$fatk['wall']['title'] = '';
+						$photo_uri = '';
+						$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
+					} // WALL end
+					
+						} // Foreach end
+					} // Forwarded Attachments end
+						
+					// Set forwarded message id as negative value of message id
+					$fwdm['id'] = -abs($v['id']);
+					$fwdm['chat_id'] = isset($v['chat_id']) ? $v['chat_id'] : 0;
+					$fwdm['from_id'] = $fwdm['user_id'];
+					
+					// Insert OR update Forwarded message
+					$f->dialog_message_insert($fwdm,$fwd_attach,0,SYNC_MSG_DEBUG);
+					
+				} // Foreach end
+			} // Forwarded end
+			
+			// Check and insert new profiles from forwarded messages
+			if(!empty($fwd_profiles)){
+				// ADD: group parse and wall-> copy_history
+				$fwd_pr = '';
+				$fwd_gr = '';
+				// Split Users and Groups
+				foreach($fwd_profiles as $fpk => $fpv){
+					if($fpv > 0){ $fwd_pr .= ($fwd_pr != '' ? ',' : '').$fpv; }
+					if($fpv < 0){ $fwd_gr .= ($fwd_gr != '' ? ',' : '').$fpv; }
+				}
+				// If we have new users, add em
+				if(!empty($fwd_pr)){
+					$fwd_pr = $prof->profile_get_new('user',$fwd_pr,SYNC_MSG_DEBUG);
+					if(!empty($fwd_pr)){ $prof->profile_user_add($fwd_pr,SYNC_MSG_DEBUG); }
+				}
+				// If we have new groups, add em
+				if(!empty($fwd_gr)){
+					$fwd_gr = $prof->profile_get_new('group',$fwd_gr,SYNC_MSG_DEBUG);
+					if(!empty($fwd_gr)){ $prof->profile_group_add($fwd_gr,SYNC_MSG_DEBUG); }
+				}
+			}
 
 						// Insert OR update message
 						$f->dialog_message_insert($v,$attach,$forward,SYNC_MSG_DEBUG);

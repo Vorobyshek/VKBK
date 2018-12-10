@@ -85,14 +85,22 @@ $done['dc'] = ceil($done['dcc']);
 
 $bar_total = $db->query_row("SELECT COUNT(*) as msat FROM vk_messages_attach WHERE `uri` != '' AND `is_local` = 0 AND `skipthis` = 0");
 $bar = $db->query_row("SELECT COUNT(*) as msat FROM vk_messages_attach WHERE `path` = '' AND `uri` != '' AND `is_local` = 0 AND `skipthis` = 0");
-$bar_queue['msat'] = $bar['msat'];
+$bar_queue['msat']['total'] = $bar['msat'];
 $per = $bar_total['msat']/100;
 if($bar_total['msat'] > 0){
-$done['msatt'] = round(($bar_total['msat'] - $bar_queue['msat']) / $per, 2);
+$done['msatt'] = round(($bar_total['msat'] - $bar_queue['msat']['total']) / $per, 2);
 $done['msat'] = ceil($done['msatt']);
 } else { $done['msat'] = $done['msatt'] = 0; }
+if($bar_queue['msat']['total'] > 0){
+	$msatq = $db->query("SELECT type, COUNT(*) as c FROM vk_messages_attach WHERE `path` = '' AND `uri` != '' AND `is_local` = 0 AND `skipthis` = 0 GROUP BY `type`");
+	while($row = $db->return_row($msatq)){
+		$bar_queue['msat'][$row['type']] = $row['c'];
+	}
+	
+}
 
-$all_queue = $bar_queue['p'] + $bar_queue['m'] + $bar_queue['v'] + $bar_queue['at'] + $bar_queue['dc'] + $bar_queue['msat'];
+
+$all_queue = $bar_queue['p'] + $bar_queue['m'] + $bar_queue['v'] + $bar_queue['at'] + $bar_queue['dc'] + $bar_queue['msat']['total'];
 $no_queue = true;
 
 // Profiles & Groups
@@ -1551,26 +1559,37 @@ if($all_queue == 0 && $no_queue == true) {
 	print '<tr><td colspan="5" style="text-align:center;color:#bbb;">Очередь закачки пуста</td></tr>';
 }
 
-if($bar_queue['p'] > $show || $bar_queue['m'] > $show){
+$more = array();
+foreach($bar_queue as $mrk => $mrv){
+	if(!is_array($mrv)){
+		if($mrv > $show){ $more[$mrk] = $mrv - $show; }
+	} else {
+		if($mrv['total'] > $show){ $more[$mrk] = $mrv['total'] - $show; }
+		foreach($mrv as $rk => $rv){
+			if($rk != 'total'){ $more[$mrk.'-'.$rk] = $rv; }
+		}
+	}
+}
+if(!empty($more)){
+	$more_types = array(
+		'p' => 'фотографий','m'=>'аудиозаписей','v'=>'видео','dc'=>'документов','at'=>'вложений','msat'=>'диалог вложений',
+		'msat-photo'=>'фотографий','msat-link'=>'ссылок','msat-doc'=>'документов','msat-video'=>'видео','msat-sticker'=>'стикеров'
+	);
 print <<<E
 <tr>
   <td colspan="5">
 	<div class="alert alert-info" role="alert">
+	 И ещё
 E;
-print 'И ещё';
-	if(($bar_queue['p']-$show) > 0){
-		print ' <strong>'.($bar_queue['p']-$show).'</strong> фотографий;';
+	foreach($more as $mrk => $mrv){
+		print ' <strong>'.($mrv).'</strong> '.$more_types[$mrk];
 	}
-	if(($bar_queue['m']-$show) > 0){
-		print ' <strong>'.($bar_queue['m']-$show).'</strong> аудиозаписей;';
-	}
-
 print <<<E
     </div>
   </td>
 </tr>
 E;
-}
+} // More end
 
 print <<<E
               </tbody>

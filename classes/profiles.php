@@ -53,7 +53,7 @@ class profiles {
 			$group_data = '';
 			if(!empty($new_ids)){
 				// Get Groups info
-				$group_api = $vk->api('groups.getById', array(
+				$group_api = $this->vk->api('groups.getById', array(
 					'group_ids' => implode(',',$new_ids),
 					'fields' => 'name,screen_name,photo_100'
 				));

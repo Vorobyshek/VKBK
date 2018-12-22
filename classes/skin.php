@@ -349,6 +349,7 @@ E;
 	    exclurl - url params to exclusion function
 	*/
 	function queue_no_data($error,$exclurl = false,$exclid = false){
+		$exclude = '';
 	    if($exclurl != false){
 		$exclude = <<<E
 <div class="float-right"><input type="button" class="btn btn-outline-danger" onclick="skipit('{$exclurl}',{$exclid});" value="Исключить из очереди" /></div>

@@ -38,8 +38,8 @@ $type_icons = array(
 	'mattach'	=> 'paperclip'
 );
 
-$bar_total = $db->query_row("SELECT COUNT(*) as p FROM vk_photos WHERE album_id > -9000");
-$bar = $db->query_row("SELECT COUNT(*) as p FROM vk_photos WHERE album_id > -9000 AND `in_queue` = 1");
+$bar_total = $db->query_row("SELECT COUNT(*) as p FROM vk_photos WHERE album_id > -9000 AND `skipthis` = 0");
+$bar = $db->query_row("SELECT COUNT(*) as p FROM vk_photos WHERE album_id > -9000 AND `in_queue` = 1 AND `skipthis` = 0");
 $bar_queue['p'] = $bar['p'];
 $per = $bar_total['p']/100;
 if($bar_total['p'] > 0){
@@ -1369,7 +1369,7 @@ $btniconauto = 'fas fa-sync fa-fw';
 
 $first['p'] = true;
 if($bar_queue['p'] > 0){
-	$r = $db->query("SELECT * FROM vk_photos WHERE `in_queue` = 1 ORDER BY date_added DESC LIMIT 0,{$show}");
+	$r = $db->query("SELECT * FROM vk_photos WHERE `in_queue` = 1 AND `skipthis` = 0 ORDER BY date_added DESC LIMIT 0,{$show}");
 	while($row = $db->return_row($r)){
 		$row['date_added'] = date("Y-m-d H:i:s",$row['date_added']);
 		// Add a autodownload for the first element in list

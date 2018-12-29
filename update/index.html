@@ -36,6 +36,76 @@
     </div>
     
     <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-gray pb-2 mb-0">0.8.6 &rarr; 0.8.7</h6>
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
+            <span class="d-block">
+<div class="d-flex align-items-center p-3 text-white1 badge-info rounded box-shadow">
+        <div class="lh-100">
+          <h6 class="mb-0 text-white lh-100">Внимание! В версии 0.8.6 были найдены ошибки у вложений в диалогах пользователя.</h6>
+          Если вы делали синхронизацию диалогов, то после обновления крайне желательно запустить скрипт проверки <a href="update_086.php" target="_blank" style="color:#fff;text-decoration:underline;">update_086.php</a> чтобы обновить проблемные записи (если таковые имеются).
+        </div>
+</div>
+<hr/>
+<pre>
+ALTER TABLE `vk_photos` ADD `skipthis` BOOLEAN NOT NULL DEFAULT FALSE AFTER `in_queue`, ADD INDEX `skip` (`skipthis`);
+
+CREATE TABLE IF NOT EXISTS `vk_messages_wall` (
+  `id` int(11) NOT NULL,
+  `from_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  `date` int(11) NOT NULL,
+  `post_type` varchar(255) NOT NULL,
+  `text` text CHARACTER SET utf8mb4 NOT NULL,
+  `attach` tinyint(1) NOT NULL,
+  `repost` int(11) NOT NULL,
+  `repost_owner` int(11) NOT NULL,
+  `is_repost` tinyint(1) NOT NULL,
+  UNIQUE KEY `id` (`id`,`owner_id`),
+  KEY `from` (`from_id`),
+  KEY `owner` (`owner_id`),
+  KEY `type` (`post_type`),
+  KEY `attach` (`attach`),
+  KEY `repost` (`is_repost`),
+  KEY `repost_owner` (`repost_owner`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `vk_messages_wall_attach` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `wall_id` int(11) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `is_local` tinyint(1) NOT NULL,
+  `attach_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  `uri` text NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `width` smallint(5) UNSIGNED NOT NULL,
+  `height` smallint(5) UNSIGNED NOT NULL,
+  `text` text CHARACTER SET utf8mb4 NOT NULL,
+  `date` int(11) NOT NULL,
+  `access_key` varchar(255) NOT NULL,
+  `title` text CHARACTER SET utf8mb4 NOT NULL,
+  `duration` int(11) NOT NULL,
+  `player` text NOT NULL,
+  `link_url` text NOT NULL,
+  `caption` varchar(255) NOT NULL,
+  `skipthis` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `uniqid` (`wall_id`,`attach_id`),
+  KEY `local` (`is_local`),
+  KEY `width` (`width`),
+  KEY `height` (`height`),
+  KEY `skip` (`skipthis`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+UPDATE `vk_status` SET `val` = '2018122301' WHERE `key` = 'version';
+</pre>
+	    </span>
+          </div>
+        </div>
+    </div>
+    
+    <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.8.5 &rarr; 0.8.6</h6>
         <div class="text-muted pt-3">
           <div class="pb-0 mb-0 small lh-125">

@@ -421,7 +421,7 @@ E;
 					$data_i = 1;
 					$data_k = 0;
 					foreach($photos_data as $k => $v){
-						$data_sql[$data_k] .= ($data_sql[$data_k] != '' ? ',' : '')."({$k},{$v['album_id']},{$v['date']},'{$v['uri']}',{$v['width']},{$v['height']},0,0,'','',true)";
+						$data_sql[$data_k] .= ($data_sql[$data_k] != '' ? ',' : '')."({$k},{$v['album_id']},{$v['date']},'{$v['uri']}',{$v['width']},{$v['height']},0,0,'','',true,0)";
 						$data_i++;
 						if($data_i > $data_limit){
 							$data_i = 1;
@@ -430,7 +430,7 @@ E;
 					}
 					
 					foreach($data_sql as $k => $v){
-						$q = $db->query("INSERT INTO vk_photos (`id`,`album_id`,`date_added`,`uri`,`width`,`height`,`date_done`,`saved`,`path`,`hash`,`in_queue`) VALUES {$v}");
+						$q = $db->query("INSERT INTO vk_photos (`id`,`album_id`,`date_added`,`uri`,`width`,`height`,`date_done`,`saved`,`path`,`hash`,`in_queue`,`skipthis`) VALUES {$v}");
 					}
 
 					array_unshift($log,'<tr><td>Новые фото добавлены в очередь. Всего - <b>'.sizeof($photos_create).'</b></td></tr>');

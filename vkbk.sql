@@ -288,6 +288,7 @@ CREATE TABLE IF NOT EXISTS `vk_photos` (
   `path` text NOT NULL,
   `hash` varchar(40) NOT NULL,
   `in_queue` tinyint(1) NOT NULL,
+  `skipthis` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `queue` (`in_queue`),
   KEY `album` (`album_id`),
@@ -295,7 +296,8 @@ CREATE TABLE IF NOT EXISTS `vk_photos` (
   KEY `height` (`height`),
   KEY `dsaved` (`date_done`),
   KEY `saved` (`saved`),
-  KEY `dadded` (`date_added`)
+  KEY `dadded` (`date_added`),
+  KEY `skip` (`skipthis`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

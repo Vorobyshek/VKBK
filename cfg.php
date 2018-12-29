@@ -78,27 +78,27 @@ $cfg['docs_path']  = '';
   photo_layout_width - max width for photos in preview
   perpage_photo - how much photos load per page
 */
-$cfg['photo_layout_width'] = 300;
-$cfg['perpage_photo'] = 24;
+$cfg['photo_layout_width']   = 300;
+$cfg['perpage_photo']        = 24;
 
 /* Videos
   Settings
   perpage_video - how much videos load per page
 */
-$cfg['perpage_video'] = 24;
+$cfg['perpage_video']        = 24;
 
 /* Documents
   Settings
   perpage_docs - how much documents load per page
 */
-$cfg['perpage_docs'] = 24;
+$cfg['perpage_docs']         = 24;
 
 /* Wall
   Settings
   wall_layout_width - max width for photos in preview
   perpage_wall - how much posts load per page
 */
-$cfg['wall_layout_width'] = 200;
+$cfg['wall_layout_width']    = 200;
 $cfg['perpage_wall'] = 20;
 
 $cfg['perpage_dlg_messages'] = 250;
@@ -113,27 +113,27 @@ $cfg['perpage_dlg_messages'] = 250;
 */
 $cfg['sync_photo_start_cd'] = 5;
 $cfg['sync_photo_error_cd'] = 5;
-$cfg['sync_photo_next_cd'] = 3;
-$cfg['sync_photo_auto_cd'] = 10;
+$cfg['sync_photo_next_cd']  = 3;
+$cfg['sync_photo_auto_cd']  = 10;
 
 $cfg['sync_music_start_cd'] = 5;
 $cfg['sync_music_error_cd'] = 5;
-$cfg['sync_music_next_cd'] = 3;
-$cfg['sync_music_auto_cd'] = 10;
+$cfg['sync_music_next_cd']  = 3;
+$cfg['sync_music_auto_cd']  = 10;
 
-$cfg['sync_docs_start_cd'] = 5;
-$cfg['sync_docs_error_cd'] = 5;
-$cfg['sync_docs_next_cd'] = 3;
-$cfg['sync_docs_auto_cd'] = 10;
+$cfg['sync_docs_start_cd']  = 5;
+$cfg['sync_docs_error_cd']  = 5;
+$cfg['sync_docs_next_cd']   = 3;
+$cfg['sync_docs_auto_cd']   = 10;
 
 $cfg['sync_video_start_cd'] = 5;
-$cfg['sync_video_next_cd'] = 3;
+$cfg['sync_video_next_cd']  = 3;
 
-$cfg['sync_wall_next_cd'] = 10;
+$cfg['sync_wall_next_cd']   = 10;
 
 $cfg['sync_dialog_next_cd'] = 3;
 
-$cfg['sync_found_local'] = 1;
+$cfg['sync_found_local']    = 1;
 
 /* Addon: youtube-dl
   This path you should edit if you have a youtube-dl

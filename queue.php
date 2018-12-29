@@ -250,9 +250,9 @@ E;
 			$fnam = $win[1];
 			
 			$out = $c->curl_req(array(
-					'uri' => $q['uri'],
-					'method'=>'',
-					'return'=>1
+				'uri' => $q['uri'],
+				'method'=>'',
+				'return'=>1
 			));
 
 			if($out['err'] == 0 && $out['errmsg'] == '' && $out['content'] != '' && substr($out['content'],0,5) != '<html' && substr($out['content'],0,9) != '<!DOCTYPE'){
@@ -308,9 +308,9 @@ E;
 			$c->curl_on();
 			preg_match("/[^\/]+$/",$q['preview_uri'],$n);
 			$out = $c->curl_req(array(
-					'uri' => $q['preview_uri'],
-					'method'=>'',
-					'return'=>1
+				'uri' => $q['preview_uri'],
+				'method'=>'',
+				'return'=>1
 			));
 			
 			if($out['err'] == 0 && $out['errmsg'] == '' && $out['content'] != '' && substr($out['content'],0,5) != '<html' && substr($out['content'],0,9) != '<!DOCTYPE'){
@@ -373,9 +373,9 @@ E;
 			$c->curl_on();
 			$f = date("Y-m",$q['date']);
 			$out = $c->curl_req(array(
-					'uri' => $q['uri'],
-					'method'=>'',
-					'return'=>1
+				'uri' => $q['uri'],
+				'method'=>'',
+				'return'=>1
 			));
 			
 			if($out['err'] == 0 && $out['errmsg'] == '' && $out['content'] != '' && substr($out['content'],0,5) != '<html' && substr($out['content'],0,9) != '<!DOCTYPE'){

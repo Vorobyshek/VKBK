@@ -224,8 +224,13 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 							// Insert OR update
 							$f->wall_attach_update($v['id'],$atk);
 						} else {
-							$photo_uri = $f->get_largest_photo($atk['photo']);
-							
+							$photo_urx = $f->get_largest_photo($atk['photo']);
+							// Check do we have old or new type
+							if(is_array($photo_urx)){
+								$atk['photo']['width'] = $photo_urx['width'];
+								$atk['photo']['height'] = $photo_urx['height'];
+								$photo_uri = $photo_urx['url'];
+							} else { $photo_uri = $photo_urx; }
 							// Save information about attach
 							$f->wall_attach_insert($v['id'],$atk,$photo_uri);
 						}
@@ -275,9 +280,15 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 							//$f->wall_attach_update($v['id'],$atk);
 						} else {
 							if(isset($atk['link']['photo'])){
-								$photo_uri = $f->get_largest_photo($atk['link']['photo']);
 								$atk['link']['width']  = (isset($atk['link']['photo']['width'])) ? $atk['link']['photo']['width'] : 0 ;
 								$atk['link']['height'] = (isset($atk['link']['photo']['height'])) ? $atk['link']['photo']['height'] : 0;
+								$photo_urx = $f->get_largest_photo($atk['link']['photo']);
+								// Check do we have old or new type
+								if(is_array($photo_urx)){
+									$atk['link']['width'] = $photo_urx['width'];
+									$atk['link']['height'] = $photo_urx['height'];
+									$photo_uri = $photo_urx['url'];
+								} else { $photo_uri = $photo_urx; }
 							} else {
 								$photo_uri = '';
 							}
@@ -382,8 +393,13 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 									// Insert OR update
 									$f->wall_attach_update($rp['id'],$rpatk);
 								} else {
-									$photo_uri = $f->get_largest_photo($rpatk['photo']);
-									
+									$photo_urx = $f->get_largest_photo($rpatk['photo']);
+									// Check do we have old or new type
+									if(is_array($photo_urx)){
+										$rpatk['photo']['width'] = $photo_urx['width'];
+										$rpatk['photo']['height'] = $photo_urx['height'];
+										$photo_uri = $photo_urx['url'];
+									} else { $photo_uri = $photo_urx; }
 									// Save information about attach
 									$f->wall_attach_insert($rp['id'],$rpatk,$photo_uri);
 								}
@@ -475,14 +491,14 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 							$rerepost = $v['copy_history'][$ch_next]['id'];
 							$rerepost_owner = ($chk > 1) ? $v['copy_history'][$ch_next-1]['owner_id'] : $v['copy_history'][$ch_next]['owner_id'];
 						} else {$rerepost = 0; $rerepost_owner = 0; }
-						$f->wall_post_insert($rp,$repost_attach,$rerepost,$rerepost_owner,1);
+						$f->wall_post_insert('wall',$rp,$repost_attach,$rerepost,$rerepost_owner,1,false);
 					}
 				
 				} // Foreach end
 			} // Reposts end
 			
 			// Insert OR update post
-			$f->wall_post_insert($v,$attach,$origin,$origin_owner,0);
+			$f->wall_post_insert('wall',$v,$attach,$origin,$origin_owner,0,false);
 			
 			// Fast sync option
 			// Check the date of the last post to our posts. If found, stop sync.

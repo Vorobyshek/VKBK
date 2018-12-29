@@ -29,7 +29,8 @@ $types = array(
 	'p',//'m','v','dc',						// Media types
 	//'pr','gr',							// Profiles & Groups
 	'atph','atvi','atli','atau','atdc',		// Attachments
-	'matph','matvi','matli','matdc','matst'	// Dialogs attachments
+	'matph','matvi','matli','matdc','matst',// Dialogs attachments
+	'mwatph','mwatvi','mwatli','mwatdc'		// Dialogs Wall attachments
 );
 
 if(isset($_GET['t']) && in_array($_GET['t'],$types) && isset($_GET['id']) && isset($_GET['oid'])){
@@ -52,6 +53,14 @@ if(isset($_GET['t']) && in_array($_GET['t'],$types) && isset($_GET['id']) && iss
 	if($t == 'matst'){
 		$db->query("UPDATE vk_messages_attach SET `skipthis` = 1 WHERE `date` = ".$id." AND `type` = 'sticker' ");
 	}
+	
+	if($t == 'mwatph' || $t == 'mwatvi' || $t == 'mwatdc'){
+		$db->query("UPDATE vk_messages_wall_attach SET `skipthis` = 1 WHERE `attach_id` = ".$id." AND `owner_id` = ".$oid." ");
+	}
+	if($t == 'mwatli'){
+		$db->query("UPDATE vk_messages_wall_attach SET `skipthis` = 1 WHERE `attach_id` = ".$id." AND `date` = ".$oid." AND `type` = 'link' ");
+	}
+	
 } else {
 	print 'Неопознанный параметр';
 }

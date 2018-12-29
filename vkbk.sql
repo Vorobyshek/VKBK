@@ -231,6 +231,66 @@ CREATE TABLE IF NOT EXISTS `vk_messages_attach` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `vk_messages_wall`
+--
+
+CREATE TABLE IF NOT EXISTS `vk_messages_wall` (
+  `id` int(11) NOT NULL,
+  `from_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  `date` int(11) NOT NULL,
+  `post_type` varchar(255) NOT NULL,
+  `text` text CHARACTER SET utf8mb4 NOT NULL,
+  `attach` tinyint(1) NOT NULL,
+  `repost` int(11) NOT NULL,
+  `repost_owner` int(11) NOT NULL,
+  `is_repost` tinyint(1) NOT NULL,
+  UNIQUE KEY `id` (`id`,`owner_id`),
+  KEY `from` (`from_id`),
+  KEY `owner` (`owner_id`),
+  KEY `type` (`post_type`),
+  KEY `attach` (`attach`),
+  KEY `repost` (`is_repost`),
+  KEY `repost_owner` (`repost_owner`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vk_messages_wall_attach`
+--
+
+CREATE TABLE IF NOT EXISTS `vk_messages_wall_attach` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `wall_id` int(11) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `is_local` tinyint(1) NOT NULL,
+  `attach_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  `uri` text NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `width` smallint(5) UNSIGNED NOT NULL,
+  `height` smallint(5) UNSIGNED NOT NULL,
+  `text` text CHARACTER SET utf8mb4 NOT NULL,
+  `date` int(11) NOT NULL,
+  `access_key` varchar(255) NOT NULL,
+  `title` text CHARACTER SET utf8mb4 NOT NULL,
+  `duration` int(11) NOT NULL,
+  `player` text NOT NULL,
+  `link_url` text NOT NULL,
+  `caption` varchar(255) NOT NULL,
+  `skipthis` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `uniqid` (`wall_id`,`attach_id`),
+  KEY `local` (`is_local`),
+  KEY `width` (`width`),
+  KEY `height` (`height`),
+  KEY `skip` (`skipthis`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `vk_music`
 --
 
@@ -359,7 +419,7 @@ INSERT INTO `vk_status` (`key`, `val`) VALUES
 ('log_music', ''),
 ('log_photo', ''),
 ('log_video', ''),
-('version', '2018121001'),
+('version', '2018122301'),
 ('auto-queue-audio', '0'),
 ('auto-queue-photo', '0'),
 ('play-local-video', '0');

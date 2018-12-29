@@ -40,7 +40,7 @@ class profiles {
 				if($profile_data != '' && $debug === false){
 					$q = $this->db->query("INSERT INTO vk_profiles (`id`,`first_name`,`last_name`,`sex`,`nick`,`photo_uri`,`photo_path`) VALUES ".$profile_data);
 				} else {
-					print '<div>Profiles insert:'.$this->func->dbg_row(array(explode(',',$profile_data)),false).'</div><br/>';
+					print '<div class="m-2 p-2">Profiles insert:'.$this->func->dbg_row(array(explode(',',$profile_data)),false,'primary').'</div>';
 				}
 			}
 		} // else
@@ -57,23 +57,24 @@ class profiles {
 					'group_ids' => implode(',',$new_ids),
 					'fields' => 'name,screen_name,photo_100'
 				));
-				
+				$new_data = array();
 				foreach($group_api['response'] as $pk => $pv){
 					if(in_array($pv['id'],$new_ids)){
-						$new_ids[$pv['id']] = $pv;
+						$new_data[$pv['id']] = $pv;
 					}
 				}
-				
-				// Make import query string
-				foreach($new_ids as $k => $v){
-					$group_data .= ($group_data != '' ? ',' : '')."({$v['id']},'".$this->db->real_escape($v['name'])."','{$v['screen_name']}','{$v['photo_100']}','')";
-				}
-				
-				// If we have data to import, do it!
-				if($group_data != '' && $debug === false){
-					$q = $this->db->query("INSERT INTO vk_groups (`id`,`name`,`nick`,`photo_uri`,`photo_path`) VALUES ".$group_data);
-				} else {
-					print '<div>Profiles insert:'.$this->func->dbg_row(array(explode(',',$group_data)),false).'</div><br/>';
+				if(!empty($new_data)){
+					// Make import query string
+					foreach($new_data as $k => $v){
+						$group_data .= ($group_data != '' ? ',' : '')."({$v['id']},'".$this->db->real_escape($v['name'])."','{$v['screen_name']}','{$v['photo_100']}','')";
+					}
+					
+					// If we have data to import, do it!
+					if($group_data != '' && $debug === false){
+						$q = $this->db->query("INSERT INTO vk_groups (`id`,`name`,`nick`,`photo_uri`,`photo_path`) VALUES ".$group_data);
+					} else {
+						print '<div class="m-2 p-2">Group insert:'.$this->func->dbg_row(array(explode(',',$group_data)),false,'primary').'</div>';
+					}
 				}
 			}
 		} // else
@@ -99,7 +100,7 @@ class profiles {
 		}
 		return $ids;
 		if($debug === true){
-			print 'New profiles: <p>'.implode(',',$ids).'</p><br/>';
+			print '<div class="m-2 p-2 bg-white rounded shadow-sm">New profiles: <p>'.implode(',',$ids).'</p></div>';
 		}
 	}
 }

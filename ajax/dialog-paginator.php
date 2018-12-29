@@ -266,13 +266,13 @@ foreach($messages as $k => $v){
 				$fwd_ava_path = "profiles/".$users_data[$fwdv['msg_user']]['photo_path'];
 			}
 			if(substr($fwd_ava_path,0,1) == "#"){
-				$fwd_ava_path = '<span class="mb-1 mr-2" style="background:'.$fwd_ava_path.';display:block;min-width:35px;min-height:35px;float:left;border-radius:50%;"></span>';
+				$fwd_ava_path = '<span class="mb-1 mr-3" style="background:'.$fwd_ava_path.';display:block;min-width:35px;min-height:35px;float:left;border-radius:50%;"></span>';
 			} else {
 				$fwd_ava_path = '<img src="data/'.$fwd_ava_path.'" class="wall-ava dlg-ava mb-1 mr-2" />';
 			}
 			
 			// Show forwarded messages and combine same user messages within 1 hour
-			$output_fwd .= '<div class="ml-1 px-1 py-2" style="border-left: 2px solid #ccc;">';
+			$output_fwd .= '<div class="ml-1 px-3 py-2" style="border-left: 2px solid #ccc;">';
 			if($fwdk >= 1 && $fwd_data[$v['msg_id']][$fwdk-1]['msg_date']+3600 >= $fwdv['msg_date'] && $fwd_data[$v['msg_id']][$fwdk-1]['msg_user'] == $fwdv['msg_user']){
 			} else {
 $output_fwd .= <<<E

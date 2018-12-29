@@ -16,6 +16,10 @@ $res = $db->connect($cfg['host'],$cfg['user'],$cfg['pass'],$cfg['base']);
 require_once(ROOT.'classes/skin.php');
 $skin = new skin();
 
+// Get Functions
+require_once(ROOT.'classes/func.php');
+$func = new func();
+
 // Get local counters for top menu
 $lc = $db->query_row("SELECT * FROM vk_counters");
 
@@ -396,14 +400,14 @@ E;
 				
 				foreach($photos_vk as $k => $v){
 					if(in_array($v['id'],$photos_create)){
-						// Get biggest photo
-						if(isset($v['photo_2560'])){ $v['uri'] = $v['photo_2560']; }
-							elseif(isset($v['photo_1280'])){ $v['uri'] = $v['photo_1280'];}
-								elseif(isset($v['photo_807'])){ $v['uri'] = $v['photo_807'];}
-									elseif(isset($v['photo_604'])){ $v['uri'] = $v['photo_604'];}
-										elseif(isset($v['photo_130'])){ $v['uri'] = $v['photo_130'];}
-											elseif(isset($v['photo_75'])){ $v['uri'] = $v['photo_75'];}
-				
+						
+						$photo_urx = $func->get_largest_photo($v);
+						// Check do we have old or new type
+						if(is_array($photo_urx)){
+							$v['width'] = $photo_urx['width'];
+							$v['height'] = $photo_urx['height'];
+							$v['uri'] = $photo_urx['url'];
+						} else { $photo_uri = $photo_urx; }
 						
 						$photos_data[$v['id']] = array(
 							'album_id' => $v['album_id'],
@@ -842,9 +846,10 @@ E;
 					foreach($video_vk as $k => $v){
 						if(isset($video_create_ids[$v['adding_date']]) && $video_create_ids[$v['adding_date']] = $v['id']){
 						// Get biggest preview
-						if(isset($v['photo_640'])){ $v['uri'] = $v['photo_640'];}
-							elseif(isset($v['photo_320'])){ $v['uri'] = $v['photo_320'];}
-								elseif(isset($v['photo_130'])){ $v['uri'] = $v['photo_130'];}
+						if(isset($v['photo_800'])){ $v['uri'] = $v['photo_800'];}
+					elseif(isset($v['photo_640'])){ $v['uri'] = $v['photo_640'];}
+					elseif(isset($v['photo_320'])){ $v['uri'] = $v['photo_320'];}
+					elseif(isset($v['photo_130'])){ $v['uri'] = $v['photo_130'];}
 						
 						$video_data[$v['id']] = array(
 							'owner_id' => (!is_numeric($v['owner_id']) ? 0 : $v['owner_id']),

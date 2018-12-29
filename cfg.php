@@ -6,6 +6,12 @@ define('ROOT',dirname(__FILE__).'/');
 // Time Configuration
 date_default_timezone_set("Europe/Minsk");
 
+// Necessary modules check
+$needed_modules = array('curl','mbstring','mysqli','json');
+foreach($needed_modules as $nm){
+	if(!extension_loaded($nm)){ die('<b>Необходим модуль:</b> '.$nm); }
+}
+
 // VKBK Configuration
 $cfg = array();
 require_once('version.php');

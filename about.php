@@ -51,14 +51,14 @@ print <<<E
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
 			<a href="https://fortawesome.github.io/Font-Awesome/">Font Awesome</a>
-				<span class="badge badge-light">5.3.1</span><br/>
+				<span class="badge badge-light">5.6.3</span><br/>
 			<a href="https://github.com/minhur/bootstrap-toggle">Bootstrap Toggle</a>
 				<span class="badge badge-light">2.2.2</span><br/>
 			<a href="https://habrahabr.ru/sandbox/57659/">hashnav.js</a>
 				<span class="badge badge-light">6 May 2016</span><br/>
 			<a href="https://github.com/noraesae/perfect-scrollbar">perfect-scrollbar.js</a>
 				<span class="badge badge-light">1.3.0</span><br/>
-			<a href="https://github.com/happyworm/jPlayer">jPlayer.js <i class="badge badge-warning">deprecated</i></a>
+			<a href="https://github.com/happyworm/jPlayer">jPlayer.js</a>
 				<span class="badge badge-light">2.9.2</span>
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
@@ -90,6 +90,17 @@ E;
 
 $changelog = array(
 	'0.8.x' => array(
+		'0.8.7' => array(
+			array('i',"Добавлена проверка необходимых модулей для работы скрипта."),
+			array('i',"Используется VK API версии 5.92."),
+			array('n',"В синхронизации диалогов добавлено сохранение цитируемых\пересылаемых постов со стены."),
+			array('u',"Добавлена возможность исключать из очереди фотографии."),
+			array('u',"Старая версия API при синхронизации диалогов не всегда отдавала самое лучшее качество для изображений."),
+			array('u','FontAwesome обновлен до версии 5.6.3'),
+			array('bf',"Некорректное добавление новых групп при синхронизации диалогов."),
+			array('bf',"Потеря информации о локальной копии файла в диалогах."),
+			array('u',"Мелкие изменения и исправления."),
+		),
 		'0.8.6' => array(
 			array('n',"В синхронизации диалогов добавлено сохранение цитируемых\пересылаемых сообщений."),
 			array('u',"В диалогах добавлена группировка сообщений от одного пользователя."),

@@ -58,7 +58,7 @@ class func {
 	    $atk[$type]['duration']    = !isset($atk[$type]['duration'])   ? 0  : $atk[$type]['duration'];
 	    $atk[$type]['title']       = !isset($atk[$type]['title'])      ? '' : $atk[$type]['title'];
 	    $atk[$type]['player']      = !isset($atk[$type]['player'])     ? '' : $atk[$type]['player'];
-	    $atk[$type]['url']         = !isset($atk[$type]['url'])        ? '' : $atk[$type]['url'];;
+	    $atk[$type]['url']         = !isset($atk[$type]['url'])        ? '' : $atk[$type]['url'];
 	    $atk[$type]['caption']     = !isset($atk[$type]['caption'])    ? '' : $atk[$type]['caption'];
 	    $atk[$type]['access_key']  = !isset($atk[$type]['access_key']) ? '' : $atk[$type]['access_key'];
 	    
@@ -79,11 +79,16 @@ class func {
 	    id - attachID,
 	    atk - attachData,
 	    photo_uri - uri of image (photo & video) if it not stored in user albums
+	    (string) dst - destination table; default: msg; opts: wall|msg;
 	    debug - if `true` returns array and not saving data in DB (default: false)
 	*/
-	function msg_attach_insert($id,$atk,$photo_uri,$debug){
+	function msg_attach_insert($id,$atk,$photo_uri,$dst,$debug){
 	    global $db;
-	    
+		
+		$table = 'vk_messages_attach';
+		$debug_color = 'info';
+		if($dst == 'wall'){ $table = 'vk_messages_wall_attach'; $debug_color = 'primary'; }
+		
 	    $type = $atk['type'];
 	    $text = '';
 	    if($type == 'photo'){ $text = $atk['photo']['text']; }
@@ -111,7 +116,7 @@ class func {
 		
 	    // Save information about attach
 		if($debug == false){
-	    $q = $db->query("INSERT INTO `vk_messages_attach`
+	    $q = $db->query("INSERT INTO `{$table}`
 	    (`uid`,`wall_id`,`type`,`is_local`,`attach_id`,`owner_id`,`uri`,`path`,`width`,`height`,`text`,`date`,`access_key`,`title`,`duration`,`player`,`link_url`,`caption`,`skipthis`)
 	    VALUES
 	    (NULL,{$id},'{$type}',0,{$atk[$type]['id']},{$atk[$type]['owner_id']},'{$photo_uri}','',{$atk[$type]['width']},{$atk[$type]['height']},'".$db->real_escape($text)."',{$atk[$type]['date']},'{$atk[$type]['access_key']}','".$db->real_escape($atk[$type]['title'])."',{$atk[$type]['duration']},'{$atk[$type]['player']}','".$db->real_escape($atk[$type]['url'])."','".$db->real_escape($atk[$type]['caption'])."',0)
@@ -119,6 +124,8 @@ class func {
 	    `wall_id` = {$id}, `type` = '{$type}', `is_local` = 0, `attach_id` = {$atk[$type]['id']}, `owner_id` = {$atk[$type]['owner_id']}, `uri` = '{$photo_uri}', `width` = {$atk[$type]['width']}, `height` = {$atk[$type]['height']}, `text` = '".$db->real_escape($text)."', `date` = {$atk[$type]['date']}, `duration` = {$atk[$type]['duration']}, `skipthis` = 0 {$update_fields}
 	    ");
 		} else {
+			print $this->dbg_row( array( array('uid','wall_id','type','is_local','attach_id','owner_id','uri','path','width','height','text','date','access_key','title','duration','player','link_url','caption','skipthis'), array(NULL,$id,$type,0,$atk[$type]['id'],$atk[$type]['owner_id'],$photo_uri,'',$atk[$type]['width'],$atk[$type]['height'],$db->real_escape($text),$atk[$type]['date'],$atk[$type]['access_key'],$db->real_escape($atk[$type]['title']),$atk[$type]['duration'],$atk[$type]['player'],$db->real_escape($atk[$type]['url']),$db->real_escape($atk[$type]['caption']),0) ),true,$debug_color);
+
 			return array(
 				$type => array(
 		'uid'		=> NULL,
@@ -152,14 +159,16 @@ class func {
 	    id - attachID,
 	    atk - attachData
 	*/
-	function msg_attach_update($id,$atk,$debug){
+	function msg_attach_update($id,$atk,$dst,$debug){
 	    global $db;
 	    
+		$table = 'vk_messages_attach';
+		if($dst == 'wall'){ $table = 'vk_messages_wall_attach'; }
 	    $type = $atk['type'];
 	    
 		if($debug == false){
 			// Insert OR update
-			$q = $db->query("INSERT INTO `vk_messages_attach`
+			$q = $db->query("INSERT INTO `{$table}`
 			(`uid`,`wall_id`,`type`,`is_local`,`attach_id`,`owner_id`,`uri`,`path`,`width`,`height`,`text`,`date`,`access_key`,`title`,`duration`,`player`,`link_url`,`caption`,`skipthis`)
 			VALUES
 			(NULL,{$id},'{$type}',1,{$atk[$type]['id']},0,'','',0,0,'',0,'','',0,'','','',0)
@@ -168,6 +177,7 @@ class func {
 			");
 		} else {
 			// Be lazy, Do nothing;
+			print $this->dbg_row( array( array('uid','wall_id','type','is_local','attach_id','owner_id','uri','path','width','height','text','date','access_key','title','duration','player','link_url','caption','skipthis'), array(NULL,$id,$type,1,$atk[$type]['id'],0,'','',0,0,'',$atk[$type]['date'],'','',0,'','','',0) ),true,'warning');
 		}
 	}
 	
@@ -175,22 +185,33 @@ class func {
 	    Function: wall_post_insert
 	    Saves wall post and repost body to DB
 	    In:
+	    (string) dst - destination table; default: wall; opts: wall|msg;
 	    v - postData,
 	    attach - post contains attachment
 	    repost - post contains another post
 	    repost_owner - owner of repost ID
 	    is_repost - post are inside
+	    debug - if `true` returns array and not saving data in DB (default: false)
 	*/
-	function wall_post_insert($v,$attach,$repost,$repost_owner,$is_repost){
+	function wall_post_insert($dst,$v,$attach,$repost,$repost_owner,$is_repost,$debug){
 	    global $db;
 	    
-	    $q = $db->query("INSERT INTO `vk_wall`
-	    (`id`,`from_id`,`owner_id`,`date`,`post_type`,`text`,`attach`,`repost`,`repost_owner`,`is_repost`)
-	    VALUES
-	    ({$v['id']},{$v['from_id']},{$v['owner_id']},{$v['date']},'{$v['post_type']}','".$db->real_escape($this->removeEmoji($v['text']))."',{$attach},{$repost},{$repost_owner},{$is_repost})
-	    ON DUPLICATE KEY UPDATE
-	    `from_id` = {$v['from_id']}, `owner_id` = {$v['owner_id']}, `date` = {$v['date']}, `post_type` = '{$v['post_type']}', `text` = '".$db->real_escape($this->removeEmoji($v['text']))."', `attach` = {$attach}, `repost` = {$repost}, `repost_owner` = {$repost_owner}, `is_repost` = {$is_repost}
-	    ");
+		$table = 'vk_wall';
+		$debug_color = 'info';
+		if($dst == 'msg'){ $table = 'vk_messages_wall'; $debug_color = 'primary'; }
+		
+		if($debug == false){
+			$q = $db->query("INSERT INTO `{$table}`
+			(`id`,`from_id`,`owner_id`,`date`,`post_type`,`text`,`attach`,`repost`,`repost_owner`,`is_repost`)
+			VALUES
+			({$v['id']},{$v['from_id']},{$v['owner_id']},{$v['date']},'{$v['post_type']}','".$db->real_escape($this->removeEmoji($v['text']))."',{$attach},{$repost},{$repost_owner},{$is_repost})
+			ON DUPLICATE KEY UPDATE
+			`from_id` = {$v['from_id']}, `owner_id` = {$v['owner_id']}, `date` = {$v['date']}, `post_type` = '{$v['post_type']}', `text` = '".$db->real_escape($this->removeEmoji($v['text']))."', `attach` = {$attach}, `repost` = {$repost}, `repost_owner` = {$repost_owner}, `is_repost` = {$is_repost}
+			");
+		} else {
+			// Be lazy, Do nothing;
+			print $this->dbg_row( array( array('id','from_id','owner_id','date','post_type','text','attach','repost','repost_owner','is_repost'), array($v['id'],$v['from_id'],$v['owner_id'],$v['date'],$v['post_type'],$db->real_escape($this->removeEmoji($v['text'])),$attach,$repost,$repost_owner,$is_repost) ),true,$debug_color);
+		}
 	}
 	
 	/*
@@ -204,6 +225,10 @@ class func {
 	function dialog_message_insert($v,$attach,$forward,$debug){
 	    global $db;
 	    
+		// quick fix for API v5.9x
+		if(!isset($v['user_id']) && isset($v['peer_id'])){ $v['user_id'] = $v['peer_id']; }
+		if(!isset($v['body']) && isset($v['text'])){ $v['body'] = $v['text']; }
+		
 		$dialog_id = $v['user_id'];
 		if(!isset($v['chat_id'])){ $v['chat_id'] = 0; }
 		if($v['chat_id'] > 0){ $dialog_id = 2000000000 + $v['chat_id']; }
@@ -218,17 +243,61 @@ class func {
 	    ");
 		} else {
 			// Be lazy, Do nothing;
+			print $this->dbg_row( array( array('uid','msg_id','msg_chat','msg_dialog','msg_user','msg_date','msg_body','msg_attach','msg_forwarded'), array(null,$v['id'],$v['chat_id'],$dialog_id,$v['from_id'],$v['date'],$db->real_escape($this->removeEmoji($v['body'])),$attach,$forward) ),true,'success');
 		}
 	}
 	
 	/*
 	    Function: get_largest_photo
-	    Returns a largest photo url
+	    Returns a largest photo url as a string or array
 	    In: data array
 	    Out: url
 	*/
 	function get_largest_photo($data){
-	    $photo_uri = '';
+	    
+		if(isset($data['sizes']) && is_array($data['sizes'])){
+			
+			// New style sizes
+			$photo_uri = array();
+			$opts = array();
+			foreach($data['sizes'] as $dk => $dv){
+				$opts[$dv['type']] = $dv;
+			}
+			if(isset($opts['w'])){ $photo_uri = $opts['w']; }
+		elseif(isset($opts['z'])){ $photo_uri = $opts['z']; }
+		elseif(isset($opts['y'])){ $photo_uri = $opts['y']; }
+		elseif(isset($opts['x'])){ $photo_uri = $opts['x']; }
+		elseif(isset($opts['m'])){ $photo_uri = $opts['m']; }
+		elseif(isset($opts['s'])){ $photo_uri = $opts['s']; }
+			
+			// Let's check do we realy send back some data
+			if(empty($photo_uri)){
+				// NO? WTF VK?! Ok, then I show you kung-fu!
+				$max_w = 0;
+				$max_h = 0;
+				$horv = 'w'; // Default ratio for 'W'idth
+				foreach($data['sizes'] as $dk => $dv){
+					if(isset($dv['width']) && isset($dv['height']) && isset($dv['url'])){
+						if($dv['width'] > $dv['height']){ $horv = 'w'; } else { $horv = 'h'; }
+						if($horv == 'w' && $dv['width'] >= $max_w){
+							$max_w = $dv['width'];
+							$photo_uri = array('width'=>$dv['width'], 'height'=>$dv['height'], 'url'=>$dv['url']);
+						}
+						if($horv == 'h' && $dv['height'] >= $max_h){
+							$max_h = $dv['height'];
+							$photo_uri = array('width'=>$dv['width'], 'height'=>$dv['height'], 'url'=>$dv['url']);
+						}
+					}
+				}
+				// Check... Again?
+				if(empty($photo_uri)){
+					$photo_uri = array('width'=>0,'height'=>0,'url'=>'');
+				}
+			}
+		} else {
+			
+			// Old style sizes
+			$photo_uri = '';
 	        if(isset($data['photo_2560'])){ $photo_uri = $data['photo_2560']; }
 	    elseif(isset($data['photo_1280'])){ $photo_uri = $data['photo_1280'];}
 	    elseif(isset($data['photo_807'])){  $photo_uri = $data['photo_807'];}
@@ -238,6 +307,7 @@ class func {
 	    elseif(isset($data['photo_320'])){  $photo_uri = $data['photo_320'];} // Video
 	    elseif(isset($data['photo_130'])){  $photo_uri = $data['photo_130'];}
 	    elseif(isset($data['photo_75'])){   $photo_uri = $data['photo_75'];}
+		}
 	    return $photo_uri;
 	}
 	
@@ -249,14 +319,13 @@ class func {
 	*/
 	function get_sticker_image($data,$hq){
 	    $image = array('pre'=>"",'prew'=>0,'preh'=>0);
-		
 		if(isset($data['images'])){
-			foreach($data as $pk => $pv){
-				if($pv['width'] == '64'){
+			foreach($data['images'] as $pk => $pv){
+				if($pv['width'] == '64' || $pv['height'] == '64'){
 					$image['pre'] = $pv['url']; $image['prew'] = $pv['width']; $image['preh'] = $pv['height']; }
-				if($pv['width'] == '128'){
+				if($pv['width'] == '128' || $pv['height'] == '128'){
 					$image['pre'] = $pv['url']; $image['prew'] = $pv['width']; $image['preh'] = $pv['height']; }
-				if($pv['width'] == '512' && $hq == true){
+				if($pv['width'] == '512' || $pv['height'] == '512' && $hq == true){
 					$image['pre'] = $pv['url']; $image['prew'] = $pv['width']; $image['preh'] = $pv['height']; }
 			}
 		} else {
@@ -686,6 +755,300 @@ E;
 	}
 	
 	/*
+	    Function: dlg_wall_show_post
+	    Display wall post as attach\forwarded
+	    In:
+	    (array) row - data
+	    (bool|string) repost - `true` if repost; `single` if solo
+	    (array) repost_body - data
+	    (array) session - user vk_session data
+	*/
+	function dlg_wall_show_post($row,$repost,$repost_body,$session){
+	    global $cfg, $db, $skin;
+		
+	    $output = '';
+		
+	    // Load profiles for posts
+	    if($row['from_id'] > 0){
+		    $pr = $db->query_row("SELECT * FROM vk_profiles WHERE `id` = ".$row['from_id']);
+        	$path = 'profiles';
+		    $who = $pr['first_name'].' '.$pr['last_name'];
+	    } else {
+		    $pr = $db->query_row("SELECT * FROM vk_groups WHERE `id` = ".abs($row['from_id']));
+		    $path = 'groups';
+		    $who = $pr['name'];
+	    }
+		// If no data, show... something!
+		if(empty($who)){
+			$who = "VK# ".$row['from_id'];
+			$path = "#f44336";
+		} else {
+			$path = $path.'/'.$pr['photo_path'];
+		}
+
+	    // Attachments
+	    $attach = array(
+		'local_photo'  => '',
+		'attach_photo' => '',
+		'local_video'  => '',
+		'attach_video' => '',
+		'attach_link'  => '',
+		'local_audio'  => '',
+		'attach_audio' => '',
+		'local_doc'    => '',
+		'attach_doc'   => ''
+	    );
+	
+	    if($row['attach'] == 1){
+		$q = $db->query("SELECT * FROM vk_messages_wall_attach WHERE wall_id = ".$row['id']);
+		while($at_row = $db->return_row($q)){
+			if($at_row['type'] == 'photo' && $at_row['is_local'] == 1){
+				$attach['local_photo'] .= ($attach['local_photo'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+			if($at_row['type'] == 'photo' && $at_row['is_local'] == 0 && $at_row['path'] != ''){
+				$attach['attach_photo'] .= ($attach['attach_photo'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+			if($at_row['type'] == 'video' && $at_row['is_local'] == 1){
+				$attach['local_video'] .= ($attach['local_video'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+			if($at_row['type'] == 'video' && $at_row['is_local'] == 0 && $at_row['path'] != ''){
+				$attach['attach_video'] .= ($attach['attach_video'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+			if($at_row['type'] == 'link'){
+				$attach['attach_link'] .= ($attach['attach_link'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+			if($at_row['type'] == 'audio' && $at_row['is_local'] == 1){
+				$attach['local_audio'] .= ($attach['local_audio'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+			if($at_row['type'] == 'audio' && $at_row['is_local'] == 0 && $at_row['path'] != ''){
+				$attach['attach_audio'] .= ($attach['attach_audio'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+			if($at_row['type'] == 'doc' && $at_row['is_local'] == 1){
+				$attach['local_doc'] .= ($attach['local_doc'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+			if($at_row['type'] == 'doc' && $at_row['is_local'] == 0 && $at_row['player'] != ''){
+				$attach['attach_doc'] .= ($attach['attach_doc'] != '' ? ',' : '').$at_row['attach_id'];
+			}
+		}
+	    }
+
+	    $full_date = date("d M Y H:i",$row['date']);
+	    $row['date'] = $this->wall_date_format($row['date']);
+	    if($row['text'] != ''){ $row['text'] = '<div class="mb-2">'.nl2br($this->wall_post_parse($row['text'])).'</div>'; }
+	    $tmp_box = '';
+	    $tmp_class = 'col-sm-12 col-md-6 m-auto wall-box';
+		
+	    if($repost === true){
+		$tmp_box = 'repost';
+		$tmp_class = 'repost-box';
+	    }
+	    if($repost === 'single'){
+		$tmp_class = '';
+	    }
+		
+		if(substr($path,0,1) == "#"){
+			$ava_path = '<span class="mb-1 mr-2" style="background:'.$path.';display:block;min-width:50px;min-height:50px;float:left;border-radius:50%;"></span>';
+		} else {
+			$ava_path = '<img src="data/'.$path.'" class="wall-ava mb-1 mr-2" />';
+		}
+
+$output .= <<<E
+<div class="mb-2 {$tmp_box}">
+    <div class="{$tmp_class}">
+	{$ava_path}
+	<div class="wall-head mb-1">
+		<strong>{$who}</strong><br/><span class="full-date" data-placement="right" data-toggle="tooltip" data-original-title="{$full_date}">{$row['date']}</span>
+	</div>
+	<div style="clear:both;"></div>
+	{$row['text']}{$repost_body}
+E;
+
+foreach($attach as $qk => $qv){
+
+$attach_query = false;
+$qclass = '';
+if($qk == 'local_photo' && $qv != '' && $row['owner_id'] == $session['vk_user']){
+	$q = $db->query("SELECT * FROM vk_photos WHERE id IN(".$qv.")");
+	$attach_query = true;
+	$qclass = 'free-wall';
+}
+if($qk == 'attach_photo' && $qv != ''){
+	$q = $db->query("SELECT * FROM vk_messages_wall_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_query = true;
+	$qclass = 'free-wall';
+}
+
+if($qk == 'local_video' && $qv != '' && $row['owner_id'] == $session['vk_user']){
+	$q = $db->query("SELECT * FROM vk_videos WHERE id IN(".$qv.")");
+	$attach_query = true;
+}
+if($qk == 'attach_video' && $qv != ''){
+	$q = $db->query("SELECT * FROM vk_messages_wall_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_query = true;
+}
+
+if($qk == 'attach_link' && $qv != ''){
+	$q = $db->query("SELECT * FROM vk_messages_wall_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_query = true;
+}
+
+if($qk == 'local_audio' && $qv != '' && $row['owner_id'] == $session['vk_user']){
+	$q = $db->query("SELECT * FROM vk_music WHERE id IN(".$qv.")");
+	$attach_query = true;
+}
+if($qk == 'attach_audio' && $qv != ''){
+	$q = $db->query("SELECT * FROM vk_messages_wall_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_query = true;
+}
+if($qk == 'local_doc' && $qv != '' && $row['owner_id'] == $session['vk_user']){
+	$q = $db->query("SELECT * FROM vk_docs WHERE id IN(".$qv.")");
+	$attach_query = true;
+}
+if($qk == 'attach_doc' && $qv != ''){
+	$q = $db->query("SELECT * FROM vk_messages_wall_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_query = true;
+}
+    
+if($attach_query == true){
+	$output .= '<div class="'.$qclass.'">';
+	while($lph_row = $db->return_row($q)){
+		// Let's try to guess what type of data we have received
+		
+		// Type - Photo or attach photo
+		if((isset($lph_row['type']) && $lph_row['type'] == 'photo') || isset($lph_row['album_id'])){
+			// Rewrite for Alias
+			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
+				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'photo');
+			}
+$output .= <<<E
+    <div class="brick" style='width:{$cfg['wall_layout_width']}px;'><a class="fancybox" data-fancybox="images" rel="p{$row['id']}" href="{$lph_row['path']}"><img style="width:100%" src="{$lph_row['path']}"></a></div>
+E;
+		} // end of attach photo
+		
+		// Remote Video Attach
+		if(isset($lph_row['type']) && $lph_row['type'] == 'video'){
+			// Rewrite for Alias
+			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
+				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'video');
+			}
+			
+			// Clean player
+			$lph_row['player'] = $this->clean_player($lph_row['player']);
+
+			if($lph_row['text'] != ''){ $lph_row['text'] = '<div style="margin-bottom:10px;">'.nl2br($lph_row['text']).'</div>'; }
+			$lph_row['duration'] = $skin->seconds2human($lph_row['duration']);
+$output .= <<<E
+	<div class="wall-video-box">
+	    <span class="label label-default wall-video-duration">{$lph_row['duration']}</span>
+	    <a class="various fancybox" href="javascript:;" onclick="javascript:fbox_video_global('{$lph_row['player']}',1);" data-title-id="title-{$lph_row['attach_id']}" style="background-image:url('{$lph_row['path']}');"></a>
+	</div>
+	<h6 class="wall-video-header">{$lph_row['title']}</h6>
+	<div id="title-{$lph_row['attach_id']}" style="display:none;">
+	    {$lph_row['text']}
+	    <div class="expander" onClick="expand_desc();">показать</div>
+	</div>
+E;
+		} // end of attach video
+		
+		// Remote Link Attach
+		if(isset($lph_row['type']) && $lph_row['type'] == 'link'){
+			// Rewrite for Alias
+			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
+				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'photo');
+			}
+
+			if($lph_row['text'] != ''){ $lph_row['text'] = nl2br($lph_row['text']); }
+			if($lph_row['path'] != ''){
+$output .= <<<E
+    <div class="wall-link-img"><a class="fancybox" data-fancybox="images" rel="p{$row['id']}" href="{$lph_row['path']}"><img style="width:100%" src="{$lph_row['path']}"></a><a href="{$lph_row['link_url']}" class="wall-link-caption" rel="nofollow noreferrer" target="_blank"><i class="fa fa-link"></i>&nbsp;{$lph_row['caption']}</a></div>
+E;
+$output .= <<<E
+<div class="col-sm-12" style="border:1px solid rgba(0,20,51,.12);">
+	<h6>{$lph_row['title']}</h6>
+	<p class="wall-description">{$lph_row['text']}</p>
+</div>
+E;
+			} else {
+$output .= <<<E
+<div class="col-sm-12">
+	<h5><a href="{$lph_row['link_url']}" rel="nofollow noreferrer" target="_blank"><i class="fas fa-share"></i> {$lph_row['title']}</a></h5>
+	<p class="wall-description">{$lph_row['text']}</p>
+</div>
+E;
+			}
+
+		} // end of attach link
+		
+		// Remote Audio Attach
+		if(isset($lph_row['type']) && $lph_row['type'] == 'audio'){
+			// Rewrite for Alias
+			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
+				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'audio');
+			}
+			
+			if($lph_row['path'] != ''){
+$output .= <<<E
+<div class="col-sm-12" style="margin:4px auto 0 auto;font-size:12px;">
+    {$lph_row['caption']} - {$lph_row['title']}
+    <audio controls preload="none" style="width:100%;">
+	<source src="{$lph_row['path']}" type="audio/mpeg">
+	Ваш браузер не поддерживает HTML5 аудио.
+    </audio>
+</div>
+E;
+			}
+
+		} // end of attach audio
+		
+		// Type - Document or attach document
+		if((isset($lph_row['type']) && $lph_row['type'] == 'doc')){
+			// Rewrite for Alias
+			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
+				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'docs');
+			}
+			// Attach
+			if(isset($lph_row['player'])){
+				// Have preview
+				if($lph_row['path'] != ''){
+					// Rewrite for Alias
+					if($cfg['vhost_alias'] == true && substr($lph_row['player'],0,4) != 'http'){
+						$lph_row['player'] = $this->windows_path_alias($lph_row['player'],'docs');
+					}
+					$animated = '';
+					if(strtolower(substr($lph_row['player'],-3)) == "gif"){
+						$animated = 'class="doc-gif" data-docsrc="'.$lph_row['player'].'" data-docpre="'.$lph_row['path'].'"';
+					}
+$output .= <<<E
+    <div class="brick" style='width:100%;'><a class="fancybox" data-fancybox="images" rel="p{$row['id']}" href="{$lph_row['player']}"><img {$animated} style="width:100%" src="{$lph_row['path']}"></a></div>
+E;
+				} else {
+					$lph_row['duration'] = $this->human_filesize($lph_row['duration']);
+					$lph_row['caption'] = strtoupper($lph_row['caption']);
+$output .= <<<E
+<div class="col-sm-12">
+	<h5><a href="{$lph_row['player']}" rel="nofollow noreferrer" target="_blank"><i class="fas fa-share"></i> {$lph_row['title']}</a></h5>
+	<p class="wall-description"><span class="label label-default">{$lph_row['caption']}</span> {$lph_row['duration']}</p>
+</div>
+E;
+				}
+			}
+			
+		} // end of attach document
+		
+	}
+	$output .= '</div><div style="clear:both;"></div>';
+}
+
+} // Foreach $attach end
+
+$output .= <<<E
+	</div>
+</div>
+E;
+	    return $output;
+	} // Dialog Wall Post end
+	
+	/*
 	    Function: is_html_response
 	    Check response to html data
 	    In:
@@ -776,18 +1139,20 @@ E;
 		Out:
 		string
 	*/
-	function dbg_row($p,$head){
-		$output = '<table cellpadding="2" border="1" style="border-collapse:collapse;">';
+	function dbg_row($p,$head,$color){
+		if($color != ''){ $color = 'table-'.$color; }
+		
+		$output = '<div class="p-2 bg-white rounded shadow-sm"><table class="table table-sm table-bordered table-responsive m-0">';
 		foreach($p as $k => $v){
 			if(is_array($v)){
-				$output .= '<tr>';
+				$output .= '<tr class="'.$color.'">';
 				foreach($v as $a => $b){
 					$output .= ($head == true && $k == 0 ? '<th>' : '<td>').$b.($head == true && $k == 0 ? '</th>' : '</td>');
 				}
 				$output .= '</tr>';
 			}
 		}
-		$output .= '</table>';
+		$output .= '</table></div>';
 		return $output;
 	}
 

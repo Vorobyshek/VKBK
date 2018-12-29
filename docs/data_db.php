@@ -338,7 +338,7 @@ $db = array(
     'messages_attach' => array(
 	'uid' => array(
 	    'type' => 'i11',
-	    'desc' => ''
+	    'desc' => 'Автоинкремент ID'
 	),
 	'wall_id' => array(
 	    'type' => 'i11',
@@ -346,7 +346,7 @@ $db = array(
 	),
 	'type' => array(
 	    'type' => 'v255',
-	    'desc' => ''
+	    'desc' => 'Тип вложения. Может принимать значения: doc, photo, sticker, video, link, wall'
 	),
 	'is_local' => array(
 	    'type' => 'b',
@@ -354,7 +354,7 @@ $db = array(
 	),
 	'attach_id' => array(
 	    'type' => 'i11',
-	    'desc' => ''
+	    'desc' => 'ID вложения. Для типа `wall` указывает на связь `attach_id` => '.$db_prefix.'messages_wall.id'
 	),
 	'owner_id' => array(
 	    'type' => 'i11',
@@ -370,11 +370,11 @@ $db = array(
 	),
 	'width' => array(
 	    'type' => 'si5',
-	    'desc' => ''
+	    'desc' => 'Ширина изображения'
 	),
 	'height' => array(
 	    'type' => 'si5',
-	    'desc' => ''
+	    'desc' => 'Высота изображения'
 	),
 	'text' => array(
 	    'type' => 'tx',
@@ -386,7 +386,7 @@ $db = array(
 	),
 	'access_key' => array(
 	    'type' => 'v255',
-	    'desc' => ''
+	    'desc' => 'Поле `access key` для доступа к не публичному содержанию'
 	),
 	'title' => array(
 	    'type' => 'tx',
@@ -394,7 +394,7 @@ $db = array(
 	),
 	'duration' => array(
 	    'type' => 'i11',
-	    'desc' => ''
+	    'desc' => 'Тип `wall` - является флагом сохранена ли запись; Тип `doc` - размер документа в байтах; Тип `video` - продолжительность сек.'
 	),
 	'player' => array(
 	    'type' => 'tx',
@@ -410,7 +410,7 @@ $db = array(
 	),
 	'skipthis' => array(
 	    'type' => 'b',
-	    'desc' => ''
+	    'desc' => 'Флаг пропуска элемента в очереди закачки'
 	)
     ),
     'music' => array(

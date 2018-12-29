@@ -5,7 +5,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-// Debug mode
+// Debug mode (if TRUE - no data would be saved)
 define('SYNC_MSG_DEBUG', false);
 
 // Check do we have all needed GET data
@@ -38,9 +38,18 @@ require_once(ROOT.'classes/db.php');
 $db = new db();
 $res = $db->connect($cfg['host'],$cfg['user'],$cfg['pass'],$cfg['base']);
 
+// Get Skin
+require_once(ROOT.'classes/skin.php');
+$skin = new skin();
+
 // Get Functions
 require_once(ROOT.'classes/func.php');
 $f = new func();
+
+// Get skin if we in debug mode
+if(SYNC_MSG_DEBUG === true){
+	echo $skin->header_ajax();
+}
 
 $don = false;
 
@@ -80,6 +89,15 @@ $prof = new profiles();
 $prof->db = $db;
 $prof->vk = $vk;
 $prof->func = $f;
+
+// Attach Functions
+require_once(ROOT.'classes/attach.php');
+$atch = new attach();
+$atch->cfg = $cfg;
+$atch->db = $db;
+$atch->vk = $vk;
+$atch->func = $f;
+$atch->skin = $skin;
 
 if($vk_session['vk_token'] != '' && $token_valid == true){
 	try {
@@ -132,6 +150,11 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 			// Insert OR update dialog
 			$multi = array('on' => 0, 'chat_id' => 0, 'users' => 0, 'admin' => 0);
 			if($pv['conversation']['peer']['type'] == 'chat'){
+				// Fix for members count not exist in new API
+				if(!isset($pv['conversation']['chat_settings']['members_count'])){
+					$pv['conversation']['chat_settings']['members_count'] = 0;
+				}
+				
 				// Set last active user as 'admin'
 				$admin_id = (isset($pv['last_message']['from_id']) && is_numeric($pv['last_message']['from_id'])) ? $pv['last_message']['from_id'] : 0;
 				$multi = array(
@@ -293,169 +316,10 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 				$attach = 1;
 				
 				foreach($v['attachments'] as $atv => $atk){
-					// Attach - Photo
-					if($atk['type'] == 'photo'){
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT id FROM vk_photos WHERE id = ".$atk['photo']['id']);
-						// Attach found, make a link
-						if(!empty($at['id']) && $atk['photo']['owner_id'] == $vk_session['vk_user']){
-							// Insert OR update
-							$f->msg_attach_update($v['id'],$atk,SYNC_MSG_DEBUG);
-						} else {
-							$photo_uri = $f->get_largest_photo($atk['photo']);
-							
-							// Save information about attach
-							$f->msg_attach_insert($v['id'],$atk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					}
 					
-					// Attach - Video
-					if($atk['type'] == 'video'){
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT id FROM vk_videos WHERE id = ".$atk['video']['id']);
-						// Attach found, make a link
-						if(!empty($at['id']) && $atk['video']['owner_id'] == $vk_session['vk_user']){
-							// Insert OR update
-							$f->msg_attach_update($v['id'],$atk,SYNC_MSG_DEBUG);
-						} else {
-							$photo_uri = $f->get_largest_photo($atk['video']);
-							$atk['video']['player'] = '';
-							
-							// Get video player code for external attach
-							$v_api = $vk->api('video.get', array(
-								'videos' => $atk['video']['owner_id'].'_'.$atk['video']['id'].($atk['video']['access_key'] != '' ? '_'.$atk['video']['access_key'] : ''),
-								'extended' => 0, // возвращать ли информацию о настройках приватности видео для текущего пользователя
-								'offset' => 0,
-								'count' => 1
-							));
-							
-							if(isset($v_api['response']['items'][0]['player']) && $v_api['response']['items'][0]['player'] != ''){
-								$atk['video']['player'] = $v_api['response']['items'][0]['player'];
-							}
-							
-							// Save information about attach
-							$f->msg_attach_insert($v['id'],$atk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					}
+					// Attach :: Parse
+					$atch->attach_parse($v,$atk,$vk_session,array('forwarded'=>false),SYNC_MSG_DEBUG);
 					
-					// Attach - Link
-					if($atk['type'] == 'link'){
-						// For links we use a date as id because link type does not have a id
-						$atk['link']['id'] = $v['date'];
-						$atk['link']['owner_id'] = 0;//$v['owner_id'];
-						$atk['link']['date'] = $v['date'];
-						$atk['link']['access_key'] = '';
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT attach_id FROM vk_messages_attach WHERE attach_id = ".$atk['link']['id']);
-						// Attach found, just skip it ><
-						if(!empty($at['attach_id'])){
-							// Insert OR update
-							$f->msg_attach_update($v['id'],$atk,SYNC_MSG_DEBUG);
-						} else {
-							if(isset($atk['link']['photo'])){
-								$photo_uri = $f->get_largest_photo($atk['link']['photo']);
-								$atk['link']['width']  = (isset($atk['link']['photo']['width'])) ? $atk['link']['photo']['width'] : 0 ;
-								$atk['link']['height'] = (isset($atk['link']['photo']['height'])) ? $atk['link']['photo']['height'] : 0;
-							} else {
-								$photo_uri = '';
-							}
-							
-							// Save information about attach
-							$f->msg_attach_insert($v['id'],$atk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					}
-					
-					
-					// Attach - Document
-					/*
-						title -> title
-						size -> duration
-						ext -> text
-						url -> uri ( for local copy path )
-						date -> date
-						type -> not saved
-						preview (
-							photo -> link_url ( for local copy player )
-							width -> width
-							height -> height
-						)
-					*/
-					if($atk['type'] == 'doc'){
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT id FROM vk_docs WHERE id = ".$atk['doc']['id']);
-						$photo_uri = '';
-						// Attach found, make a link
-						if(!empty($at['id']) && $atk['doc']['owner_id'] == $vk_session['vk_user']){
-							// Insert OR update
-							$f->msg_attach_update($v['id'],$atk,SYNC_MSG_DEBUG);
-						} else {
-							$atk['doc']['caption'] = $atk['doc']['ext'];
-							$atk['doc']['width'] = 0;
-							$atk['doc']['height'] = 0;
-							$atk['doc']['duration'] = $atk['doc']['size'];
-							$atk['doc']['text'] = $atk['doc']['ext'];
-							
-							if(isset($atk['doc']['preview'])){
-								// Images
-								if(isset($atk['doc']['preview']['photo'])){
-									// Get biggest preview
-									$sizes = $f->get_largest_doc_image($atk['doc']['preview']['photo']['sizes']);
-									if($sizes['pre'] != ''){
-										$photo_uri = $sizes['pre'];
-										$atk['doc']['width'] = $sizes['prew'];
-										$atk['doc']['height'] = $sizes['preh'];
-									}
-								}
-							} // Preview end
-
-							// Save information about attach
-							$f->msg_attach_insert($v['id'],$atk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					}
-					
-					// Attach - Sticker
-					if($atk['type'] == 'sticker'){
-						
-						if(!isset($atk['sticker']['sticker_id'])){ $atk['sticker']['sticker_id'] = $atk['sticker']['id']; }
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT sticker FROM vk_stickers WHERE product = ".$atk['sticker']['product_id']." AND sticker = ".$atk['sticker']['sticker_id']);
-						// Attach found, make a link
-						if(!empty($at['sticker'])){
-							// Insert OR update
-							$f->msg_attach_update($v['id'],$atk,SYNC_MSG_DEBUG);
-						} else {
-							$atk['sticker']['caption'] = '';
-							$atk['sticker']['width'] = 0;
-							$atk['sticker']['height'] = 0;
-							$atk['sticker']['duration'] = 0;
-							$atk['sticker']['text'] = '';
-							$atk['sticker']['owner_id'] = 0;
-							$atk['sticker']['date'] = $v['date'];
-							$atk['sticker']['id'] = 0;
-							
-							$sticker = $f->get_sticker_image($atk['sticker'],true);
-							
-							if($sticker['pre'] != ''){
-								$photo_uri = $sticker['pre'];
-								$atk['sticker']['width'] = $sticker['prew'];
-								$atk['sticker']['height'] = $sticker['preh'];
-							}
-							// Save information about attach
-							$f->msg_attach_insert($v['id'],$atk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					} // STICKER end
-					
-					// Attach - Wall
-					if($atk['type'] == 'wall'){
-						$atk['wall']['caption'] = '';
-						$atk['wall']['owner_id'] = $atk['wall']['from_id'];
-						$atk['wall']['width'] = 0;
-						$atk['wall']['height'] = 0;
-						$atk['wall']['duration'] = 0;
-						$atk['wall']['title'] = '';
-						$photo_uri = '';
-						$f->msg_attach_insert($v['id'],$atk,$photo_uri,SYNC_MSG_DEBUG);
-					} // WALL end
 					
 				} // Foreach end
 			} // Attachments end
@@ -467,6 +331,9 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 				
 				foreach($v['fwd_messages'] as $fwdk => $fwdm){
 					$fwd_attach = 0;
+					
+					// quick fix for API v5.9x
+					if(!isset($fwdm['user_id'])){ $fwdm['user_id'] = $fwdm['from_id']; }
 					
 					// Insert user ID in array
 					$fwd_profiles[$fwdm['user_id']] = $fwdm['user_id'];
@@ -492,156 +359,9 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 							}
 							// User IDs to array end
 							
-					// Attach - Photo
-					if($fatk['type'] == 'photo'){
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT id FROM vk_photos WHERE id = ".$fatk['photo']['id']);
-						// Attach found, make a link
-						if(!empty($at['id']) && $fatk['photo']['owner_id'] == $vk_session['vk_user']){
-							// Insert OR update
-							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
-						} else {
-							$photo_uri = $f->get_largest_photo($fatk['photo']);
+							// Attach :: Parse
+							$atch->attach_parse($v,$fatk,$vk_session,array('forwarded'=>true),SYNC_MSG_DEBUG);
 							
-							// Save information about attach
-							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					}
-					
-					// Attach - Video
-					if($fatk['type'] == 'video'){
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT id FROM vk_videos WHERE id = ".$fatk['video']['id']);
-						// Attach found, make a link
-						if(!empty($at['id']) && $fatk['video']['owner_id'] == $vk_session['vk_user']){
-							// Insert OR update
-							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
-						} else {
-							$photo_uri = $f->get_largest_photo($fatk['video']);
-							$fatk['video']['player'] = '';
-							
-							// Get video player code for external attach
-							$v_api = $vk->api('video.get', array(
-								'videos' => $fatk['video']['owner_id'].'_'.$fatk['video']['id'].($fatk['video']['access_key'] != '' ? '_'.$fatk['video']['access_key'] : ''),
-								'extended' => 0, // возвращать ли информацию о настройках приватности видео для текущего пользователя
-								'offset' => 0,
-								'count' => 1
-							));
-							
-							if(isset($v_api['response']['items'][0]['player']) && $v_api['response']['items'][0]['player'] != ''){
-								$fatk['video']['player'] = $v_api['response']['items'][0]['player'];
-							}
-							
-							// Save information about attach
-							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					}
-					
-					// Attach - Link
-					if($fatk['type'] == 'link'){
-						// For links we use a date as id because link type does not have a id
-						$fatk['link']['id'] = $v['date'];
-						$fatk['link']['owner_id'] = 0;
-						$fatk['link']['date'] = $v['date'];
-						$fatk['link']['access_key'] = '';
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT attach_id FROM vk_messages_attach WHERE attach_id = ".$fatk['link']['id']);
-						// Attach found, just skip it ><
-						if(!empty($at['attach_id'])){
-							// Insert OR update
-							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
-						} else {
-							if(isset($fatk['link']['photo'])){
-								$photo_uri = $f->get_largest_photo($fatk['link']['photo']);
-								$fatk['link']['width']  = (isset($fatk['link']['photo']['width'])) ? $fatk['link']['photo']['width'] : 0 ;
-								$fatk['link']['height'] = (isset($fatk['link']['photo']['height'])) ? $fatk['link']['photo']['height'] : 0;
-							} else {
-								$photo_uri = '';
-							}
-							
-							// Save information about attach
-							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					}
-					
-					
-					// Attach - Document
-					if($fatk['type'] == 'doc'){
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT id FROM vk_docs WHERE id = ".$fatk['doc']['id']);
-						$photo_uri = '';
-						// Attach found, make a link
-						if(!empty($at['id']) && $fatk['doc']['owner_id'] == $vk_session['vk_user']){
-							// Insert OR update
-							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
-						} else {
-							$fatk['doc']['caption'] = $fatk['doc']['ext'];
-							$fatk['doc']['width'] = 0;
-							$fatk['doc']['height'] = 0;
-							$fatk['doc']['duration'] = $fatk['doc']['size'];
-							$fatk['doc']['text'] = $fatk['doc']['ext'];
-							
-							if(isset($fatk['doc']['preview'])){
-								// Images
-								if(isset($fatk['doc']['preview']['photo'])){
-									// Get biggest preview
-									$sizes = $f->get_largest_doc_image($fatk['doc']['preview']['photo']['sizes']);
-									if($sizes['pre'] != ''){
-										$photo_uri = $sizes['pre'];
-										$fatk['doc']['width'] = $sizes['prew'];
-										$fatk['doc']['height'] = $sizes['preh'];
-									}
-								}
-							} // Preview end
-
-							// Save information about attach
-							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					}
-					
-					// Attach - Sticker
-					if($fatk['type'] == 'sticker'){
-						if(!isset($fatk['sticker']['sticker_id'])){ $fatk['sticker']['sticker_id'] = $fatk['sticker']['id']; }
-						// Check do we have this attach already?
-						$at = $db->query_row("SELECT sticker FROM vk_stickers WHERE product = ".$fatk['sticker']['product_id']." AND sticker = ".$fatk['sticker']['sticker_id']);
-						// Attach found, make a link
-						if(!empty($at['sticker'])){
-							// Insert OR update
-							$f->msg_attach_update(-abs($v['id']),$fatk,SYNC_MSG_DEBUG);
-						} else {
-							//print_r($atk);
-							$fatk['sticker']['caption'] = '';
-							$fatk['sticker']['width'] = 0;
-							$fatk['sticker']['height'] = 0;
-							$fatk['sticker']['duration'] = 0;
-							$fatk['sticker']['text'] = '';
-							$fatk['sticker']['owner_id'] = 0;
-							$fatk['sticker']['date'] = $v['date'];
-							$fatk['sticker']['id'] = 0;
-							
-							$sticker = $f->get_sticker_image($fatk['sticker'],true);
-							
-							if($sticker['pre'] != ''){
-								$photo_uri = $sticker['pre'];
-								$fatk['sticker']['width'] = $sticker['prew'];
-								$fatk['sticker']['height'] = $sticker['preh'];
-							}
-							// Save information about attach
-							$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
-						}
-					} // STICKER end
-					
-					// Attach - Wall
-					if($fatk['type'] == 'wall'){
-						$fatk['wall']['caption'] = '';
-						$fatk['wall']['owner_id'] = $fatk['wall']['from_id'];
-						$fatk['wall']['width'] = 0;
-						$fatk['wall']['height'] = 0;
-						$fatk['wall']['duration'] = 0;
-						$fatk['wall']['title'] = '';
-						$photo_uri = '';
-						$f->msg_attach_insert(-abs($v['id']),$fatk,$photo_uri,SYNC_MSG_DEBUG);
-					} // WALL end
 					
 						} // Foreach end
 					} // Forwarded Attachments end
@@ -665,7 +385,7 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 				// Split Users and Groups
 				foreach($fwd_profiles as $fpk => $fpv){
 					if($fpv > 0){ $fwd_pr .= ($fwd_pr != '' ? ',' : '').$fpv; }
-					if($fpv < 0){ $fwd_gr .= ($fwd_gr != '' ? ',' : '').$fpv; }
+					if($fpv < 0){ $fwd_gr .= ($fwd_gr != '' ? ',' : '').abs($fpv); }
 				}
 				// If we have new users, add em
 				if(!empty($fwd_pr)){
@@ -788,6 +508,10 @@ E;
 
 $db->close($res);
 
-print json_encode($output);
+if(SYNC_MSG_DEBUG === true){
+	print $skin->footer_ajax();
+} else {
+	print json_encode($output);
+}
 
 ?>

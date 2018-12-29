@@ -212,7 +212,7 @@ E;
 	    if(isset($bar['per'])  && $bar['per']  < 0){ $bar['per']  = 0; }
 	    if(isset($bar['perx']) && $bar['perx'] < 0){ $bar['perx'] = 0; }
 return <<<E
-<div class="col-sm-2 text-center">
+<div class="mx-auto text-center">
 <i class="fa fa-{$bar['fa']} text-{$bar['bar']}" style="font-size:2em;"></i><br/>
 <small>{$bar['name']}</small><br/>{$bar['perx']}%
 </div>
@@ -234,9 +234,22 @@ E;
 	    
 	    $t = '';
 	    $fancy = false;
-	    if($row['type'] == 'photo'){    $t = 'atph';$row['id'] = $row['attach_id'];$fancy=true; }
-	    if($row['type'] == 'video'){    $t = 'atvi';$row['id'] = $row['attach_id'];$fancy=true; }
-	    if($row['type'] == 'link'){     $t = 'atli';$row['id'] = $row['attach_id'];$fancy=true; }
+		$fa_extra = '';
+		
+		// Allow fancy preview for some types
+		$fancy_types = array('photo','video','link','groups','profiles','m-photo','m-video','m-link','m-doc','m-sticker','mw-photo','mw-video','mw-link','mw-doc','mw-sticker');
+		if(in_array($row['type'],$fancy_types)){ $fancy = true; }
+		
+		// Icon for AttachTypes
+		$attach_ico = 'paperclip';
+		$attach_msg = array('m-photo','m-video','m-link','m-doc','m-sticker');
+		$attach_wall = array('mw-photo','mw-video','mw-link','mw-doc','mw-sticker');
+		if(in_array($row['type'],$attach_msg)){ $attach_ico = 'paperclip'; }
+		if(in_array($row['type'],$attach_wall)){ $attach_ico = 'share'; }
+		
+	    if($row['type'] == 'photo'){    $t = 'atph';$row['id'] = $row['attach_id']; }
+	    if($row['type'] == 'video'){    $t = 'atvi';$row['id'] = $row['attach_id']; }
+	    if($row['type'] == 'link'){     $t = 'atli';$row['id'] = $row['attach_id']; }
 	    if($row['type'] == 'audio'){
 		$t = 'atau';$row['id'] = $row['attach_id'];
 		mb_internal_encoding("UTF-8");
@@ -245,22 +258,43 @@ E;
 		$duration = $skin->seconds2human($row['duration']);
 		$uri_name = "[{$duration}] {$row['caption']} - {$row['title']}";
 	    }
-	    if($row['type'] == 'groups'){   $t = 'gr'; $row['uri']  = $row['photo_uri'];$fancy=true; }
-	    if($row['type'] == 'profiles'){ $t = 'pr'; $row['uri']  = $row['photo_uri'];$fancy=true; }
-	    if($row['type'] == 'doc'){      $t = 'atdc';$row['id']  = $row['attach_id']; }
+	    if($row['type'] == 'groups'){
+			$t = 'gr'; $row['uri'] = $row['photo_uri'];$fa_extra = 'users'; }
+	    if($row['type'] == 'profiles'){
+			$t = 'pr'; $row['uri'] = $row['photo_uri'];$fa_extra = 'user'; }
+	    if($row['type'] == 'doc'){
+			$t = 'atdc';$row['id'] = $row['attach_id']; }
 	    
-	    if($row['type'] == 'm-photo'){    $t = 'matph';$row['id'] = $row['attach_id'];$fancy=true; }
-	    if($row['type'] == 'm-video'){    $t = 'matvi';$row['id'] = $row['attach_id'];$fancy=true; }
-	    if($row['type'] == 'm-link'){     $t = 'matli';$row['id'] = $row['attach_id'];$row['owner_id'] = $row['date'];$fancy=true; }
-	    if($row['type'] == 'm-doc'){      $t = 'matdc';$row['id'] = $row['attach_id']; }
-	    if($row['type'] == 'm-sticker'){  $t = 'matst';$row['id'] = $row['date'];$fancy=true; }
+	    if($row['type'] == 'm-photo'){
+			$t = 'matph';$row['id'] = $row['attach_id'];$fa_extra = 'image'; }
+	    if($row['type'] == 'm-video'){
+			$t = 'matvi';$row['id'] = $row['attach_id'];$fa_extra = 'film'; }
+	    if($row['type'] == 'm-link'){
+			$t = 'matli';$row['id'] = $row['attach_id'];$row['owner_id'] = $row['date'];$fa_extra = 'link'; }
+	    if($row['type'] == 'm-doc'){
+			$t = 'matdc';$row['id'] = $row['attach_id'];$fa_extra = 'file'; }
+	    if($row['type'] == 'm-sticker'){
+			$t = 'matst';$row['id'] = $row['date']; }
+		
+		if($row['type'] == 'mw-photo'){
+			$t = 'mwatph';$row['id'] = $row['attach_id'];$fa_extra = 'image'; }
+	    if($row['type'] == 'mw-video'){
+			$t = 'mwatvi';$row['id'] = $row['attach_id'];$fa_extra = 'film'; }
+	    if($row['type'] == 'mw-link'){
+			$t = 'mwatli';$row['id'] = $row['attach_id'];$row['owner_id'] = $row['date'];$fa_extra = 'link'; }
+	    if($row['type'] == 'mw-doc'){
+			$t = 'mwatdc';$row['id'] = $row['attach_id'];$fa_extra = 'file'; }
+	    if($row['type'] == 'mw-sticker'){
+			$t = 'mwatst';$row['id'] = $row['date']; }
 	    
 	    // Fancybox preview for some types
 	    if($fancy == true){
-		$fbox = 'class="fancybox" data-fancybox="images"';
+			$fbox = 'class="fancybox" data-fancybox="images"';
 	    } else {
-		$fbox = 'target="_blank"';
+			$fbox = 'target="_blank"';
 	    }
+		
+		if($fa_extra != ''){ $fa_extra = ' <i class="fa fa-'.$fa_extra.'"></i>'; }
 	    
 	    // Add a autodownload for the first element in list
 	    if($first == true){
@@ -269,7 +303,7 @@ E;
 	    $oid = isset($row['owner_id']) ? "&oid=".$row['owner_id'] : '';
 return <<<E
 <tr id="{$row['id']}">
-  <td class="text-center"><i class="fa fa-paperclip"></i></td>
+  <td class="text-center"><i class="fa fa-{$attach_ico}"></i>{$fa_extra}</td>
   <td class="align-middle">{$row['id']}</td>
   <td class="align-middle"><a href="{$row['uri']}" {$fbox}>{$uri_name}</a></td>
   <td class="align-middle">{$row['fdate']}</td>
@@ -369,6 +403,21 @@ return <<<E
     <div {$c}>{$msg}<br/><a href="{$uri}">Далее...</a></div>
   </td>
 </tr>
+E;
+	}
+	
+	/*
+		Function: Show Alert
+		IN:
+		(string) type - bootstrap color style of alert
+		(string) icon - FontAwesome icon name
+		(string) msg - message of alert
+	*/
+	function show_alert($type,$icon,$msg){
+		$ic = '';
+		if($icon != ''){ $ic = '<i class="'.$icon.'"></i> '; }
+		return <<<E
+<div class="alert alert-{$type}" role="alert">{$ic}{$msg}</div>
 E;
 	}
 	

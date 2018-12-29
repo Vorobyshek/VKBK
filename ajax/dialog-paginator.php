@@ -5,6 +5,9 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
+// Debug mode
+define('DEBUG', false);
+
 // Check do we have all needed GET data
 $page = 0;
 if(isset($_GET['page']) && is_numeric($_GET['page'])){
@@ -38,6 +41,15 @@ $atch->cfg = $cfg;
 $atch->db = $db;
 $atch->func = $f;
 $atch->skin = $skin;
+
+// Get session
+$q = $db->query("SELECT * FROM vk_session WHERE `vk_id` = 1");
+$vk_session = $row = $db->return_row($q);
+
+// Get skin if we in debug mode
+if(DEBUG === true){
+	echo $skin->header_ajax();
+}
 
 $offset_page = ($page > 0) ? $cfg['perpage_dlg_messages']*$page : 0;
 // Get 1 more video to see do we have something on the next page
@@ -361,5 +373,9 @@ if(count($messages) > 0){
 }
 
 $db->close($res);
+
+if(DEBUG === true){
+	print $skin->footer_ajax();
+}
 
 ?>

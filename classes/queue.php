@@ -112,10 +112,11 @@ class queue {
 		
 		// Check type and set basic values
 		foreach($types as $k => $t){
+			$found_type = '';
 			foreach($t as $tt){
-				if($type === $tt){ $type_allowed = true; }
+				if($type === $tt){ $type_allowed = true; $found_type = $k; }
 			}
-			if($k == 'photo'){
+			if($found_type == 'photo'){
 				$db_type = 'photo';
 				$db_oid = 'owner_id';
 				$countdown = $this->cfg['sync_photo_next_cd'];
@@ -126,7 +127,7 @@ class queue {
 				if($type == 'mwatph'){
 					$table = 'messages_wall_attach'; $path = $this->cfg['photo_path'].'messages_wall'; }
 			}
-			if($k == 'video'){
+			if($found_type == 'video'){
 				$db_type = 'video';
 				$db_oid = 'owner_id';
 				$countdown = $this->cfg['sync_video_next_cd'];
@@ -137,7 +138,7 @@ class queue {
 				if($type == 'mwatvi'){
 					$table = 'messages_wall_attach'; $path = $this->cfg['video_path'].'messages_wall'; }
 			}
-			if($k == 'link'){
+			if($found_type == 'link'){
 				$db_type = 'link';
 				$db_oid = 'date';
 				$countdown = $this->cfg['sync_photo_next_cd'];

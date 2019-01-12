@@ -320,7 +320,7 @@ class queue {
 					$error_code = $this->skin->remote_server_error($out = $c->curl_req(array('uri' => $q['link_url'], 'method'=>'', 'return'=>0 )));
 				}
 				// Something wrong with response or connection
-				$skin->queue_no_data($error_code,"t=".$type."&id=".$queue_id."&oid=".$queue_oid,$queue_id);
+				$this->skin->queue_no_data($error_code,"t=".$type."&id=".$queue_id."&oid=".$queue_oid,$queue_id);
 			}
 			
 		} else {

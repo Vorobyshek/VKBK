@@ -243,10 +243,11 @@ class queue {
 		
 		// Check type and set basic values
 		foreach($types as $k => $t){
+			$found_type = '';
 			foreach($t as $tt){
-				if($type === $tt){ $type_allowed = true; }
+				if($type === $tt){ $type_allowed = true; $found_type = $k; }
 			}
-			if($k == 'doc'){
+			if($found_type == 'doc'){
 				$db_type = 'doc';
 				$countdown = $this->cfg['sync_docs_next_cd'];
 				if($type == 'atdc'){

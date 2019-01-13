@@ -241,6 +241,17 @@ function update_count(c,tc,t,n){
 			var p = Math.floor(a1 / (mmax / 100));
 			console.log('UpC M: less '+mmax+' total items: '+a1+' ('+p+'%)');
 			progress_change(minval,a1,total,p);
+			// Messages sync finished, stopping task
+			if(sync_do == 'msg'){
+				if(n == 1){
+					console.log('UpC M event process. Setting event to NEXT.');
+					sync_do = 'msg'; sync_ssp.html(syncProcess); sync_set_status('process');
+				}
+				if(n == 0){
+					console.log('UpC M event finished. Setting event to SUCCESS.');
+					sync_do = 'none'; sync_ssp.html(syncSuccess); sync_set_status('success');
+				}
+			}
 		}
 		if(a1 >= mmax){
 			console.log('UpC T: more or equal '+mmax+' total items: '+a1+' (100%)');

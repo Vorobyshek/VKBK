@@ -292,13 +292,13 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 					
 					if($offset == 0){
 						// Send 'count' as total
-						if($quick == false){
+						//if($quick == false){
 							$output['response']['total'] = $api['response']['count'];
-						}
+						//}
 						// Send difference between saved & new messages
-						if($quick == true){
-							$output['response']['total'] = $api['response']['in_read'] - $q['in_read'];
-						}
+						//if($quick == true){
+							//$output['response']['total'] = $api['response']['in_read'] - $q['in_read'];
+						//}
 					}
 		
 				}

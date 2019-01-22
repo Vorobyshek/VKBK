@@ -504,48 +504,57 @@ E;
 
 
 foreach($attach as $qk => $qv){
-
+$attach_type = '';
 $attach_query = false;
 $qclass = '';
 if($qk == 'local_photo' && $qv != '' && $row['owner_id'] == $session['vk_user']){
 	$q = $db->query("SELECT * FROM vk_photos WHERE id IN(".$qv.")");
+	$attach_type = 'photo';
 	$attach_query = true;
 	$qclass = 'free-wall';
 }
 if($qk == 'attach_photo' && $qv != ''){
 	$q = $db->query("SELECT * FROM vk_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_type = 'photo';
 	$attach_query = true;
 	$qclass = 'free-wall';
 }
 
 if($qk == 'local_video' && $qv != '' && $row['owner_id'] == $session['vk_user']){
 	$q = $db->query("SELECT * FROM vk_videos WHERE id IN(".$qv.")");
+	$attach_type = 'video';
 	$attach_query = true;
 }
 if($qk == 'attach_video' && $qv != ''){
 	$q = $db->query("SELECT * FROM vk_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_type = 'video';
 	$attach_query = true;
 }
 
 if($qk == 'attach_link' && $qv != ''){
 	$q = $db->query("SELECT * FROM vk_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_type = 'link';
 	$attach_query = true;
 }
 
 if($qk == 'local_audio' && $qv != '' && $row['owner_id'] == $session['vk_user']){
 	$q = $db->query("SELECT * FROM vk_music WHERE id IN(".$qv.")");
+	$attach_type = 'audio';
 	$attach_query = true;
 }
 if($qk == 'attach_audio' && $qv != ''){
 	$q = $db->query("SELECT * FROM vk_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_type = 'audio';
 	$attach_query = true;
 }
 if($qk == 'local_doc' && $qv != '' && $row['owner_id'] == $session['vk_user']){
 	$q = $db->query("SELECT * FROM vk_docs WHERE id IN(".$qv.")");
+	$attach_type = 'doc';
 	$attach_query = true;
 }
 if($qk == 'attach_doc' && $qv != ''){
 	$q = $db->query("SELECT * FROM vk_attach WHERE attach_id IN(".$qv.") AND wall_id = ".$row['id']." AND owner_id = ".$row['owner_id']);
+	$attach_type = 'doc';
 	$attach_query = true;
 }
     
@@ -553,9 +562,8 @@ if($attach_query == true){
 	$output .= '<div class="'.$qclass.'">';
 	while($lph_row = $db->return_row($q)){
 		// Let's try to guess what type of data we have received
-		
 		// Type - Photo or attach photo
-		if((isset($lph_row['type']) && $lph_row['type'] == 'photo') || isset($lph_row['album_id'])){
+		if((isset($lph_row['type']) && $attach_type == 'photo') || isset($lph_row['album_id'])){
 			// Rewrite for Alias
 			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
 				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'photo');
@@ -566,7 +574,7 @@ E;
 		} // end of attach photo
 		
 		// Remote Video Attach
-		if(isset($lph_row['type']) && $lph_row['type'] == 'video'){
+		if(isset($lph_row['type']) && $attach_type == 'video'){
 			// Rewrite for Alias
 			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
 				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'video');
@@ -591,7 +599,7 @@ E;
 		} // end of attach video
 		
 		// Remote Link Attach
-		if(isset($lph_row['type']) && $lph_row['type'] == 'link'){
+		if(isset($lph_row['type']) && $attach_type == 'link'){
 			// Rewrite for Alias
 			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
 				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'photo');
@@ -620,7 +628,7 @@ E;
 		} // end of attach link
 		
 		// Remote Audio Attach
-		if(isset($lph_row['type']) && $lph_row['type'] == 'audio'){
+		if(isset($lph_row['type']) && $attach_type == 'audio'){
 			// Rewrite for Alias
 			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
 				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'audio');
@@ -641,19 +649,25 @@ E;
 		} // end of attach audio
 		
 		// Type - Document or attach document
-		if((isset($lph_row['type']) && $lph_row['type'] == 'doc')){
+		if((isset($lph_row['type']) && $attach_type == 'doc')){
 			// Rewrite for Alias
-			if($cfg['vhost_alias'] == true && substr($lph_row['path'],0,4) != 'http'){
-				$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'docs');
+			if($cfg['vhost_alias'] == true){
+				if(isset($lph_row['path']) && substr($lph_row['path'],0,4) != 'http'){
+					$lph_row['path'] = $this->windows_path_alias($lph_row['path'],'docs');
+				} else if(isset($lph_row['local_path']) && substr($lph_row['local_path'],0,4) != 'http') {
+					$lph_row['path'] = $this->windows_path_alias($lph_row['local_path'],'docs');
+				}
+				if(isset($lph_row['player']) && substr($lph_row['player'],0,4) != 'http'){
+					$lph_row['player'] = $this->windows_path_alias($lph_row['player'],'docs');
+				} else if(isset($lph_row['preview_path']) && substr($lph_row['preview_path'],0,4) != 'http') {
+					$lph_row['player'] = $this->windows_path_alias($lph_row['preview_path'],'docs');
+				}
 			}
+			
 			// Attach
 			if(isset($lph_row['player'])){
 				// Have preview
 				if($lph_row['path'] != ''){
-					// Rewrite for Alias
-					if($cfg['vhost_alias'] == true && substr($lph_row['player'],0,4) != 'http'){
-						$lph_row['player'] = $this->windows_path_alias($lph_row['player'],'docs');
-					}
 					$animated = '';
 					if(strtolower(substr($lph_row['player'],-3)) == "gif"){
 						$animated = 'class="doc-gif" data-docsrc="'.$lph_row['player'].'" data-docpre="'.$lph_row['path'].'"';

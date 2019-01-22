@@ -157,6 +157,7 @@ class func {
 	    Inserts information about message attach to DB if attach is found in local
 	    In:
 	    id - attachID,
+	    (string) dst - destination table; default: msg; opts: wall|msg;
 	    atk - attachData
 	*/
 	function msg_attach_update($id,$atk,$dst,$debug){

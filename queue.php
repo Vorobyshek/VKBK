@@ -800,7 +800,7 @@ print <<<E
 <tr id="{$row['id']}">
   <td class="text-center"><i class="fa fa-{$type_icons['video']}"></i></td>
   <td>{$row['id']}</td>
-  <td><a href="{$row['preview_uri']}" target="_blank">{$row['preview_uri']}</a></td>
+  <td><a href="{$row['preview_uri']}" class="fancybox" data-fancybox="images" >{$row['preview_uri']}</a></td>
   <td>{$row['date_added']}</td>
   <td><a href="queue.php?t=v&id={$row['id']}&oid={$row['owner_id']}" class="{$btnclass}" id="{$row['id']}" onClick="jQuery('#{$row['id']}').hide();return true;" title="Скачать"><b class="{$btnicon}"></b></a>{$auto}</td>
 </tr>

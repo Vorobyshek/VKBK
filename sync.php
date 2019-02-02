@@ -823,7 +823,7 @@ E;
 				// Compare VK IDs with local IDs
 				$video_create = array_diff($video_vk_list['uid'],$video_list['uid']);
 				
-				if(sizeof($video_list) > 0){
+				if(sizeof($video_list['id']) > 0){
 					// Update status for local IDs which was found
 					$q = $db->query("UPDATE vk_videos SET `deleted` = 0 WHERE `id` IN(".implode(',',$video_list['id']).") AND `in_queue` = 0");
 					$moved = $db->affected_rows();

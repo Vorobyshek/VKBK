@@ -1135,7 +1135,7 @@ E;
 					print $skin->reload('info',"Страница будет обновлена через  <span id=\"gcd\">".$cfg['sync_docs_next_cd']."</span> сек.","sync.php?do=docs&part=".$part_new."",$cfg['sync_docs_next_cd']);
 				}
 			
-				// Get log if any process rinning
+				// Get log if any process running
 				$old_log = $db->query_row("SELECT val as p FROM vk_status WHERE `key` = 'log_docs'");
 				if($old_log['p'] != ''){
 					print '<tr><th class="text-center">Лог</th></tr>'.$old_log['p'];

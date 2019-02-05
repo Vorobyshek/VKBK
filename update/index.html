@@ -36,6 +36,21 @@
     </div>
     
     <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-gray pb-2 mb-0">0.8.7 &rarr; 0.8.7b</h6>
+        <div class="text-muted pt-3">
+          <div class="pb-0 mb-0 small lh-125">
+            <span class="d-block">
+<pre>
+ALTER TABLE `vk_docs` ADD `skipthis` BOOLEAN NOT NULL DEFAULT FALSE AFTER `local_h`, ADD INDEX `skip` (`skipthis`);
+
+UPDATE `vk_status` SET `val` = '2019020501' WHERE `key` = 'version';
+</pre>
+	    </span>
+          </div>
+        </div>
+    </div>
+    
+    <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-gray pb-2 mb-0">0.8.6 &rarr; 0.8.7</h6>
         <div class="text-muted pt-3">
           <div class="pb-0 mb-0 small lh-125">

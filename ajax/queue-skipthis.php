@@ -26,7 +26,7 @@ $db = new db();
 $res = $db->connect($cfg['host'],$cfg['user'],$cfg['pass'],$cfg['base']);
 
 $types = array(
-	'p',//'m','v','dc',						// Media types
+	'p','dc',//'m','v',						// Media types
 	//'pr','gr',							// Profiles & Groups
 	'atph','atvi','atli','atau','atdc',		// Attachments
 	'matph','matvi','matli','matdc','matst',// Dialogs attachments
@@ -38,6 +38,10 @@ if(isset($_GET['t']) && in_array($_GET['t'],$types) && isset($_GET['id']) && iss
 	
 	if($t == 'p'){
 		$db->query("UPDATE vk_photos SET `skipthis` = 1 WHERE `id` = ".$id." ");
+	}
+	
+	if($t == 'dc'){
+		$db->query("UPDATE vk_docs SET `skipthis` = 1 WHERE `id` = ".$id." ");
 	}
 	
 	if($t == 'atph' || $t == 'atvi' || $t == 'atdc' || $t == 'atli'){

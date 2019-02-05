@@ -150,10 +150,12 @@ CREATE TABLE IF NOT EXISTS `vk_docs` (
   `local_size` int(11) NOT NULL,
   `local_w` smallint(6) NOT NULL,
   `local_h` smallint(6) NOT NULL,
+  `skipthis` tinyint(1) NOT NULL DEFAULT 0,
   UNIQUE KEY `id` (`id`),
   KEY `type` (`type`),
   KEY `deleted` (`deleted`),
-  KEY `queue` (`in_queue`)
+  KEY `queue` (`in_queue`),
+  KEY `skip` (`skipthis`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -419,7 +421,7 @@ INSERT INTO `vk_status` (`key`, `val`) VALUES
 ('log_music', ''),
 ('log_photo', ''),
 ('log_video', ''),
-('version', '2018122301'),
+('version', '2019020501'),
 ('auto-queue-audio', '0'),
 ('auto-queue-photo', '0'),
 ('play-local-video', '0');

@@ -75,8 +75,8 @@ $done['att'] = round(($bar_total['at'] - $bar_queue['at']) / $per, 2);
 $done['at'] = ceil($done['att']);
 } else { $done['at'] = $done['att'] = 0; }
 
-$bar_total = $db->query_row("SELECT COUNT(*) as dc FROM vk_docs WHERE `deleted` = 0");
-$bar = $db->query_row("SELECT COUNT(*) as dc FROM vk_docs WHERE `in_queue` = 1");
+$bar_total = $db->query_row("SELECT COUNT(*) as dc FROM vk_docs WHERE `deleted` = 0 AND `skipthis` = 0");
+$bar = $db->query_row("SELECT COUNT(*) as dc FROM vk_docs WHERE `in_queue` = 1 AND `skipthis` = 0");
 $bar_queue['dc'] = $bar['dc'];
 $per = $bar_total['dc']/100;
 if($bar_total['dc'] > 0){
@@ -427,7 +427,7 @@ if(isset($_GET['id']) && isset($_GET['t'])){
 						$error_code = $skin->remote_server_error($out = $c->curl_req(array('uri' => $q['uri'], 'method'=>'', 'return'=>0 )));
 					}
 					// Something wrong with response or connection
-					$skin->queue_no_data($error_code,false,false);
+					$skin->queue_no_data($error_code,"t=dc&id=".$queue_id."&oid=0",$queue_id);
 			}
 			
 		} else {
@@ -809,7 +809,7 @@ E;
 }
 $first['dc'] = true;
 if($bar_queue['dc'] > 0){
-	$r = $db->query("SELECT * FROM vk_docs WHERE `in_queue` = 1 ".($skip_list != '' ? "AND `id` NOT IN (".$skip_list.")" : "")." ORDER BY date DESC LIMIT 0,{$show}");
+	$r = $db->query("SELECT * FROM vk_docs WHERE `in_queue` = 1 AND `skipthis` = 0 ".($skip_list != '' ? "AND `id` NOT IN (".$skip_list.")" : "")." ORDER BY date DESC LIMIT 0,{$show}");
 	while($row = $db->return_row($r)){
 		$row['date'] = date("Y-m-d H:i:s",$row['date']);
 		// Add a autodownload for the first element in list

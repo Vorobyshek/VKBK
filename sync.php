@@ -1082,7 +1082,7 @@ E;
 					$data_i = 1;
 					$data_k = 0;
 					foreach($docs_data as $k => $v){
-						$data_sql[$data_k] .= ($data_sql[$data_k] != '' ? ',' : '')."({$k},{$v['owner_id']},'".$db->real_escape($v['title'])."',{$v['size']},'".$db->real_escape($v['ext'])."','{$v['uri']}',{$v['date']},{$v['type']},'{$v['preview_uri']}','','{$v['width']}','{$v['height']}',0,1,'',0,0,0)";
+						$data_sql[$data_k] .= ($data_sql[$data_k] != '' ? ',' : '')."({$k},{$v['owner_id']},'".$db->real_escape($v['title'])."',{$v['size']},'".$db->real_escape($v['ext'])."','{$v['uri']}',{$v['date']},{$v['type']},'{$v['preview_uri']}','','{$v['width']}','{$v['height']}',0,1,'',0,0,0,0)";
 						$data_i++;
 						if($data_i > $data_limit){
 							$data_i = 1;
@@ -1091,7 +1091,7 @@ E;
 					}
 					
 					foreach($data_sql as $k => $v){
-						$q = $db->query("INSERT INTO vk_docs (`id`,`owner_id`,`title`,`size`,`ext`,`uri`,`date`,`type`,`preview_uri`,`preview_path`,`width`,`height`,`deleted`,`in_queue`,`local_path`,`local_size`,`local_w`,`local_h`) VALUES {$v}");
+						$q = $db->query("INSERT INTO vk_docs (`id`,`owner_id`,`title`,`size`,`ext`,`uri`,`date`,`type`,`preview_uri`,`preview_path`,`width`,`height`,`deleted`,`in_queue`,`local_path`,`local_size`,`local_w`,`local_h`,`skipthis`) VALUES {$v}");
 					}
 
 					array_unshift($log,'<tr><td>Новые документы добавлены в очередь. Всего - <b>'.sizeof($docs_create).'</b></td></tr>');

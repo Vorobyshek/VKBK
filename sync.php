@@ -945,7 +945,7 @@ E;
 			if($part == ''){
 				
 				// Clean DB log before write something new
-				$q4 = $db->query("UPDATE vk_status SET `val` = '' WHERE `key` = 'log_documents'");
+				$q4 = $db->query("UPDATE vk_status SET `val` = '' WHERE `key` = 'log_docs'");
 
 				$log = array();
 				

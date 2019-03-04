@@ -116,12 +116,18 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 	$api_dialogs = array();
 	$vk_dialogs_total = 0;
 	
-	if($api['response'] != ''){
+	if(isset($api['response']) && $api['response'] != ''){
 		
 		$don = true;
 		$api_dialogs = $api['response']['items'];
 		$vk_dialogs_total = $api['response']['count'];
 		
+	} else {
+		
+		$output['error'] = true;
+$output['response']['error_msg'] = <<<E
+    <div class="alert alert-danger mb-0" role="alert">{$api['error']['error_msg']}</div>
+E;
 	}
 	
 	// Check & process
@@ -209,42 +215,43 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 			} // end new groups
 		}
 	} // Check & Process END
-		
-	// I want this logic in one line, but this blow my mind so...
-	$to = 0;
-	if($offset == 0){
-		$to = $count;
-		if($count > $vk_dialogs_total){
-			$to = $vk_dialogs_total;
-		}
-	} else {
-		if(($count+$offset) > $vk_dialogs_total){
-			$to = $vk_dialogs_total;
+	
+	if($output['error'] != true){
+		// I want this logic in one line, but this blow my mind so...
+		$to = 0;
+		if($offset == 0){
+			$to = $count;
+			if($count > $vk_dialogs_total){
+				$to = $vk_dialogs_total;
+			}
 		} else {
-			$to = $count+$offset;
+			if(($count+$offset) > $vk_dialogs_total){
+				$to = $vk_dialogs_total;
+			} else {
+				$to = $count+$offset;
+			}
 		}
-	}
-	if($offset > 0){ $ot = $offset; } else { $ot = 1; }
+		if($offset > 0){ $ot = $offset; } else { $ot = 1; }
 	
-	$output['response']['msg'][] = '<div>Получаем диалоги <b> '.$ot.' - '.$to.' / '.$vk_dialogs_total.'</b> из ВК.</div>';
+		$output['response']['msg'][] = '<div>Получаем диалоги <b> '.$ot.' - '.$to.' / '.$vk_dialogs_total.'</b> из ВК.</div>';
 	
-	// Let's recount dialogs
-	$q5 = $db->query("UPDATE vk_counters SET `dialogs` = (SELECT COUNT(*) FROM vk_dialogs)");
+		// Let's recount dialogs
+		$q5 = $db->query("UPDATE vk_counters SET `dialogs` = (SELECT COUNT(*) FROM vk_dialogs)");
 	
-		// If we done with all dialogs
-		if(($offset+$count) >= $vk_dialogs_total){
-			// No unsynced dialogs left. This is the end...
-			$output['response']['msg'][] = '<div class="alert alert-success mb-0" role="alert"><strong>Товарищ майор!</strong> Синхронизация диалогов завершена. Чтобы начать проверку сообщений снимите с паузы.</div>';
-		} else {
-			// Some dialogs is not synced yed
-			$output['response']['msg'][] = '<div>Перехожу к следующей порции диалогов...</div>';
+			// If we done with all dialogs
+			if(($offset+$count) >= $vk_dialogs_total){
+				// No unsynced dialogs left. This is the end...
+				$output['response']['msg'][] = '<div class="alert alert-success mb-0" role="alert"><strong>Товарищ майор!</strong> Синхронизация диалогов завершена. Чтобы начать проверку сообщений снимите с паузы.</div>';
+			} else {
+				// Some dialogs is not synced yed
+				$output['response']['msg'][] = '<div>Перехожу к следующей порции диалогов...</div>';
 		
-			// Calculate offset and reload page
-			$offset_new = $offset+$count;
-			$output['response']['next_uri'] = '/ajax/sync-message.php?do=dlg&offset='.$offset_new;
-			$output['response']['total'] = $vk_dialogs_total;
+				// Calculate offset and reload page
+				$offset_new = $offset+$count;
+				$output['response']['next_uri'] = '/ajax/sync-message.php?do=dlg&offset='.$offset_new;
+				$output['response']['total'] = $vk_dialogs_total;
+			}
 		}
-
 	} // Do dialog END
 	
 		// Do = Next
@@ -499,7 +506,7 @@ $output['response']['error_msg'] = <<<E
 E;
 }
 
-if($don == false && $token_valid == true){
+if($don == false && $token_valid == true && $output['error'] != true){
 $output['error'] = true;
 $output['response']['error_msg'] = <<<E
     <div class="alert alert-info mb-0" role="alert">Нет заданий для синхронизации</div>

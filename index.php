@@ -179,7 +179,7 @@ E;
 	         * Ex. $vk->getAuthorizeURL($api_settings, $callback_url, true);
 			*/
 	        //$authorize_url = $vk->getAuthorizeURL('offline,status,photos,audio,video,docs',$cfg['vk_uri']);
-			$authorize_url = $vk->getAuthorizeURL('offline,status,photos,audio,video,docs,messages');
+			$authorize_url = $vk->getAuthorizeURL('offline,status,photos,audio,video,docs');//messages
 print <<<E
 <div class="text-center">
 	<i class="fab fa-vk" style="font-size:3em;"></i>

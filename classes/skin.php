@@ -91,7 +91,7 @@ E;
     <footer class="footer">
       <div class="container pt-2">
 	<div class="row">
-        <div class="col-8"><p class="text-muted mb-2"><a href="https://github.com/Chiaki/VKBK" target="_blank"><i class="fab fa-vk"></i>BK {$cfg['version']}</a> <small>&copy; 2016 - 2018 Megumin</small></p></div>
+        <div class="col-8"><p class="text-muted mb-2"><a href="https://github.com/Chiaki/VKBK" target="_blank"><i class="fab fa-vk"></i>BK {$cfg['version']}</a> <small>&copy; 2016 - 2019 Megumin</small></p></div>
 		<div class="col-4" style="text-align:right;"><a href="about.php" data-pjax><small><i class="fa fa-code-branch fa-fw"></i> История версий</a></small></div>
 	</div>
       </div>
@@ -122,7 +122,7 @@ E;
 	function footer_links(){
 	    return <<<E
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>

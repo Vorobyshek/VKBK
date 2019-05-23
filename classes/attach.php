@@ -114,12 +114,14 @@ E;
 	
 	// Type = Video
 	function dlg_attach_video($av){
+		
 		$output = '';
 		if(isset($av['type']) && $av['type'] == 'video'){
 			// Rewrite for Alias
 			if($this->cfg['vhost_alias'] == true && substr($av['path'],0,4) != 'http'){
 				$av['path'] = $this->func->windows_path_alias($av['path'],'video');
 			}
+			
 			// Clean player
 			$av['player'] = $this->func->clean_player($av['player']);
 			if($av['text'] != ''){

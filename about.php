@@ -47,17 +47,17 @@ print <<<E
 			<a href="https://github.com/pklauzinski/jscroll">jScroll.js</a>
 				<span class="badge badge-light">2.3.9a</span><br/>
 			<a href="https://github.com/fancyapps/fancyBox">fancybox.js</a>
-				<span class="badge badge-light">3.1.20</span>
+				<span class="badge badge-light">3.5.7</span>
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
 			<a href="https://fortawesome.github.io/Font-Awesome/">Font Awesome</a>
-				<span class="badge badge-light">5.6.3</span><br/>
+				<span class="badge badge-light">5.8.2</span><br/>
 			<a href="https://github.com/minhur/bootstrap-toggle">Bootstrap Toggle</a>
 				<span class="badge badge-light">2.2.2</span><br/>
-			<a href="https://habrahabr.ru/sandbox/57659/">hashnav.js</a>
+			<a href="https://habr.com/ru/sandbox/57659/">hashnav.js</a>
 				<span class="badge badge-light">6 May 2016</span><br/>
 			<a href="https://github.com/noraesae/perfect-scrollbar">perfect-scrollbar.js</a>
-				<span class="badge badge-light">1.3.0</span><br/>
+				<span class="badge badge-light">1.4.0</span><br/>
 			<a href="https://github.com/happyworm/jPlayer">jPlayer.js</a>
 				<span class="badge badge-light">2.9.2</span>
 			</div>
@@ -76,11 +76,11 @@ print <<<E
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
 			<a href="https://github.com/FezVrasta/popper.js">popper.js</a>
-				<span class="badge badge-light">1.14.1</span><br/>
+				<span class="badge badge-light">1.15.0</span><br/>
 			<a href="https://github.com/miromannino/Justified-Gallery">Justified Gallery</a>
 				<span class="badge badge-light">3.7.0</span><br/>
 			<a href="https://github.com/sampotts/plyr">Plyr</a>
-				<span class="badge badge-light">3.4.0</span><br/>
+				<span class="badge badge-light">3.5.4</span><br/>
 			</div>
 			</div>
 			
@@ -90,6 +90,14 @@ E;
 
 $changelog = array(
 	'0.8.x' => array(
+		'0.8.8' => array(
+			array('u','fancybox.js обновлен до версии 3.5.7'),
+			array('u','Font Awesome обновлен до версии 5.8.2'),
+			array('u','jQuery обновлен до версии 3.4.1'),
+			array('u','perfect-scrollbar.js обновлен до версии 1.4.0'),
+			array('u','popper.js обновлен до версии 1.15.0'),
+			array('u','Plyr обновлен до версии 3.5.4'),
+		),
 		'0.8.7' => array(
 			array('i',"Добавлена проверка необходимых модулей для работы скрипта."),
 			array('i',"Используется VK API версии 5.92."),

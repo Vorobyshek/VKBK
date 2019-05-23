@@ -71,7 +71,7 @@ while($row = $db->return_row($r)){
 print <<<E
           </div>
 </div>
-<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/freewall.js"></script>
 <script type="text/javascript" src="js/jquery.fancybox3.min.js"></script>

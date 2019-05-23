@@ -13,8 +13,7 @@ if(isset($_GET['id']) && is_numeric($_GET['id'])){
 }
 $oid = 0;
 if(isset($_GET['oid']) && is_numeric($_GET['oid'])){
-	$o = intval($_GET['oid']);
-	if($o > 0){ $oid = $o; }
+	$oid  = intval($_GET['oid']);
 }
 
 require_once('../cfg.php');

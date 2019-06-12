@@ -75,7 +75,7 @@ print <<<E
 				<span class="badge badge-light">2.2.0</span>
 			</div>
 			<div class="col-xs-6 col-sm-3 libs-row">
-			<a href="https://github.com/FezVrasta/popper.js">popper.js</a>
+			<a href="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js">popper.js</a>
 				<span class="badge badge-light">1.15.0</span><br/>
 			<a href="https://github.com/miromannino/Justified-Gallery">Justified Gallery</a>
 				<span class="badge badge-light">3.7.0</span><br/>
@@ -90,6 +90,11 @@ E;
 
 $changelog = array(
 	'0.8.x' => array(
+		'0.8.9' => array(
+			array('n',"Обновлен раздел синхронизации. Теперь он работает на ajax."),
+			array('u','Bootstrap обновлен до версии 4.3.1'),
+			array('u','Обновление popper.js для Bootstrap от CloudFlare'),
+		),
 		'0.8.8' => array(
 			array('u','fancybox.js обновлен до версии 3.5.7'),
 			array('u','Font Awesome обновлен до версии 5.8.2'),

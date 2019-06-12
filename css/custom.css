@@ -35,7 +35,7 @@ h4[aria-expanded="false"]:hover{
     text-decoration: underline;
 }
 .display-4 {
-    font-size: 2.5rem;
+    font-size: 2rem;
 }
 .tooltip-inner {
     max-width: 200px;

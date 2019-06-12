@@ -1,3 +1,8 @@
+## v0.8.9
+-   [new] Обновлен раздел синхронизации. Теперь он работает на ajax.
+-   [upd] Bootstrap обновлен до версии 4.3.1
+-   [upd] Обновление popper.js для Bootstrap от CloudFlare
+
 ## v0.8.8
 -   [upd] fancybox.js обновлен до версии 3.5.7
 -   [upd] Font Awesome обновлен до версии 5.8.2

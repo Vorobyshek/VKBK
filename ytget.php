@@ -32,12 +32,16 @@ $s = isset($_GET['s']) ? preg_replace("/[^a-z]+/","",$_GET['s']) : '';
 // Force authorization
 $force_auth = (isset($_GET['force_auth']) && !empty($cfg['yt_dl_login']) && !empty($cfg['yt_dl_passw'])) ? true : false;
 
+$ytdl = $cfg['yt_dl_path'] != '' ? true : false;
+
 print <<<E
 <div class="container">
           <h2 class="sub-header">Сохраниение видео (youtube-dl)</h2>
           <div class="table-responsive">
             <table class="table table-striped">
 E;
+
+if($ytdl === true){
 
 if($key == ''){
 print <<<E
@@ -176,6 +180,16 @@ E;
 }
 
 // End of IF KEY
+}
+
+} else {
+print <<<E
+<tr>
+  <td>
+    <div class="alert alert-danger" role="alert">youtube-dl не найден. Скачать можно по ссылке <a href="https://github.com/ytdl-org/youtube-dl/releases" target="_blank" rel="noopener noreferer" >https://github.com/ytdl-org/youtube-dl/releases</a></div>
+  </td>
+</tr>
+E;
 }
 
 print <<<E

@@ -153,11 +153,11 @@ E;
 		}
 
 		foreach($counters_show as $k => $v){
-			if($k == 'albums') { $k = '<i class="fa fa-folder fa-fw"></i> Альбомы'; }
-			if($k == 'photos') { $k = '<i class="fa fa-image fa-fw"></i> Фото'; }
+			if($k == 'albums')  { $k = '<i class="fa fa-folder fa-fw"></i> Альбомы'; }
+			if($k == 'photos')  { $k = '<i class="fa fa-image fa-fw"></i> Фото'; }
 			//if($k == 'audios') { $k = '<i class="fa fa-music fa-fw"></i> Музыка'; }
-			if($k == 'videos') { $k = '<i class="fa fa-film fa-fw"></i> Видео'; }
-			if($k == 'docs') { $k = '<i class="fa fa-file fa-fw"></i> Документы'; }
+			if($k == 'videos')  { $k = '<i class="fa fa-film fa-fw"></i> Видео'; }
+			if($k == 'docs')    { $k = '<i class="fa fa-file fa-fw"></i> Документы'; }
 			if($k == 'dialogs') { $k = '<i class="far fa-comment-alt fa-fw"></i> Диалоги'; }
 			print '<li class="w-100 btn btn-light text-left mb-1 d-flex justify-content-between align-items-center"><span>'.$k.':</span> <span class="badge badge-secondary">'.$v.'</span></li>';
 		}
@@ -226,19 +226,11 @@ print <<<E
           <div class="row placeholders pt-4 pb-2">
             <div class="col-sm-3 placeholder">
               <h2 class="display-4">{$f->human_thousand($counters['album'])}</h2>
-              <span class="text-muted">Альбомы&nbsp;&nbsp;<a href="sync.php?do=albums"><i class="fa fa-sync fa-fw"></i></a></span>
+              <span class="text-muted">Альбомы</span>
             </div>
             <div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['photo'])}</h2>
-              <span class="text-muted">Фотографии&nbsp;&nbsp;
-				<div class="dropdown show" style="display:inline-block;">
-					<a class="dropdown-toggle" href="#" role="button" id="photosync" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false"><i class="fa fa-sync fa-fw"></i></a>
-					<div class="dropdown-menu" aria-labelledby="photosync">
-						<a class="dropdown-item" href="sync.php?do=photo"><i class="fa fa-hourglass fa-fw"></i> Полная</a>
-						<a class="dropdown-item" href="sync.php?do=photo&fast=1"><i class="fa fa-hourglass-end fa-fw"></i> Быстрая</a>
-					</div>
-				</div>
-			  </span>
+              <span class="text-muted">Фотографии</span>
             </div>
 			<div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($music_albums['count'])}</h2>
@@ -250,7 +242,7 @@ print <<<E
             </div>
             <div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['video'])}</h2>
-              <span class="text-muted">Видео&nbsp;&nbsp;<a href="sync.php?do=video"><i class="fa fa-sync fa-fw"></i></a></span>
+              <span class="text-muted">Видео</span>
             </div>
 			<div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['wall'])}</h2>
@@ -265,7 +257,7 @@ print <<<E
             </div>
 			<div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['docs'])}</h2>
-              <span class="text-muted">Документы&nbsp;&nbsp;<a href="sync.php?do=docs"><i class="fa fa-sync fa-fw"></i></a></span>
+              <span class="text-muted">Документы</span>
             </div>
 			<div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['dialogs'])}</h2>
@@ -283,6 +275,11 @@ print <<<E
               <h2 class="display-4">{$f->human_thousand($messages_attach['count'])}</h2>
               <span class="text-muted">Вложения (диалоги)</span>
             </div>
+			<div class="col-sm-3 mb-4">
+              <h2 class="display-4"><i class="fa fa-sync fa-fw text-success"></i></h2>
+              <span class="text-muted" style="text-decoration:underline;"><a href="sync.php">Синхронизация</a></span>
+            </div>
+			
           </div>
           
 		  <div class="row white-box">
@@ -294,14 +291,14 @@ E;
 
 if($counters_show['albums'] != 0 && $counters_show['albums'] > $counters['album']){
 print <<<E
-<tr><td>Количество <b>альбомов</b> изменилось, необходима синхронизация. <a href="sync.php?do=albums">Синхронизировать</a> сейчас?</td></tr>
+<tr><td>Количество <b>альбомов</b> изменилось, необходима синхронизация. <a href="sync.php">Синхронизировать</a> сейчас?</td></tr>
 E;
 }
 if($counters_show['photos'] != 0 && $counters_show['photos'] > $counters['photo']){
 	$d = $counters_show['photos'] - $counters['photo'];
 	if($d > 0){ $d = '(+<b>'.$d.'</b>)'; }
 print <<<E
-<tr><td>Количество <b>фотографий</b> изменилось {$d}, необходима синхронизация. <a href="sync.php?do=photo">Синхронизировать</a> сейчас?</td></tr>
+<tr><td>Количество <b>фотографий</b> изменилось {$d}, необходима синхронизация. <a href="sync.php">Синхронизировать</a> сейчас?</td></tr>
 E;
 }
 // Disabled because VK does not return data anymore
@@ -318,14 +315,14 @@ if($counters_show['videos'] != 0 && $counters_show['videos'] > $counters['video'
 	$d = $counters_show['videos'] - $counters['video'];
 	if($d > 0){ $d = '(+<b>'.$d.'</b>)'; }
 print <<<E
-<tr><td>Количество <b>видеозаписей</b> изменилось {$d}, необходима синхронизация. <a href="sync.php?do=video">Синхронизировать</a> сейчас?</td></tr>
+<tr><td>Количество <b>видеозаписей</b> изменилось {$d}, необходима синхронизация. <a href="sync.php">Синхронизировать</a> сейчас?</td></tr>
 E;
 }
 if($counters_show['docs'] != 0 && $counters_show['docs'] > $counters['docs']){
 	$d = $counters_show['docs'] - $counters['docs'];
 	if($d > 0){ $d = '(+<b>'.$d.'</b>)'; }
 print <<<E
-<tr><td>Количество <b>документов</b> изменилось {$d}, необходима синхронизация. <a href="sync.php?do=docs">Синхронизировать</a> сейчас?</td></tr>
+<tr><td>Количество <b>документов</b> изменилось {$d}, необходима синхронизация. <a href="sync.php">Синхронизировать</a> сейчас?</td></tr>
 E;
 }
 if($counters_show['dialogs'] != 0 && $counters_show['dialogs'] > $counters['dialogs']){

@@ -166,7 +166,7 @@ E;
 				$multi = array(
 					'on' => 1,
 					'chat_id' => $pv['conversation']['peer']['local_id'],
-					'users' => $pv['conversation']['chat_settings']['members_count'],
+					'users' => ($pv['conversation']['chat_settings']['members_count']) ? $pv['conversation']['chat_settings']['members_count'] : 0,
 					'admin' => $admin_id);
 				// Add 'admin' ID to dialogs users IDs
 				if($admin_id > 0){ $dialog_ids .= ($dialog_ids != '' ? ',' : '').$admin_id; }

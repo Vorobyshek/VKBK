@@ -1170,6 +1170,33 @@ E;
 		$output .= '</table></div>';
 		return $output;
 	}
+	
+	/*
+		Return calculated FROM and TO values
+		In:
+		offset - int
+		count - int
+		total - int
+		Out:
+		array( from, to )
+	*/
+	public function get_offset_range($offset,$count,$total){
+		$to = 0;
+		if($offset == 0){
+			$to = $count;
+			if($count > $total){
+				$to = $total;
+			}
+		} else {
+			if(($count+$offset) > $total){
+				$to = $total;
+			} else {
+				$to = $count+$offset;
+			}
+		}
+		if($offset > 0){ $from = $offset; } else { $from = 1; }
+		return array('from' => $from, 'to' => $to);
+	}
 
 } // end of class
 

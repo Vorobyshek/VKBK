@@ -272,23 +272,11 @@ if($do !== false){
 				}
 				
 				// I want this logic in one line, but this blow my mind so...
-				$to = 0;
-				if($offset == 0){
-					$to = $count;
-					if($count > $items_vk_total){
-						$to = $items_vk_total;
-					}
-				} else {
-					if(($count+$offset) > $items_vk_total){
-						$to = $items_vk_total;
-					} else {
-						$to = $count+$offset;
-					}
-				}
-				if($offset > 0){ $ot = $offset; } else { $ot = 1; }
+				// Calculate FROM and TO values
+				$from_to = $func->get_offset_range($offset,$count,$items_vk_total);
 				
-				array_unshift($log,"Получаем фото <b> ".$ot." - ".$to." / ".$items_vk_total."</b>.\r\n");
-				$output['response']['msg'][] = '<div><i class="far fa-fw fa-circle"></i> Получаем фото <b> '.$ot.' - '.$to.' / '.$items_vk_total.'</b>.</div>';
+				array_unshift($log,"Получаем фото <b> ".$from_to['from']." - ".$from_to['to']." / ".$items_vk_total."</b>.\r\n");
+				$output['response']['msg'][] = '<div><i class="far fa-fw fa-circle"></i> Получаем фото <b> '.$from_to['from'].' - '.$from_to['to'].' / '.$items_vk_total.'</b>.</div>';
 				
 				$items_list = array();
 				// No items in list? Probably album is empty.
@@ -475,24 +463,11 @@ if($do !== false){
 					$items_vk_list['uid'][] = $v['id'].'_'.$v['adding_date'];
 				}
 				
-				// I want this logic in one line, but this blow my mind so...
-				$to = 0;
-				if($offset == 0){
-					$to = $count;
-					if($count > $items_vk_total){
-						$to = $items_vk_total;
-					}
-				} else {
-					if(($count+$offset) > $items_vk_total){
-						$to = $items_vk_total;
-					} else {
-						$to = $count+$offset;
-					}
-				}
-				if($offset > 0){ $ot = $offset; } else { $ot = 1; }
+				// Calculate FROM and TO values
+				$from_to = $func->get_offset_range($offset,$count,$items_vk_total);
 				
-				array_unshift($log,"Синхронизация видеозаписей <b> ".$ot." - ".$to." / ".$items_vk_total."</b>.\r\n");
-				$output['response']['msg'][] = '<div><i class="far fa-fw fa-circle"></i> Синхронизация видеозаписей <b> '.$ot.' - '.$to.' / '.$items_vk_total.'</b>.</div>';
+				array_unshift($log,"Синхронизация видеозаписей <b> ".$from_to['from']." - ".$from_to['to']." / ".$items_vk_total."</b>.\r\n");
+				$output['response']['msg'][] = '<div><i class="far fa-fw fa-circle"></i> Синхронизация видеозаписей <b> '.$from_to['from'].' - '.$from_to['to'].' / '.$items_vk_total.'</b>.</div>';
 				
 				$items_list = array('id'=>array(),'uid'=>array());
 				// Get local IDs
@@ -663,24 +638,11 @@ if($do !== false){
 					$items_vk_list[] = $v['id'];
 				}
 				
-				// I want this logic in one line, but this blow my mind so...
-				$to = 0;
-				if($offset == 0){
-					$to = $count;
-					if($count > $items_vk_total){
-						$to = $items_vk_total;
-					}
-				} else {
-					if(($count+$offset) > $items_vk_total){
-						$to = $items_vk_total;
-					} else {
-						$to = $count+$offset;
-					}
-				}
-				if($offset > 0){ $ot = $offset; } else { $ot = 1; }
+				// Calculate FROM and TO values
+				$from_to = $func->get_offset_range($offset,$count,$items_vk_total);
 				
-				array_unshift($log,"Синхронизация документов <b> ".$ot." - ".$to." / ".$items_vk_total."</b>.\r\n");
-				$output['response']['msg'][] = '<div><i class="far fa-fw fa-circle"></i> Синхронизация документов <b> '.$ot.' - '.$to.' / '.$items_vk_total.'</b>.</div>';
+				array_unshift($log,"Синхронизация документов <b> ".$from_to['from']." - ".$from_to['to']." / ".$items_vk_total."</b>.\r\n");
+				$output['response']['msg'][] = '<div><i class="far fa-fw fa-circle"></i> Синхронизация документов <b> '.$from_to['from'].' - '.$from_to['to'].' / '.$items_vk_total.'</b>.</div>';
 				
 				$items_list = array();
 				// Get local IDs

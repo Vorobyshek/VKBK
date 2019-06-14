@@ -52,7 +52,7 @@ $counters_show = array(
 	//'audios' => 0,
 	'videos' => 0,
 	'docs'   => 0,
-	'dialogs'=> 0
+	//'dialogs'=> 0
 );
 
 if($vk_session['vk_token']){
@@ -141,8 +141,8 @@ E;
 			$counters_show['docs'] = 0;
 		}
 		
-		// GET DIALOGS Count
-		$dialogs = $vk->api('messages.getDialogs', array(
+		// GET DIALOGS Count *** Disabled by API ***
+		/*$dialogs = $vk->api('messages.getDialogs', array(
 			'count' => 0,
 			'offset' => 0
 		));
@@ -150,7 +150,7 @@ E;
 			$counters_show['dialogs'] = $dialogs['response']['count'];
 		} else {
 			$counters_show['dialogs'] = 0;
-		}
+		}*/
 
 		foreach($counters_show as $k => $v){
 			if($k == 'albums')  { $k = '<i class="fa fa-folder fa-fw"></i> Альбомы'; }
@@ -158,7 +158,7 @@ E;
 			//if($k == 'audios') { $k = '<i class="fa fa-music fa-fw"></i> Музыка'; }
 			if($k == 'videos')  { $k = '<i class="fa fa-film fa-fw"></i> Видео'; }
 			if($k == 'docs')    { $k = '<i class="fa fa-file fa-fw"></i> Документы'; }
-			if($k == 'dialogs') { $k = '<i class="far fa-comment-alt fa-fw"></i> Диалоги'; }
+			//if($k == 'dialogs') { $k = '<i class="far fa-comment-alt fa-fw"></i> Диалоги'; }
 			print '<li class="w-100 btn btn-light text-left mb-1 d-flex justify-content-between align-items-center"><span>'.$k.':</span> <span class="badge badge-secondary">'.$v.'</span></li>';
 		}
 		
@@ -246,14 +246,7 @@ print <<<E
             </div>
 			<div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['wall'])}</h2>
-              <span class="text-muted">Стена&nbsp;&nbsp;
-				<div class="dropdown show" style="display:inline-block;"><a class="dropdown-toggle" href="#" role="button" id="wallsync" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-sync fa-fw"></i></a>
-					<ul class="dropdown-menu" aria-labelledby="wallsync">
-						<a class="dropdown-item" href="sync-wall.php?offset=0"><i class="fa fa-hourglass fa-fw"></i> Полная</a>
-						<a class="dropdown-item" href="sync-wall.php?offset=0&fast=1"><i class="fa fa-hourglass-end fa-fw"></i> Быстрая</a>
-					</ul>
-				</div>
-			  </span>
+              <span class="text-muted">Стена</span>
             </div>
 			<div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['docs'])}</h2>
@@ -276,8 +269,8 @@ print <<<E
               <span class="text-muted">Вложения (диалоги)</span>
             </div>
 			<div class="col-sm-3 mb-4">
-              <h2 class="display-4"><i class="fa fa-sync fa-fw text-success"></i></h2>
-              <span class="text-muted" style="text-decoration:underline;"><a href="sync.php">Синхронизация</a></span>
+              <a href="sync.php"><h2 class="display-4"><i class="fa fa-sync fa-fw text-success"></i></h2>
+              <span class="text-muted" style="text-decoration:underline;">Синхронизация</span></a>
             </div>
 			
           </div>
@@ -325,13 +318,13 @@ print <<<E
 <tr><td>Количество <b>документов</b> изменилось {$d}, необходима синхронизация. <a href="sync.php">Синхронизировать</a> сейчас?</td></tr>
 E;
 }
-if($counters_show['dialogs'] != 0 && $counters_show['dialogs'] > $counters['dialogs']){
+/*if($counters_show['dialogs'] != 0 && $counters_show['dialogs'] > $counters['dialogs']){
 	$d = $counters_show['dialogs'] - $counters['dialogs'];
 	if($d > 0){ $d = '(+<b>'.$d.'</b>)'; }
 print <<<E
 <tr><td>Количество <b>диалогов</b> изменилось {$d}, необходима синхронизация. <a href="sync-messages.php">Синхронизировать</a> сейчас?</td></tr>
 E;
-}
+}*/
 
 print <<<E
 			      </tbody>

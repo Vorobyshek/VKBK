@@ -31,6 +31,7 @@ print $skin->header(array('extend'=>''));
 print $skin->navigation($lc);
 
 $sync_apvd = '/ajax/sync.php?';
+$sync_wall = '/ajax/sync-wall.php?';
 
 print <<<E
 <div class="nav-scroller bg-white box-shadow mb-4" style="position:relative;">
@@ -54,20 +55,38 @@ print <<<E
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-sm-12 text-center">
-					<div class="text-center"><h6 class="pb-2 mb-0">Синхронизация</h6></div>
-					<div id="sync-opts">
+			<div id="sync-opts">
+				<div class="row">
+					<div class="col-sm-12 text-center">
+						<div class="text-center"><h6 class="pb-2 mb-0">Синхронизировать</h6></div>
 <button data-uri="{$sync_apvd}do=albums" type="button" class="btn btn-sm btn-block btn-outline-success">
 <i class="fa fa-fw fa-folder"></i> Альбомы</button>
+					</div>
+				</div>
+				<div class="row mt-2">
+					<div class="col-sm-6 pr-1">
 <button data-uri="{$sync_apvd}do=photo&fast=1" type="button" class="btn btn-sm btn-block btn-outline-success">
-<i class="fa fa-fw fa-image"></i> Фотографии (<i class="fa fa-fw fa-hourglass-end"></i> быстр.)</button>
+<i class="fa fa-fw fa-image"></i> Фото (<i class="fa fa-fw fa-hourglass-end"></i> быстр.)</button>
+					</div>
+					<div class="col-sm-6 pl-1">
 <button data-uri="{$sync_apvd}do=photo" type="button" class="btn btn-sm btn-block btn-outline-success">
-<i class="fa fa-fw fa-image"></i> Фотографии (<i class="fa fa-fw fa-hourglass"></i> все)</button>
+<i class="fa fa-fw fa-image"></i> Фото (<i class="fa fa-fw fa-hourglass"></i> все)</button>
+					</div>
+				</div>
+				<div class="row mt-2">
+					<div class="col-sm-12">
 <button data-uri="{$sync_apvd}do=video" type="button" class="btn btn-sm btn-block btn-outline-success">
 <i class="fa fa-fw fa-film"></i> Видеозаписи</button>
 <button data-uri="{$sync_apvd}do=docs" type="button" class="btn btn-sm btn-block btn-outline-success">
 <i class="fa fa-fw fa-file"></i> Документы</button>
+					</div>
+				</div>
+				<div class="row mt-2">
+					<div class="col-sm-6 pr-1">
+<button data-uri="{$sync_wall}do=wall&offset=0&fast=1" type="button" class="btn btn-sm btn-block btn-outline-success"><i class="far fa-fw fa-comments"></i> Стена (<i class="fa fa-fw fa-hourglass-end"></i> быстр.)</button>
+					</div>
+					<div class="col-sm-6 pl-1">
+<button data-uri="{$sync_wall}do=wall&offset=0" type="button" class="btn btn-sm btn-block btn-outline-success"><i class="far fa-fw fa-comments"></i> Стена (<i class="fa fa-fw fa-hourglass"></i> всё)</button>
 					</div>
 				</div>
 			</div>

@@ -1,11 +1,49 @@
 <?php
+/*
+	vkbk :: /ajax/sync-wall.php
+	since v0.8.9
+*/
 
 header('Content-Type: text/html; charset=UTF-8');
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-require_once('./cfg.php');
+define('SLF',basename(__DIR__).'/'.basename(__FILE__));
+
+// Output > JSON container
+$output = array(
+	'response' => array(
+		'error_msg' => '',
+		'msg' => array(),
+		'next_uri' => '',
+		'done' => 0,
+		'total' => 0,
+		'timer' => 0
+	),
+	'error' => false
+);
+
+// Check do we have all needed GET data
+$do = false;
+$do_opts = array('wall');
+$offset = false;
+if(isset($_GET['do']) && in_array($_GET['do'],$do_opts)){
+	$do = $_GET['do'];
+}
+if(isset($_GET['offset']) && is_numeric($_GET['offset'])){
+	$offset = $_GET['offset'] >= 0 ? intval($_GET['offset']) : -1;
+}
+if($do === false || $offset === false){
+$output['error'] = true;
+$output['response']['error_msg'] = <<<E
+    <div><i class="fas fa-fw fa-times-circle text-danger"></i> Неизвестный запрос</div>
+E;
+	print json_encode($output);
+	die();
+}
+
+require_once('../cfg.php');
 
 // Get DB
 require_once(ROOT.'classes/db.php');
@@ -20,49 +58,30 @@ $skin = new skin();
 require_once(ROOT.'classes/func.php');
 $f = new func();
 
-// Get local counters for top menu
-$lc = $db->query_row("SELECT * FROM vk_counters");
-
-print $skin->header(array('extend'=>''));
-print $skin->navigation($lc);
-
-$offset = isset($_GET['offset']) ? intval($_GET['offset']) : -1;
 $count = 100;
 
-print <<<E
-<div class="nav-scroller bg-white box-shadow mb-4" style="position:relative;">
-    <nav class="nav nav-underline">
-		<span class="nav-link active"><i class="fa fa-sync"></i> Синхронизация - стена</span>
-    </nav>
-</div>
-<div class="container">
-          <div class="table-responsive">
-            <table class="table table-striped">
-E;
-
-if($offset >= 0){
-
-$don = false;
-
-// Include VK.API
-require_once(ROOT.'classes/VK/VK.php');
-
-// Check token
-$q = $db->query("SELECT * FROM vk_session WHERE `vk_id` = 1");
-$vk_session = $row = $db->return_row($q);
-$token_valid = false;
-
-if($vk_session['vk_token']){
-	$vk = new VK($cfg['vk_id'], $cfg['vk_secret'], $vk_session['vk_token']);
-	// Set API version
-	$vk->setApiVersion($cfg['vk_api_version']);
-	$token_valid = $vk->checkAccessToken($vk_session['vk_token']);
-} else {
-	$vk = new VK($cfg['vk_id'], $cfg['vk_secret']);
-	// Set API version
-	$vk->setApiVersion($cfg['vk_api_version']);
-}
-
+if($do !== false && $offset >= 0){
+	$don = false;
+	
+	// Include VK.API
+	require_once(ROOT.'classes/VK/VK.php');
+	
+	// Check token
+	$q = $db->query("SELECT * FROM vk_session WHERE `vk_id` = 1");
+	$vk_session = $row = $db->return_row($q);
+	$token_valid = false;
+	
+	if($vk_session['vk_token']){
+		$vk = new VK($cfg['vk_id'], $cfg['vk_secret'], $vk_session['vk_token']);
+		// Set API version
+		$vk->setApiVersion($cfg['vk_api_version']);
+		$token_valid = $vk->checkAccessToken($vk_session['vk_token']);
+	} else {
+		$vk = new VK($cfg['vk_id'], $cfg['vk_secret']);
+		// Set API version
+		$vk->setApiVersion($cfg['vk_api_version']);
+	}
+	
 if($vk_session['vk_token'] != '' && $token_valid == true){
 	try {
 	
@@ -84,13 +103,14 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 	$fast_sync_stop = false;
 	
 	if($api['response'] != ''){
-		
 		$don = true;
 		$api_profiles = $api['response']['profiles'];
 		$api_groups = $api['response']['groups'];
 		$api_posts = $api['response']['items'];
 		$vk_post_total = $api['response']['count'];
 		
+		$output['response']['done'] = $count;
+		$output['response']['total'] = $vk_post_total;
 	}
 	
 	// If we do fast sync, get the date of the last post in DB
@@ -101,7 +121,7 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 	
 	// Check & process profiles
 	if(!empty($api_profiles)){
-		
+	
 		$profile_ids = '';
 		$profile_new_ids = array();
 		
@@ -378,7 +398,7 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 				foreach($v['copy_history'] as $chk => $chv){
 					$rp = $v['copy_history'][$chk];
 					$repost = $rp['id'];
-				
+					
 					// Check repost attachments
 					if(!empty($rp['attachments'])){
 						$repost_attach = 1;
@@ -487,6 +507,7 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 					if($repost > 0){
 						// For multiple reposts let's check the next post id, if exists add it to current repost
 						$ch_next = $chk+1;
+						
 						if(isset($v['copy_history'][$ch_next]['id']) && $v['copy_history'][$ch_next]['id'] > 0){
 							$rerepost = $v['copy_history'][$ch_next]['id'];
 							$rerepost_owner = ($chk > 1) ? $v['copy_history'][$ch_next-1]['owner_id'] : $v['copy_history'][$ch_next]['owner_id'];
@@ -509,43 +530,31 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 		
 	}
 	
-	// I want this logic in one line, but this blow my mind so...
-	$to = 0;
-	if($offset == 0){
-		$to = $count;
-		if($count > $vk_post_total){
-			$to = $vk_post_total;
-		}
-	} else {
-		if(($count+$offset) > $vk_post_total){
-			$to = $vk_post_total;
-		} else {
-			$to = $count+$offset;
-		}
-	}
-	if($offset > 0){ $ot = $offset; } else { $ot = 1; }
+	// Calculate FROM and TO values
+	$from_to = $f->get_offset_range($offset,$count,$vk_post_total);
 	
-	print '<tr><td>Получаем записи <b> '.$ot.' - '.$to.' / '.$vk_post_total.'</b> со стены ВК.</td></tr>';
+	$output['response']['msg'][] = '<div><i class="far fa-fw fa-circle"></i> Получаем записи <b> '.$from_to['from'].' - '.$from_to['to'].' / '.$vk_post_total.'</b> со стены.</div>';
 	
 	// Let's recount wall
 	$q5 = $db->query("UPDATE vk_counters SET `wall` = (SELECT COUNT(*) FROM vk_wall WHERE `is_repost` = 0)");
 	
 	if($fast_sync == 1 && $fast_sync_stop == true){
 		// No unsynced posts left. This is the end...
-		print '<tr><td><div class="alert alert-success" role="alert"><strong>Великая китайская!</strong> Быстрая синхронизация сообщений завершена.</div></td></tr>';
+		$output['response']['msg'][] = '<div><i class="fa fa-fw fa-check-circle text-success"></i> <strong>Великая китайская!</strong> Быстрая синхронизация сообщений завершена.</div>';
 	} else {
 	
 		// If we done with all posts
 		if(($offset+$count) >= $vk_post_total){
 			// No unsynced posts left. This is the end...
-			print '<tr><td><div class="alert alert-success" role="alert"><strong>Великая китайская!</strong> Синхронизация всех сообщений со стены завершена.</div></td></tr>';
+			$output['response']['msg'][] = '<div><i class="fa fa-fw fa-check-circle text-success"></i> <strong>Великая китайская!</strong> Синхронизация всех сообщений со стены завершена.</div>';
 		} else {
 			// Some posts on the wall is not synced yed
-			print '<tr><td>Перехожу к следующей порции сообщений...</td></tr>';
-		
-			// Calculate offset and reload page
+			// Calculate offset
 			$offset_new = $offset+$count;
-			print $skin->reload('info',"Страница будет обновлена через <span id=\"gcd\">".$cfg['sync_wall_next_cd']."</span> сек.","sync-wall.php?offset=".$offset_new."&fast=".$fast_sync."",$cfg['sync_wall_next_cd']);
+			
+			$output['response']['msg'][] = '<div><i class="far fa-fw fa-pause-circle"></i> Перехожу к следующей порции сообщений...</div>';
+			$output['response']['next_uri'] = SLF.'?do=wall&offset='.$offset_new.'&fast='.$fast_sync;
+			$output['response']['timer'] = $cfg['sync_wall_next_cd'];
 		}
 	
 	} // Fast sync end
@@ -559,44 +568,29 @@ if($vk_session['vk_token'] != '' && $token_valid == true){
 // end of Token Check
 } else {
 	// Token is NOT valid, re-auth?
-print <<<E
-<tr>
-  <td>
-    <div class="alert alert-danger" role="alert"><span>Внимание!</span> Токен является недействительным. Необходимо авторизироваться. Перейти в <a href="index.php">Панель управления</a> для авторизации?</div>
-  </td>
-</tr>
+$output['error'] = true;
+$output['response']['error_msg'] = <<<E
+    <div><i class="fas fa-fw fa-times-circle text-danger"></i> <span>Внимание!</span> Токен является недействительным. Необходимо авторизироваться.</div>
 E;
 }
 
 if($don == false && $token_valid == true){
-print <<<E
-<tr>
-  <td>
-    <div class="alert alert-info" role="alert">Нет заданий для синхронизации</div>
-  </td>
-</tr>
+$output['error'] = true;
+$output['response']['error_msg'] = <<<E
+    <div><i class="fas fa-fw fa-exclamation-circle text-warning"></i> Нет заданий для синхронизации</div>
 E;
 }
 
 // End of IF OFFSET
 } else {
-print <<<E
-<tr>
-  <td>
-    <div class="alert alert-info" role="alert">Нет заданий для синхронизации</div>
-  </td>
-</tr>
+$output['error'] = true;
+$output['response']['error_msg'] = <<<E
+    <div><i class="fas fa-fw fa-exclamation-circle text-warning"></i> Нет заданий для синхронизации</div>
 E;
 }
 
-print <<<E
-            </table>
-          </div>
-</div>
-E;
-
-print $skin->footer(array('extend'=>''));
-
 $db->close($res);
+
+print json_encode($output);
 
 ?>

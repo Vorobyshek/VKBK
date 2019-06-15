@@ -166,9 +166,9 @@ E;
 			{$this->navigation_item('albums.php' ,'Альбомы'			,'fa fa-camera-retro'		,$s['album'])}
 			{$this->navigation_item('music.php'	 ,'Музыка'			,'fa fa-music'				,$s['music'])}
 			{$this->navigation_item('videos.php' ,'Видео'			,'fa fa-film'				,$s['video'])}
-			{$this->navigation_item('wall.php'	 ,'Сообщения'		,'far fa-comments'			,$s['wall'])}
+			{$this->navigation_item('wall.php'	 ,'Стена'		,'far fa-newspaper'			,$s['wall'])}
 			{$this->navigation_item('docs.php'	 ,'Документы'		,'far fa-file'				,$s['docs'])}
-			{$this->navigation_item('dialogs.php','Диалоги'			,'far fa-comment-alt'		,$s['dialogs'])}
+			{$this->navigation_item('dialogs.php','Диалоги'			,'far fa-comments'		,$s['dialogs'])}
 			{$this->navigation_item('queue.php'	 ,'Очередь закачки'	,'fa fa-cloud-download-alt'	,'')}
 			
 			<li class="nav-item tip" data-placement="bottom" data-toggle="tooltip" data-original-title="Настройки">

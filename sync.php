@@ -60,7 +60,7 @@ print <<<E
 					<div class="col-sm-12 text-center">
 						<div class="text-center"><h6 class="pb-2 mb-0">Синхронизировать</h6></div>
 <button data-uri="{$sync_apvd}do=albums" type="button" class="btn btn-sm btn-block btn-outline-success">
-<i class="fa fa-fw fa-folder"></i> Альбомы</button>
+<i class="fa fa-fw fa-folder-open"></i> Альбомы</button>
 					</div>
 				</div>
 				<div class="row mt-2">
@@ -83,10 +83,10 @@ print <<<E
 				</div>
 				<div class="row mt-2">
 					<div class="col-sm-6 pr-1">
-<button data-uri="{$sync_wall}do=wall&offset=0&fast=1" type="button" class="btn btn-sm btn-block btn-outline-success"><i class="far fa-fw fa-comments"></i> Стена (<i class="fa fa-fw fa-hourglass-end"></i> быстр.)</button>
+<button data-uri="{$sync_wall}do=wall&offset=0&fast=1" type="button" class="btn btn-sm btn-block btn-outline-success"><i class="far fa-fw fa-newspaper"></i> Стена (<i class="fa fa-fw fa-hourglass-end"></i> быстр.)</button>
 					</div>
 					<div class="col-sm-6 pl-1">
-<button data-uri="{$sync_wall}do=wall&offset=0" type="button" class="btn btn-sm btn-block btn-outline-success"><i class="far fa-fw fa-comments"></i> Стена (<i class="fa fa-fw fa-hourglass"></i> всё)</button>
+<button data-uri="{$sync_wall}do=wall&offset=0" type="button" class="btn btn-sm btn-block btn-outline-success"><i class="far fa-fw fa-newspaper"></i> Стена (<i class="fa fa-fw fa-hourglass"></i> всё)</button>
 					</div>
 				</div>
 			</div>

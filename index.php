@@ -153,7 +153,7 @@ E;
 		}*/
 
 		foreach($counters_show as $k => $v){
-			if($k == 'albums')  { $k = '<i class="fa fa-folder fa-fw"></i> Альбомы'; }
+			if($k == 'albums')  { $k = '<i class="fa fa-folder-open fa-fw"></i> Альбомы'; }
 			if($k == 'photos')  { $k = '<i class="fa fa-image fa-fw"></i> Фото'; }
 			//if($k == 'audios') { $k = '<i class="fa fa-music fa-fw"></i> Музыка'; }
 			if($k == 'videos')  { $k = '<i class="fa fa-film fa-fw"></i> Видео'; }

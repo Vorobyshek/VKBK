@@ -32,7 +32,7 @@ if(!$cfg['pj']){
 print <<<E
 <div class="nav-scroller bg-white box-shadow mb-4" style="position:relative;">
     <nav class="nav nav-underline">
-		<span class="nav-link active"><i class="far fa-comment-alt"></i> Диалоги</span>
+		<span class="nav-link active"><i class="far fa-comments"></i> Диалоги</span>
     </nav>
 </div>
 <div class="container">

@@ -199,7 +199,7 @@ E;
 	    header - album name
 	*/
 	function albums_header($header){
-	    return '<span class="nav-link ">'.(!empty($header) ? '<i class="far fa-folder-open"></i> '.$header : '<i class="fa fa-image"></i> Последние фотографии').'</span>';
+	    return '<span id="cur-alb" class="nav-link ">'.(!empty($header) ? '<i class="far fa-folder-open"></i> '.$header : '<i class="fa fa-image"></i> Последние фотографии').'</span>';
 	}
 	
 	/*

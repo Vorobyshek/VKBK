@@ -159,6 +159,7 @@ $(document).ready(function() {
 	jQuery("#album").on('change', function(){
 		if(album != this.value){
 			album = this.value;
+			jQuery("#cur-alb").html('<i class="far fa-folder-open"></i> '+$(this).find(":selected").html());
 			$(".pic-albums").remove();
 			ajax_page_reload('album',"?page=0&id="+album);
 		}

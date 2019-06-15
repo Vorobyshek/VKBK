@@ -254,7 +254,7 @@ print <<<E
             </div>
 			<div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($counters['dialogs'])}</h2>
-              <span class="text-muted">Диалоги&nbsp;&nbsp;<a href="sync-messages.php"><i class="fa fa-sync fa-fw"></i></a></span>
+              <span class="text-muted">Диалоги<!--&nbsp;&nbsp;<a href="sync-messages.php"><i class="fa fa-sync fa-fw"></i></a>--></span>
             </div>
 			<div class="col-sm-3 mb-4">
               <h2 class="display-4">{$f->human_thousand($wall_attachments['count'])}</h2>

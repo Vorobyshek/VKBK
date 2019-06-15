@@ -248,7 +248,7 @@ class VK
     private function request($url, $method = 'GET', $postfields = array())
     {
         curl_setopt_array($this->ch, array(
-            CURLOPT_USERAGENT => 'VK/1.0 (+https://github.com/vladkens/VK))',
+            CURLOPT_USERAGENT => 'VKAndroidApp/4.0.1-816 (Android 6.0; SDK 23; x86; Google Nexus 5X; ru)',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_POST => ($method == 'POST'),
